@@ -1,0 +1,40 @@
+<div class="form_item_block">
+  <label>IP of server to scan:<span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="ServerIp" ng-required="true">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[ServerIp].$error.ip">Incorrect IP Adress</span>
+</div>
+<div class="form_item_block">
+  <label>Policy:<span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="Policy" ng-required="true">
+  </input>
+</div>
+<div class="form_item_block">
+  <label>Fail issue type:</label>
+  <select ng-model="IssueTypeFail">
+    <option value="critical">Critical</option>
+    <option value="high">High and Critical</option>
+    <option value="medium">Medium, High and Critical</option>
+    <option value="any">Any</option>
+  </select>
+</div>
+<div class="form_item_block">
+  <label>Nessus Api Url<span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="NessusApiUrl" ng-required="true">
+  </input>
+</div>
+<div class="form_item_block">
+  <label>Nessus Api Access Key:<span class="asterisk">*</span>
+  </label>
+  <textarea ng-model="NessusApiAccessKey" ng-required="true">
+  </textarea>
+</div>
+<div class="form_item_block">
+  <label>Nessus Api Secret Key<span class="asterisk">*</span>
+  </label>
+  <textarea ng-model="NessusApiAccessSecret" ng-required="true">
+  </textarea>
+</div>

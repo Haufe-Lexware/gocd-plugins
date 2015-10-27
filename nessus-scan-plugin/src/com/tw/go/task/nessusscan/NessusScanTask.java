@@ -14,6 +14,7 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.task.*;
 import org.apache.commons.io.IOUtils;
 import com.google.gson.GsonBuilder;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class NessusScanTask implements GoPlugin {
 
     public static final String SERVER_IP = "ServerIp";
     public static final String POLICY = "Policy";
+    public static final String SCANTEMPLATE = "ScanTemplate";
     public static final String ISSUE_TYPE_FAIL = "IssueTypeFail";
     public static final String NESSUS_API_URL = "NessusApiUrl";
     public static final String NESSUS_API_ACCESS_KEY = "NessusApiAccessKey";
@@ -64,13 +66,14 @@ public class NessusScanTask implements GoPlugin {
     }
 
     private GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) {
-        NessusScanTaskExecutor executor = new NessusScanTaskExecutor();
+
+        NessusScanTaskExecutor executor = new NessusScanTaskExecutor(JobConsoleLogger.getConsoleLogger());
+
         Map executionRequest = (Map) new GsonBuilder().create().fromJson(request.requestBody(), Object.class);
         Map config = (Map) executionRequest.get("config");
         Map context = (Map) executionRequest.get("context");
 
-        // Result result = executor.execute(new Config(config), new Context(context), JobConsoleLogger.getConsoleLogger());
-        Result result = executor.execute(new Context(context), JobConsoleLogger.getConsoleLogger());
+        Result result = executor.execute(config, new Context(context));
         return createResponse(result.responseCode(), result.toMap());
     }
 
@@ -105,27 +108,33 @@ public class NessusScanTask implements GoPlugin {
         policy.put("required", true);
         config.put(POLICY, policy);
 
+        HashMap scanTemplate = new HashMap();
+        policy.put("display-order", "2");
+        policy.put("display-name", "Scan Template Name");
+        policy.put("required", true);
+        config.put(SCANTEMPLATE, scanTemplate);
+
         HashMap issueTypeFail = new HashMap();
         issueTypeFail.put("default-value", "critical");
-        issueTypeFail.put("display-order", "2");
+        issueTypeFail.put("display-order", "3");
         issueTypeFail.put("display-name", "Issue Type Fail");
         issueTypeFail.put("required", false);
         config.put(ISSUE_TYPE_FAIL, issueTypeFail);
 
         HashMap nessusApiUrl = new HashMap();
-        nessusApiUrl.put("display-order", "3");
+        nessusApiUrl.put("display-order", "4");
         nessusApiUrl.put("display-name", "Nessus Api Url");
         nessusApiUrl.put("required", true);
         config.put(NESSUS_API_URL, nessusApiUrl);
 
         HashMap nessusApiAccessKey = new HashMap();
-        nessusApiAccessKey.put("display-order", "4");
+        nessusApiAccessKey.put("display-order", "5");
         nessusApiAccessKey.put("display-name", "Nessus Api Access Key");
         nessusApiAccessKey.put("required", true);
         config.put(NESSUS_API_ACCESS_KEY, nessusApiAccessKey);
 
         HashMap nessusApiSecretKey = new HashMap();
-        nessusApiSecretKey.put("display-order", "5");
+        nessusApiSecretKey.put("display-order", "6");
         nessusApiSecretKey.put("display-name", "Nessus Api Secret Key");
         nessusApiSecretKey.put("required", true);
         config.put(NESSUS_API_SECRET_KEY, nessusApiSecretKey);

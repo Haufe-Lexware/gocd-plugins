@@ -4,13 +4,14 @@ package com.tw.go.task.nessusscan;
 import java.util.Map;
 
 public class Config {
-/*    private final String requestType;
+
+    /*
+    private final String requestType;
     private final String secureConnection;
     private final String additionalOptions;
     private final String url;
-    */
 
-/*    public Config(Map config) {
+    public Config(Map config) {
         requestType = getValue(config, NessusScanTask.REQUEST_PROPERTY);
         secureConnection = getValue(config, NessusScanTask.SECURE_CONNECTION_PROPERTY);
         additionalOptions = getValue(config, NessusScanTask.ADDITIONAL_OPTIONS);
@@ -36,5 +37,5 @@ public class Config {
     public String getUrl() {
         return url;
     }
-    */
+*/
 }

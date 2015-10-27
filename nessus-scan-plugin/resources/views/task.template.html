@@ -6,7 +6,13 @@
   <span class="form_error" ng-show="GOINPUTNAME[ServerIp].$error.ip">Incorrect IP Adress</span>
 </div>
 <div class="form_item_block">
-  <label>Policy:<span class="asterisk">*</span>
+  <label>Scan Template:<span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="ScanTemplate" ng-required="true">
+  </input>
+</div>
+<div class="form_item_block">
+  <label>Policy ID:<span class="asterisk">*</span>
   </label>
   <input type="text" ng-model="Policy" ng-required="true">
   </input>

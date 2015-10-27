@@ -30,11 +30,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
     </dependencies>
 
     <modules>
-        <module>curl-plugin</module>
-        <module>descriptor-hash-plugin</module>
+        <module>nessus-scan-plugin</module>
     </modules>
 
     <build>

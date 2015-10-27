@@ -31,14 +31,15 @@ public class NessusClient {
 
     public String getScanTemplateUuid(String templateName) throws Exception
     {
-
         String uri = _apiUrl + "/editor/scan/templates";
         String resultData = requestGet(uri);
+
         JSONObject resultObj = new JSONObject(resultData);
         JSONArray templates = resultObj.getJSONArray("templates");
-        for (Object obj : templates)
+
+        for (int i = 0; i < templates.length(); i++)
         {
-            JSONObject template = (JSONObject) obj;
+            JSONObject template = (JSONObject) templates.get(i);
             String currentTemplateName = template.getString("name");
             if(currentTemplateName.equals(templateName))
             {
@@ -79,7 +80,7 @@ public class NessusClient {
 
     }
 
-    public JSONObject getScan(int scanId)
+    public JSONObject getScan(int scanId) throws Exception
     {
         String scanUuid = "";
         String uri = _apiUrl + "/scans/%1$s";
@@ -88,7 +89,7 @@ public class NessusClient {
         return new JSONObject(resultData);
     }
 
-    public boolean isScanFinished(int scanId)
+    public boolean isScanFinished(int scanId) throws Exception
     {
         JSONObject scan = getScan(scanId);
         NessusScanParser parser = new NessusScanParser(scan);
@@ -126,7 +127,7 @@ public class NessusClient {
         out.write(resultData);
     }
 
-    public boolean isExportFinished(int scanId, int fileId)
+    public boolean isExportFinished(int scanId, int fileId) throws Exception
     {
         String uri = _apiUrl + "/scans/%1$s/export/%2$s/status";
         uri = String.format(uri, scanId, fileId);
@@ -158,20 +159,11 @@ public class NessusClient {
         requestDelete(uri);
     }
 
-
-    public void getScanTemplates()
-    {
-        String uri = _apiUrl + "/editor/scan/templates";
-
-        String data = requestGet(uri);
-
-    }
-
-    private String requestGet(String requestUrlString){
+    private String requestGet(String requestUrlString) throws Exception{
         return request(requestUrlString, "GET" );
     }
 
-    private void requestDelete(String requestUrl)
+    private void requestDelete(String requestUrl) throws Exception
     {
         request(requestUrl, "DELETE");
     }
@@ -180,41 +172,39 @@ public class NessusClient {
         return request(requestUrlString, jsonData, "POST");
     }
 
-    private String request(String requestUrlString, String requestMethod){
+    private String request(String requestUrlString, String requestMethod) throws Exception{
         String result = "";
 
 
         // HTTP Get
-        try {
-            URL url = new URL(requestUrlString);
 
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-            conn.setRequestMethod(requestMethod);
-            conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // nessus x API keys for secure access
-            conn.setRequestProperty("Accept", "application/json");
+        URL url = new URL(requestUrlString);
 
-            if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + conn.getResponseCode());
-            }
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        conn.setRequestMethod(requestMethod);
+        conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // nessus x API keys for secure access
+        conn.setRequestProperty("Accept", "application/json");
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
-
-            StringBuffer response = new StringBuffer();
-            String inputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            result = response.toString();
-
-            conn.disconnect();
-        } catch (Exception e ) {
-            return e.getMessage();
+        if (conn.getResponseCode() != 200) {
+            throw new RuntimeException("Failed : HTTP error code : "
+                    + conn.getResponseCode());
         }
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                (conn.getInputStream())));
+
+        StringBuffer response = new StringBuffer();
+        String inputLine;
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        result = response.toString();
+
+        conn.disconnect();
+
 
         return result;
     }
@@ -225,41 +215,37 @@ public class NessusClient {
         String result = "";
 
         // pass JSON File Data to REST Service
-        try {
-            URL url = new URL(requestUrlString);
-            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
-            conn.setRequestMethod(requestMethod);
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // nessus x API keys for secure access
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(5000);
-            conn.setDoOutput(true);
-            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-            out.write(jsonData);
-            out.close();
+        URL url = new URL(requestUrlString);
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
-            int responseCode = conn.getResponseCode();
+        conn.setRequestMethod(requestMethod);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // nessus x API keys for secure access
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
+        conn.setDoOutput(true);
+        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+        out.write(jsonData);
+        out.close();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
+        int responseCode = conn.getResponseCode();
 
-            StringBuffer response = new StringBuffer();
-            String inputLine;
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                (conn.getInputStream())));
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
+        StringBuffer response = new StringBuffer();
+        String inputLine;
 
-            result = response.toString();
-
-            in.close();
-        } catch (Exception e) {
-            System.out.println("\nError while calling REST Service");
-            System.out.println(e.getMessage());
-            throw e;
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
         }
+        in.close();
+
+        result = response.toString();
+
+        in.close();
+
 
         return result;
     }

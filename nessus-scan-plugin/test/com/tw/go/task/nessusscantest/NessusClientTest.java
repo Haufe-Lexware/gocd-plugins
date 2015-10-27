@@ -69,7 +69,7 @@ public class NessusClientTest {
         // wait until scan is finished.
         while (!nessusClient.isScanFinished(scanId))
         {
-            Thread.sleep(50);
+            Thread.sleep(5000);
         }
 
         // fetch the result

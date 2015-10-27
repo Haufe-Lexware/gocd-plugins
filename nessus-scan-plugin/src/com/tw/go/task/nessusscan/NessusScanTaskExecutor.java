@@ -53,15 +53,42 @@ public class NessusScanTaskExecutor {
             Log("nessus scan id = " + String.valueOf(scanId));
 
             // run the scan
-            String scanUuid = nessusClient.launchScan(scanId);
+            nessusClient.launchScan(scanId);
 
+            int oldNumHosts = 0;
+            boolean initializingShown = false;
+            int oldScanProgressCurrent = 0;
             // wait until scan is finished.
             while (!nessusClient.isScanFinished(scanId))
             {
                 Thread.sleep(250);
                 JSONObject scanProgress = nessusClient.getScan(scanId);
                 NessusScanParser progressParser = new NessusScanParser(scanProgress);
-                Log(progressParser.scanProgressCurrent() + " of " + progressParser.scanProgressTotal() + " finished");
+                int NumHosts = progressParser.numHosts();
+                if(NumHosts > 0)
+                {
+                    if (oldNumHosts != NumHosts){
+                        oldNumHosts = NumHosts;
+                        Log("Number of Hosts to scan: " + NumHosts);
+                    }
+
+                    int scanProgressCurrent = progressParser.scanProgressCurrent();
+                    if(scanProgressCurrent != oldScanProgressCurrent)
+                    {
+                        oldScanProgressCurrent = scanProgressCurrent;
+                        int scanPercent = (100 * scanProgressCurrent) / progressParser.scanProgressTotal();
+                        Log("Done " + scanPercent + "%");
+                    }
+                }
+                else
+                {
+                    if(!initializingShown)
+                    {
+                        initializingShown = true;
+                        Log("Initializing scan...");
+                    }
+                }
+
             }
 
             // fetch the result
@@ -69,11 +96,11 @@ public class NessusScanTaskExecutor {
 
             NessusScanParser resultParser = new NessusScanParser(scanResult);
             Log("-------- scan summary -------");
-            Log("number of hosts scanned: " + String.valueOf(resultParser.numHosts()));
-            Log("critical issues: " + String.valueOf(resultParser.numIssuesCritical()));
-            Log("high issues: " + String.valueOf(resultParser.numIssuesHigh()));
-            Log("medium issues: " + String.valueOf(resultParser.numIssuesMedium()));
-            Log("low issues: " + String.valueOf(resultParser.numIssuesLow()));
+            Log("number of hosts scanned: " + resultParser.numHosts());
+            Log("critical issues: " + resultParser.numIssuesCritical());
+            Log("high issues: " + resultParser.numIssuesHigh());
+            Log("medium issues: " + resultParser.numIssuesMedium());
+            Log("low issues: " + resultParser.numIssuesLow());
             Log("-----------------------------");
 
             // export the scan
@@ -93,7 +120,40 @@ public class NessusScanTaskExecutor {
     }
 
     private Result parseResult(JSONObject scanResult, String issueTypeFail) {
-        return new Result(false, "Failed, we have to parse the result");
+
+        NessusScanParser resultParser = new NessusScanParser(scanResult);
+        if(issueTypeFail.equals("critical"))
+        {
+            if (resultParser.numIssuesCritical() > 0)
+            {
+                return new Result(false, "Failed: at least 1 critical issue");
+            }
+            return new Result(true, "No critical issue found");
+        }
+        if(issueTypeFail.equals("high"))
+        {
+            if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh()) > 0 )
+            {
+                return new Result(false, "Failed: at least 1 critical or high issue");
+            }
+            return new Result(true, "No critical or high issue found");
+        }
+
+        if(issueTypeFail.equals("medium"))
+        {
+            if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh() + resultParser.numIssuesMedium()) > 0 )
+            {
+                return new Result(false, "Failed: at least 1 critical, high or medium issue");
+            }
+            return new Result(true, "No critical, high or medium issue found");
+        }
+
+        if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh() + resultParser.numIssuesMedium() + resultParser.numIssuesLow()) > 0 )
+        {
+            return new Result(false, "Failed: at least 1 issue found ");
+        }
+        return new Result(true, "No issue found");
+
     }
 
     private void Log(String message)
@@ -103,6 +163,7 @@ public class NessusScanTaskExecutor {
 
 
     private Result runCommand(Context taskContext, JSONObject config, JobConsoleLogger console) throws Exception {
+
 
         throw new Exception(config.toString());
        /*

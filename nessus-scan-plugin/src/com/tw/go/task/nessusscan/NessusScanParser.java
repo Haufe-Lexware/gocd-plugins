@@ -40,9 +40,9 @@ public class NessusScanParser
     {
         int total = 0;
         JSONArray hosts = Hosts();
-        for (Object obj : hosts)
+        for (int i = 0; i < hosts.length(); i++)
         {
-            JSONObject host = (JSONObject) obj;
+            JSONObject host = (JSONObject) hosts.get(i);
             total += host.getInt("critical");
 
         }

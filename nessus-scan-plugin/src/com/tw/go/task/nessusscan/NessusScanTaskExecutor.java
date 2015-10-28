@@ -58,6 +58,7 @@ public class NessusScanTaskExecutor {
             int oldNumHosts = 0;
             boolean initializingShown = false;
             int oldScanProgressCurrent = 0;
+            long lastTimeMillis = System.currentTimeMillis();
             // wait until scan is finished.
             while (!nessusClient.isScanFinished(scanId))
             {
@@ -78,6 +79,15 @@ public class NessusScanTaskExecutor {
                         oldScanProgressCurrent = scanProgressCurrent;
                         int scanPercent = (100 * scanProgressCurrent) / progressParser.scanProgressTotal();
                         Log("Done " + scanPercent + "%");
+                        lastTimeMillis = System.currentTimeMillis();
+                    }
+                    else
+                    {
+                        long currentTimeMillis = System.currentTimeMillis();
+                        if((lastTimeMillis + 1000 * 60) < currentTimeMillis) {
+                            lastTimeMillis = currentTimeMillis;
+                            Log("Done ...");
+                        }
                     }
                 }
                 else
@@ -162,51 +172,4 @@ public class NessusScanTaskExecutor {
     }
 
 
-    private Result runCommand(Context taskContext, JSONObject config, JobConsoleLogger console) throws Exception {
-
-
-        throw new Exception(config.toString());
-       /*
-        ProcessBuilder curl = createCurlCommandWithOptions(taskContext, taskConfig);
-        console.printLine("Launching command: " + curl.command());
-        curl.environment().putAll(taskContext.getEnvironmentVariables());
-        console.printEnvironment(curl.environment());
-
-        Process curlProcess = curl.start();
-        console.readErrorOf(curlProcess.getErrorStream());
-        console.readOutputOf(curlProcess.getInputStream());
-
-        int exitCode = curlProcess.waitFor();
-        curlProcess.destroy();
-
-        if (exitCode != 0) {
-            return new Result(false, "Failed downloading file. Please check the output");
-        }
-        */
-        //return new Result(true, "Scan result file: " );
-    }
-
-    /*
-    ProcessBuilder createCurlCommandWithOptions(Context taskContext, Config taskConfig) {
-        String destinationFilePath = taskContext.getWorkingDir() + "/" + CURLED_FILE;
-
-        List<String> command = new ArrayList<String>();
-        command.add("nessusscan");
-        command.add(taskConfig.getRequestType());
-        if (taskConfig.getSecureConnection().equals("no")) {
-            command.add("--insecure");
-        }
-        if (taskConfig.getAdditionalOptions() != null && !taskConfig.getAdditionalOptions().trim().isEmpty()) {
-            String parts[] = taskConfig.getAdditionalOptions().split("\\s+");
-            for (String part : parts) {
-                command.add(part);
-            }
-        }
-        command.add("-o");
-        command.add(destinationFilePath);
-        command.add(taskConfig.getUrl());
-
-        return new ProcessBuilder(command);
-    }
-    */
-}
+ }

@@ -12,9 +12,10 @@ import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.task.*;
+import com.tw.go.plugin.common.Context;
+import com.tw.go.plugin.common.Result;
 import org.apache.commons.io.IOUtils;
 import com.google.gson.GsonBuilder;
-import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -66,14 +67,13 @@ public class NessusScanTask implements GoPlugin {
     }
 
     private GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) {
-
-        NessusScanTaskExecutor executor = new NessusScanTaskExecutor(JobConsoleLogger.getConsoleLogger());
-
         Map executionRequest = (Map) new GsonBuilder().create().fromJson(request.requestBody(), Object.class);
         Map config = (Map) executionRequest.get("config");
         Map context = (Map) executionRequest.get("context");
 
-        Result result = executor.execute(config, new Context(context));
+        NessusScanTaskExecutor executor = new NessusScanTaskExecutor(JobConsoleLogger.getConsoleLogger(), new Context(context), config );
+
+        Result result = executor.execute();
         return createResponse(result.responseCode(), result.toMap());
     }
 

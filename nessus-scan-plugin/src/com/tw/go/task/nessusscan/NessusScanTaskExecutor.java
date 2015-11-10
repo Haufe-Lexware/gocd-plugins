@@ -1,43 +1,39 @@
 
 package com.tw.go.task.nessusscan;
 
+
 import com.thoughtworks.go.plugin.api.task.*;
+import com.tw.go.plugin.common.*;
+import com.tw.go.plugin.common.TaskExecutor;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
-public class NessusScanTaskExecutor {
+public class NessusScanTaskExecutor extends TaskExecutor {
 
-    private JobConsoleLogger console;
-
-    public NessusScanTaskExecutor(JobConsoleLogger console)
-    {
-        this.console = console;
+    public NessusScanTaskExecutor(JobConsoleLogger console, Context context, Map config) {
+        super(console, context, config);
     }
 
-    public Result execute( Map config, Context context) {
 
-        String serverToScanIp = (String) ((Map) config.get(NessusScanTask.SERVER_IP)).get("value");
+    public Result execute() {
+
+        String serverToScanIp = (String) ((Map) this.config.get(NessusScanTask.SERVER_IP)).get("value");
         Log("IP(s) to scan: " + serverToScanIp);
 
         try {
             // get input parameter
-            String policy = (String) ((Map) config.get(NessusScanTask.POLICY)).get("value");
+            String policy = (String) ((Map) this.config.get(NessusScanTask.POLICY)).get("value");
             Log("Policy: " + policy);
             int nessusScanPolicy = Integer.parseInt(policy);
-            String nessusScanTemplateName = (String) ((Map) config.get(NessusScanTask.SCANTEMPLATE)).get("value");
+            String nessusScanTemplateName = (String) ((Map) this.config.get(NessusScanTask.SCANTEMPLATE)).get("value");
             Log("Scan Teamplate: " + nessusScanTemplateName);
-            String issueTypeFail = (String) ((Map) config.get(NessusScanTask.ISSUE_TYPE_FAIL)).get("value");
+            String issueTypeFail = (String) ((Map) this.config.get(NessusScanTask.ISSUE_TYPE_FAIL)).get("value");
             Log("Fail if: " + issueTypeFail);
-            String nessusApiUrl = (String) ((Map) config.get(NessusScanTask.NESSUS_API_URL)).get("value");
+            String nessusApiUrl = (String) ((Map)this.config.get(NessusScanTask.NESSUS_API_URL)).get("value");
             Log("API Url: " + nessusApiUrl);
-            String nessusApiAccessKey = (String) ((Map) config.get(NessusScanTask.NESSUS_API_ACCESS_KEY)).get("value");
-            String nessusApiSecretKey = (String) ((Map) config.get(NessusScanTask.NESSUS_API_SECRET_KEY)).get("value");
+            String nessusApiAccessKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_ACCESS_KEY)).get("value");
+            String nessusApiSecretKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_SECRET_KEY)).get("value");
             String exportFilename = "nessusScanResult.html";
 
             // create a scan client
@@ -166,10 +162,8 @@ public class NessusScanTaskExecutor {
 
     }
 
-    private void Log(String message)
-    {
-        this.console.printLine("[Nessus Scan Task Plugin] " + message);
+    protected String getPluginLogPrefix(){
+        return "[Nessus Scan Task Plugin] ";
     }
-
 
  }

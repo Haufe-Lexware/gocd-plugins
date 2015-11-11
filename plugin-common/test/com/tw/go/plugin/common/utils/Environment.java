@@ -20,17 +20,12 @@ public class Environment {
     public static Map getDefaultEnvVarMap(){
         Map envVars = new HashMap();
         envVars.put("GO_SERVER_URL","https://localhost:8154/go" );
-
-        /*        .with(GO_SERVER_DASHBOARD_URL, "http://go.server:8153")
-                .with("GO_SERVER_URL", "https://localhost:8154/go")
-                .with("GO_PIPELINE_NAME", "s3-publish-test")
-                .with("GO_PIPELINE_COUNTER", "20")
-                .with("GO_STAGE_NAME", "build-and-publish")
-                .with("GO_STAGE_COUNTER", "1")
-                .with("GO_JOB_NAME", "publish")
-                .with("GO_TRIGGER_USER", "Krishna")
-
-        */
+        envVars.put("GO_PIPELINE_NAME", "test-pipeline");
+        envVars.put("GO_PIPELINE_COUNTER", "123");
+        envVars.put("GO_STAGE_NAME", "test-stage");
+        envVars.put("GO_STAGE_COUNTER", "1");
+        envVars.put("GO_JOB_NAME", "test-job");
+        envVars.put("GO_TRIGGER_USER", "TestUser");
 
         return envVars;
     }

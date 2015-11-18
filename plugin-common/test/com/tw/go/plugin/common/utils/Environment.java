@@ -19,7 +19,7 @@ public class Environment {
 
     public static Map getDefaultEnvVarMap(){
         Map envVars = new HashMap();
-        envVars.put("GO_SERVER_URL","http://localhost:8153/go" );
+        envVars.put("GO_SERVER_URL","http://localhost:8153/go/" );
         envVars.put("GO_PIPELINE_NAME", "TestPluginsPipeline");
         envVars.put("GO_PIPELINE_COUNTER", "1");
         envVars.put("GO_STAGE_NAME", "TestPluginStage");

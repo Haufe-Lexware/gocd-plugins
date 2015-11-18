@@ -52,11 +52,11 @@ public class GoApiClient extends ApiRequestBase {
     }
 
     private String getJobPropertyRequestUri(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName){
-        return getApiUrl() + "/properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName + "/" + propertyName;
+        return getApiUrl() + "properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName + "/" + propertyName;
     }
 
     private String getJobPropertyRequestUri(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName){
-        return getApiUrl() + "/properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName;
+        return getApiUrl() + "properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName;
     }
 
 }

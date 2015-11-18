@@ -5,6 +5,9 @@ import org.json.JSONArray;
 import org.json.CDL;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+
 /**
  * Created by MarkusW on 17.11.2015.
  */
@@ -31,15 +34,18 @@ public class GoApiClient extends ApiRequestBase {
 
     public String setJobProperty(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName, String propertyValue) throws Exception {
         String uri = getJobPropertyRequestUri(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
-        int response = requestPostFormUrlEncodedValue(uri, propertyValue);
-        if(response == 201){
-            return propertyValue;
+        String urlParameters = "value=" + URLEncoder.encode(propertyValue, "UTF-8");
+
+        try {
+            requestPostFormUrlEncoded(uri, urlParameters);
         }
-        else if (response == 409) {
+        catch (IOException e) {
+
+        }
+        finally {
             return getJobProperty(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
         }
 
-        throw new Exception("An error occured: Http response = " + response);
     }
 
     public JSONObject getJobProperties(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName) throws Exception {

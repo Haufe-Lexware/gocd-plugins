@@ -23,6 +23,7 @@ public class JobPropParamParserTest {
 
     private String testPropertyValue1;
     private String testPropertyValue2;
+    private String testPropertyValue3;
 
     @Before
     public void init() throws Exception{
@@ -33,6 +34,7 @@ public class JobPropParamParserTest {
         // initialize test properties
         testPropertyValue1 = setJobProperty("test_property_1", "Test Value 1");
         testPropertyValue2 = setJobProperty("test_property_2", "Test Value 2");
+        testPropertyValue3 = setJobProperty("test_property_TestPluginStage", "Test Value 3");
 
     }
 
@@ -61,6 +63,17 @@ public class JobPropParamParserTest {
 
     @Test
     public void testPropVarAndEnvVarInParameter() throws Exception {
+        EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
+        JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
+
+        Assert.assertEquals("Test Value 3", propParser.Parse(envParser.Parse("%{test_property_${GO_STAGE_NAME}}")));
+        Assert.assertEquals("abcTest Value 3", propParser.Parse(envParser.Parse("abc%{test_property_${GO_STAGE_NAME}}")));
+        Assert.assertEquals("Test Value 3abc", propParser.Parse(envParser.Parse("%{test_property_${GO_STAGE_NAME}}abc")));
+        Assert.assertEquals("abcTest Value 3abc", propParser.Parse(envParser.Parse("abc%{test_property_${GO_STAGE_NAME}}abc")));
+    }
+
+    @Test
+    public void testEnvVarAsPropVarNameInParameter() throws Exception {
         EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
         JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
 

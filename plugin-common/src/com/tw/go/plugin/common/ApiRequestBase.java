@@ -1,13 +1,5 @@
 package com.tw.go.plugin.common;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,7 +15,6 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpClientConnection;
 
 
 /**
@@ -73,6 +64,10 @@ public abstract class ApiRequestBase {
         return request(requestUrlString, jsonData, "POST");
     }
 
+    protected String requestPostFormUrlEncoded(String requestUrlString, String data) throws Exception{
+        return request(requestUrlString, data, "POST", "application/x-www-form-urlencoded");
+    }
+
     private String request(String requestUrlString, String requestMethod) throws Exception{
         String result = "";
 
@@ -120,23 +115,12 @@ public abstract class ApiRequestBase {
     }
 
 
-    protected int requestPostFormUrlEncodedValue(String requestUrlString, String value) throws Exception{
 
-        HttpClient httpclient = HttpClients.createDefault();
-        HttpPost httppost = new HttpPost(requestUrlString);
-
-        // Request parameters and other properties.
-        List<NameValuePair> params = new ArrayList<NameValuePair>(2);
-        params.add(new BasicNameValuePair("value", value));
-        httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-        //Execute and get the response.
-        HttpResponse response = httpclient.execute(httppost);
-        return response.getStatusLine().getStatusCode();
-
+    private String request(String requestUrlString, String jsonData, String requestMethod) throws Exception {
+        return request(requestUrlString, jsonData, requestMethod, "application/json");
     }
 
-    private String request(String requestUrlString, String jsonData, String requestMethod) throws Exception{
+    private String request(String requestUrlString, String data, String requestMethod, String contentType) throws Exception{
 
         String result = "";
 
@@ -144,7 +128,9 @@ public abstract class ApiRequestBase {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod(requestMethod);
-        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Content-Type", contentType);
+        conn.setRequestProperty("Content-Length", "" +  Integer.toString(data.getBytes().length));
+
         if(_apiKeysAvailable) {
             conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // API keys for secure access
         }
@@ -152,7 +138,7 @@ public abstract class ApiRequestBase {
         conn.setReadTimeout(5000);
         conn.setDoOutput(true);
         OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-        out.write(jsonData);
+        out.write(data);
         out.close();
 
         int responseCode = conn.getResponseCode();

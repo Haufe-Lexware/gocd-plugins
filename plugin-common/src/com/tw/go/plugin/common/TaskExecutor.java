@@ -21,7 +21,7 @@ public abstract class TaskExecutor {
         this.config = config;
 
         // Replace Parameters
-        ReplaceEnvVarsInConfig(config);
+        ReplaceEnvVarsAndPropertiesInConfig(config);
 
         // Log context
         Log(context.getEnvironmentVariables());
@@ -41,25 +41,20 @@ public abstract class TaskExecutor {
             it.remove(); // avoids a ConcurrentModificationException
         }
     }
-/*    protected void Log(Map<String, String> map) {
-        for (Map.Entry<String, String> entry : map.entrySet())
-        {
-            this.console.printLine(getPluginLogPrefix() + entry.getKey() + " : " + entry.getValue());
-        }
-    }
-*/
-    protected Map ReplaceEnvVarsInConfig(Map config){
+
+    protected Map ReplaceEnvVarsAndPropertiesInConfig(Map config){
         Iterator it = config.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
             EnvVarParamParser parser = new EnvVarParamParser(context.getEnvironmentVariables(), console);
-
-            Log ( "Value: " + entry.getValue().toString());
-            Log ( "Key: " + entry.getKey().toString());
+            JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), console);
 
             Map valueMap = ((Map) entry.getValue());
 
-            String value = parser.Parse((String)valueMap.get("value"));
+            //Log ( "Value: " + entry.getValue().toString());
+            //Log ( "Key: " + entry.getKey().toString());
+
+            String value = propParser.Parse(parser.Parse((String)valueMap.get("value")));
             Log("config value replaced: " + value);
             valueMap.put("value", value);
 
@@ -68,14 +63,5 @@ public abstract class TaskExecutor {
 
         return config;
 
-        /*
-        Map<String, String> map = config;
-        for (Map.Entry<String, String> entry : map.entrySet())
-        {
-            EnvVarParamParser parser = new EnvVarParamParser(context.getEnvironmentVariables(), console);
-            entry.setValue(parser.Parse(entry.getValue()));
-        }
-        return config;
-        */
     }
 }

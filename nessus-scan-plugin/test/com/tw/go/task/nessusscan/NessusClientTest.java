@@ -74,4 +74,5 @@ public class NessusClientTest {
         // export the scan
         nessusClient.exportScan(scanId, this.exportFilename, "html");
     }
+
 }

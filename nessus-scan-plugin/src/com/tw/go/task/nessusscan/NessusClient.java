@@ -10,28 +10,22 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 
+import com.tw.go.plugin.common.ApiRequestBase;
+
 
 /**
  * Created by MarkusW on 20.10.2015.
  */
-public class NessusClient {
-
-    private String _apiUrl;
-    private String _secretKey;
-    private String _accessKey;
+public class NessusClient extends ApiRequestBase {
 
     public NessusClient(String apiUrl, String accessKey, String secretKey)
     {
-        _apiUrl = apiUrl;
-        _secretKey = secretKey;
-        _accessKey = accessKey;
-
-        disableSslVerification();
+        super(apiUrl, accessKey, secretKey, true);
     }
 
     public String getScanTemplateUuid(String templateName) throws Exception
     {
-        String uri = _apiUrl + "/editor/scan/templates";
+        String uri = getApiUrl() + "/editor/scan/templates";
         String resultData = requestGet(uri);
 
         JSONObject resultObj = new JSONObject(resultData);
@@ -68,7 +62,7 @@ public class NessusClient {
         String scanData = objCreateScan.toString();
 
         // create a new scan in nessus
-        String uri = _apiUrl + "/scans";
+        String uri = getApiUrl() + "/scans";
 
         String resultData = requestPost(uri, scanData);
         JSONObject objResult = new JSONObject(resultData);
@@ -83,7 +77,7 @@ public class NessusClient {
     public JSONObject getScan(int scanId) throws Exception
     {
         String scanUuid = "";
-        String uri = _apiUrl + "/scans/%1$s";
+        String uri = getApiUrl() + "/scans/%1$s";
         uri = String.format(uri, scanId);
         String resultData = requestGet(uri);
         return new JSONObject(resultData);
@@ -103,7 +97,7 @@ public class NessusClient {
         exportScan.put("chapters", "vuln_hosts_summary;vuln_by_host;compliance_exec;remediations;vuln_by_plugin;compliance");
         String exportScanData = exportScan.toString();
 
-        String uri = _apiUrl + "/scans/%1$s/export";
+        String uri = getApiUrl() + "/scans/%1$s/export";
         uri = String.format(uri, scanId );
         String resultData = requestPost(uri, exportScanData);
         JSONObject objResult = new JSONObject(resultData);
@@ -119,7 +113,7 @@ public class NessusClient {
 
     public void downloadScanExportFile(int scanId, int fileId, String fileName) throws Exception
     {
-        String uri = _apiUrl + "/scans/%1$s/export/%2$s/download";
+        String uri = getApiUrl() + "/scans/%1$s/export/%2$s/download";
         uri = String.format(uri, scanId, fileId);
         String resultData = requestGet(uri);
 
@@ -129,7 +123,7 @@ public class NessusClient {
 
     public boolean isExportFinished(int scanId, int fileId) throws Exception
     {
-        String uri = _apiUrl + "/scans/%1$s/export/%2$s/status";
+        String uri = getApiUrl() + "/scans/%1$s/export/%2$s/status";
         uri = String.format(uri, scanId, fileId);
         String resultData = requestGet(uri);
         JSONObject objResult = new JSONObject(resultData);
@@ -143,7 +137,7 @@ public class NessusClient {
     public String launchScan(int scanId) throws Exception
     {
         String scanUuid = "";
-        String uri = _apiUrl + "/scans/%1$s/launch";
+        String uri = getApiUrl() + "/scans/%1$s/launch";
         uri = String.format(uri, scanId);
         String resultData = requestPost(uri, "");
         JSONObject objResult = new JSONObject(resultData);
@@ -154,148 +148,9 @@ public class NessusClient {
 
     public void deleteScan(int scanId) throws Exception
     {
-        String uri = _apiUrl + "/scans/%1$s";
+        String uri = getApiUrl() + "/scans/%1$s";
         uri = String.format(uri, scanId);
         requestDelete(uri);
-    }
-
-    private String requestGet(String requestUrlString) throws Exception{
-        return request(requestUrlString, "GET" );
-    }
-
-    private void requestDelete(String requestUrl) throws Exception
-    {
-        request(requestUrl, "DELETE");
-    }
-
-    private String requestPost(String requestUrlString, String jsonData) throws Exception{
-        return request(requestUrlString, jsonData, "POST");
-    }
-
-    private String request(String requestUrlString, String requestMethod) throws Exception{
-        String result = "";
-
-
-        // HTTP Get
-
-        URL url = new URL(requestUrlString);
-
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        conn.setRequestMethod(requestMethod);
-        conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // nessus x API keys for secure access
-        conn.setRequestProperty("Accept", "application/json");
-
-        if (conn.getResponseCode() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                    + conn.getResponseCode());
-        }
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                (conn.getInputStream())));
-
-        StringBuffer response = new StringBuffer();
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        result = response.toString();
-
-        conn.disconnect();
-
-
-        return result;
-    }
-
-
-    private String request(String requestUrlString, String jsonData, String requestMethod) throws Exception{
-
-        String result = "";
-
-        // pass JSON File Data to REST Service
-
-        URL url = new URL(requestUrlString);
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-
-        conn.setRequestMethod(requestMethod);
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // nessus x API keys for secure access
-        conn.setConnectTimeout(5000);
-        conn.setReadTimeout(5000);
-        conn.setDoOutput(true);
-        OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
-        out.write(jsonData);
-        out.close();
-
-        int responseCode = conn.getResponseCode();
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                (conn.getInputStream())));
-
-        StringBuffer response = new StringBuffer();
-        String inputLine;
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        result = response.toString();
-
-        in.close();
-
-
-        return result;
-    }
-
-
-    private String getXApiKeys()
-    {
-        String apiKeys = "accessKey=%1$s; secretKey=%2$s;";
-        return String.format(apiKeys, _accessKey, _secretKey);
-    }
-
-    static {
-        disableSslVerification();
-    }
-
-    // this needs to be done, if there is no proper ssl connection available for nessus api server
-    private static void disableSslVerification() {
-        try
-        {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                }
-            }
-            };
-
-            // Install the all-trusting trust manager
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
-
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        }
     }
 
 }

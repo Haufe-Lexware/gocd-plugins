@@ -19,12 +19,12 @@ public class Environment {
 
     public static Map getDefaultEnvVarMap(){
         Map envVars = new HashMap();
-        envVars.put("GO_SERVER_URL","https://localhost:8154/go" );
-        envVars.put("GO_PIPELINE_NAME", "test-pipeline");
-        envVars.put("GO_PIPELINE_COUNTER", "123");
-        envVars.put("GO_STAGE_NAME", "test-stage");
+        envVars.put("GO_SERVER_URL","http://localhost:8153/go" );
+        envVars.put("GO_PIPELINE_NAME", "TestPluginsPipeline");
+        envVars.put("GO_PIPELINE_COUNTER", "1");
+        envVars.put("GO_STAGE_NAME", "TestPluginStage");
         envVars.put("GO_STAGE_COUNTER", "1");
-        envVars.put("GO_JOB_NAME", "test-job");
+        envVars.put("GO_JOB_NAME", "TestPluginJob");
         envVars.put("GO_TRIGGER_USER", "TestUser");
 
         return envVars;

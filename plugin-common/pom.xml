@@ -80,7 +80,7 @@
                 <version>2.4</version>
                 <configuration>
                     <finalName>${project.artifactId}-${project.version}</finalName>
-                    <outputDirectory>../bin</outputDirectory>
+                    <outputDirectory>../out</outputDirectory>
                     <archive>
                         <manifestEntries>
                             <Go-Version>${go.version}</Go-Version>

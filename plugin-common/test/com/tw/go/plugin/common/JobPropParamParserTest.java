@@ -40,7 +40,7 @@ public class JobPropParamParserTest {
 
 
 
-    @Test
+
     public void testOnePropVarInParameter() throws Exception {
         JobPropParamParser parser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
 
@@ -50,7 +50,7 @@ public class JobPropParamParserTest {
         Assert.assertEquals("abcTest Value 1abc", parser.Parse("abc%{test_property_1}abc"));
     }
 
-    @Test
+
     public void testTwoPropVarsInParameter() throws Exception {
         JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
 
@@ -61,7 +61,7 @@ public class JobPropParamParserTest {
         Assert.assertEquals("abcTest Value 1_Test Value 2abc", propParser.Parse("abc%{test_property_1}_%{test_property_2}abc"));
     }
 
-    @Test
+
     public void testPropVarAndEnvVarInParameter() throws Exception {
         EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
         JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
@@ -72,7 +72,7 @@ public class JobPropParamParserTest {
         Assert.assertEquals("abcTest Value 3abc", propParser.Parse(envParser.Parse("abc%{test_property_${GO_STAGE_NAME}}abc")));
     }
 
-    @Test
+
     public void testEnvVarAsPropVarNameInParameter() throws Exception {
         EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
         JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
@@ -84,7 +84,7 @@ public class JobPropParamParserTest {
         Assert.assertEquals("abcTest Value 1_TestPluginStageabc", propParser.Parse(envParser.Parse("abc%{test_property_1}_${GO_STAGE_NAME}abc")));
     }
 
-    @Test
+
     public void testWithoutPropVarInParameter() throws Exception {
         JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
 
@@ -101,7 +101,7 @@ public class JobPropParamParserTest {
 
     }
 
-    @Test
+
     public void testUnavailableEnvironmentVarInParameter() throws Exception {
         JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
 

@@ -40,7 +40,7 @@ public class GoApiClientTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
-    @Test
+
     public void testGetJobProperty() throws Exception {
         // just read some properties from plugin test pipeline
         Assert.assertEquals("1", getJobProperty("cruise_pipeline_counter"));
@@ -49,7 +49,7 @@ public class GoApiClientTest {
         getJobProperty("cruise_pipeline_counter_bla");
     }
 
-    @Test
+
     public void testSetJobProperty() throws Exception {
 
         String newPropertyName = "MyTestProperty_" + System.currentTimeMillis();
@@ -65,7 +65,7 @@ public class GoApiClientTest {
         Assert.assertEquals(strDate, getJobProperty(newPropertyName));
     }
 
-    @Test
+
     public void testGetJobProperties() throws Exception {
         JSONObject obj = getJobProperties();
         Assert.assertTrue(10 < obj.length());

@@ -14,11 +14,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Sonar -->
+        <sonar.host.url>http://bob.xeam-solutions.com</sonar.host.url>
         <sonar.java.coveragePlugin>cobertura</sonar.java.coveragePlugin>
         <sonar.cobertura.reportPath>${project.basedir}/target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
-   <!--     <sonar.jacoco.reportPath>${project.basedir}/target/jacoco-it.exec</sonar.jacoco.reportPath> -->
         <sonar.language>java</sonar.language>
-<!--        <sonar.jacoco.reportMissing.force.zero>true</sonar.jacoco.reportMissing.force.zero> -->
 
     </properties>
 
@@ -75,7 +74,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>2.7</version>
+                <version>2.7.1</version>
             </plugin>
 
             <plugin>

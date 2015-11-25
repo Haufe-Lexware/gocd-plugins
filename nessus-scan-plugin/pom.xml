@@ -12,6 +12,10 @@
         <go.target.version>15.1.0</go.target.version>
         <go.version>15.1.0</go.version>
         <plugin.version>${project.version}</plugin.version>
+
+        <sonar.java.coveragePlugin>cobertura</sonar.java.coveragePlugin>
+        <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
+        <sonar.language>java</sonar.language>
     </properties>
 
     <dependencies>
@@ -61,6 +65,7 @@
 
     <build>
         <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
         <resources>
             <resource>
                 <directory>resources</directory>

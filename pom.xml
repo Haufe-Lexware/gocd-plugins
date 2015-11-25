@@ -6,12 +6,20 @@
     <groupId>com.thoughtworks.go</groupId>
     <artifactId>gocd-plugins</artifactId>
     <version>1.0.0</version>
-    <name>Haufe Lexware - Go.CD Plugins</name>
+    <name>go.cd plugins</name>
     <packaging>pom</packaging>
 
     <properties>
         <go.version>15.1.0</go.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Sonar -->
+        <sonar.java.coveragePlugin>cobertura</sonar.java.coveragePlugin>
+        <sonar.cobertura.reportPath>${project.basedir}/target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
+   <!--     <sonar.jacoco.reportPath>${project.basedir}/target/jacoco-it.exec</sonar.jacoco.reportPath> -->
+        <sonar.language>java</sonar.language>
+<!--        <sonar.jacoco.reportMissing.force.zero>true</sonar.jacoco.reportMissing.force.zero> -->
+
     </properties>
 
     <scm>
@@ -65,6 +73,12 @@
             </plugin>
 
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.4</version>
@@ -93,6 +107,29 @@
                 <configuration>
                     <connectionType>developerConnection</connectionType>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <check>
+
+                    </check>
+                    <formats>
+
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>cobertura</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>

@@ -1,6 +1,5 @@
 package com.tw.go.plugin.common;
 
-import com.sun.xml.internal.ws.policy.sourcemodel.AssertionData;
 import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.mock.MockJobConsoleLogger;
@@ -9,12 +8,6 @@ import com.tw.go.plugin.common.utils.Environment;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import com.thoughtworks.go.plugin.api.task.TaskConfig;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Mockito.*;
 
 /**
  * Created by MarkusW on 09.11.2015.

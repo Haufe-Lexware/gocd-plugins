@@ -13,7 +13,7 @@
         <go.version>15.1.0</go.version>
         <plugin.version>${project.version}</plugin.version>
 
-
+        <sonar.host.url>http://bob.xeam-solutions.com</sonar.host.url>
         <sonar.java.coveragePlugin>cobertura</sonar.java.coveragePlugin>
         <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
         <sonar.language>java</sonar.language>

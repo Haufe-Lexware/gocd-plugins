@@ -39,6 +39,7 @@ public class GoApiClientTest {
         context = Environment.getDefaultContext(props);
         envVars = context.getEnvironmentVariables();
         client = new GoApiClient(context.getEnvironmentVariables().get("GO_SERVER_URL").toString());
+        client.setBasicAuthentication(props.get("GO_USER").toString(), props.get("GO_PASSWORD").toString());
     }
 
     @Rule

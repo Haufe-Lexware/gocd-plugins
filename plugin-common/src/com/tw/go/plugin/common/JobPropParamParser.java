@@ -22,6 +22,19 @@ public class JobPropParamParser extends  ParamParser{
 
         // get property from current job
         GoApiClient client = new GoApiClient(EnvVars.get("GO_SERVER_URL").toString());
+
+        // get go build user authorization
+        if(EnvVars.get("GO_BUILD_USER") != null &&
+           EnvVars.get("GO_BUILD_USER_PASSWORD") != null  )
+        {
+            Log("Authorization set");
+            Log("User: " + EnvVars.get("GO_BUILD_USER").toString());
+            Log("Password: " + EnvVars.get("GO_BUILD_USER_PASSWORD").toString());
+
+            client.setBasicAuthentication(EnvVars.get("GO_BUILD_USER").toString(), EnvVars.get("GO_BUILD_USER_PASSWORD").toString());
+        }
+
+
         String jobProperty = "";
         try
         {

@@ -29,6 +29,8 @@ public class Environment {
         envVars.put("GO_STAGE_COUNTER", props.get("GO_STAGE_COUNTER"));
         envVars.put("GO_JOB_NAME", props.get("GO_JOB_NAME"));
         envVars.put("GO_TRIGGER_USER", props.get("GO_TRIGGER_USER"));
+        envVars.put("GO_BUILD_USER_PASSWORD", props.get("GO_BUILD_USER_PASSWORD"));
+        envVars.put("GO_BUILD_USER", props.get("GO_BUILD_USER"));
 
         return envVars;
     }

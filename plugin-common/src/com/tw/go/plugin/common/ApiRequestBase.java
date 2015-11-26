@@ -1,9 +1,11 @@
 package com.tw.go.plugin.common;
 
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.net.ssl.*;
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,6 +28,8 @@ public abstract class ApiRequestBase {
     private String _secretKey;
     private String _accessKey;
     private boolean _apiKeysAvailable;
+    private String _basicAuthEncoding;
+    private boolean _basicAuthAvailable;
 
     public ApiRequestBase(String apiUrl, String accessKey, String secretKey, boolean disableSslVerification)
     {
@@ -44,6 +48,16 @@ public abstract class ApiRequestBase {
         if(disableSslVerification){
             disableSslVerification();
         }
+
+        _basicAuthAvailable = false;
+    }
+
+    public void setBasicAuthentication(String username, String password)
+    {
+        String userPassword = username + ":" + password;
+        byte[] bytesToEncode = userPassword.getBytes();
+        _basicAuthEncoding = DatatypeConverter.printBase64Binary(bytesToEncode);
+        _basicAuthAvailable = true;
     }
 
     public String getApiUrl(){
@@ -71,7 +85,6 @@ public abstract class ApiRequestBase {
     private String request(String requestUrlString, String requestMethod) throws Exception{
         String result = "";
 
-
         // HTTP Get
         URL url = new URL(requestUrlString);
 
@@ -83,6 +96,9 @@ public abstract class ApiRequestBase {
         }
         conn.setRequestProperty("Accept", "application/json");
 
+        if(_basicAuthAvailable) {
+            conn.setRequestProperty("Authorization", "Basic " + _basicAuthEncoding);
+        }
 
         if (conn.getResponseCode() != 200) {
             if(conn.getResponseCode() == 404)
@@ -134,6 +150,10 @@ public abstract class ApiRequestBase {
         if(_apiKeysAvailable) {
             conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // API keys for secure access
         }
+        if(_basicAuthAvailable) {
+            conn.setRequestProperty("Authorization", "Basic " + _basicAuthEncoding);
+        }
+
         conn.setConnectTimeout(5000);
         conn.setReadTimeout(5000);
         conn.setDoOutput(true);

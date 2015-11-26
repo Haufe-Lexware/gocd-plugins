@@ -40,11 +40,10 @@ public class GoApiClient extends ApiRequestBase {
             requestPostFormUrlEncoded(uri, urlParameters);
         }
         catch (IOException e) {
+            // if we cannot set the property, bacuase it is already available, get the latest one
+        }
 
-        }
-        finally {
-            return getJobProperty(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
-        }
+        return getJobProperty(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
 
     }
 

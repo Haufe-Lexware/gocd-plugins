@@ -8,17 +8,16 @@ import com.tw.go.plugin.common.mock.MockTaskExecutionContext;
 import com.tw.go.plugin.common.utils.Environment;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -32,7 +31,12 @@ public class GoApiClientTest {
 
     @Before
     public void init() throws Exception{
-        context = Environment.getDefaultContext();
+
+        Properties props = new Properties();
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.properties");
+        props.load(in);
+
+        context = Environment.getDefaultContext(props);
         envVars = context.getEnvironmentVariables();
         client = new GoApiClient(context.getEnvironmentVariables().get("GO_SERVER_URL").toString());
     }
@@ -40,7 +44,7 @@ public class GoApiClientTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
-
+    @Test
     public void testGetJobProperty() throws Exception {
         // just read some properties from plugin test pipeline
         Assert.assertEquals("1", getJobProperty("cruise_pipeline_counter"));
@@ -49,7 +53,7 @@ public class GoApiClientTest {
         getJobProperty("cruise_pipeline_counter_bla");
     }
 
-
+    @Test
     public void testSetJobProperty() throws Exception {
 
         String newPropertyName = "MyTestProperty_" + System.currentTimeMillis();
@@ -65,7 +69,7 @@ public class GoApiClientTest {
         Assert.assertEquals(strDate, getJobProperty(newPropertyName));
     }
 
-
+    @Test
     public void testGetJobProperties() throws Exception {
         JSONObject obj = getJobProperties();
         Assert.assertTrue(10 < obj.length());

@@ -9,6 +9,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * Created by MarkusW on 09.11.2015.
  */
@@ -19,7 +22,12 @@ public class EnvVarParamParserTest {
 
     @Before
     public void init() throws Exception{
-        context = Environment.getDefaultContext();
+
+        Properties props = new Properties();
+        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.properties");
+        props.load(in);
+
+        context = Environment.getDefaultContext(props);
         mockExecutionContext = new MockTaskExecutionContext(context.getEnvironmentVariables());
         mockConsole = new MockJobConsoleLogger(mockExecutionContext);
     }

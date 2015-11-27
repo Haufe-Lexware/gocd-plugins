@@ -80,13 +80,7 @@ public class NessusScanTask implements GoPlugin {
     private GoPluginApiResponse handleValidation(GoPluginApiRequest request) {
         HashMap validationResult = new HashMap();
         int responseCode = DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
-        Map configMap = (Map) new GsonBuilder().create().fromJson(request.requestBody(), Object.class);
-        HashMap errorMap = new HashMap();
-     /*   if (!configMap.containsKey(URL_PROPERTY) || ((Map) configMap.get(URL_PROPERTY)).get("value") == null || ((String) ((Map) configMap.get(URL_PROPERTY)).get("value")).trim().isEmpty()) {
-            errorMap.put(URL_PROPERTY, "URL cannot be empty");
-        }
-        validationResult.put("errors", errorMap);
-        */
+
         return createResponse(responseCode, validationResult);
     }
 

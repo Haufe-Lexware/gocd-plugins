@@ -128,7 +128,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
     private Result parseResult(JSONObject scanResult, String issueTypeFail) {
 
         NessusScanParser resultParser = new NessusScanParser(scanResult);
-        if(issueTypeFail.equals("critical"))
+        if("critical".equals(issueTypeFail))
         {
             if (resultParser.numIssuesCritical() > 0)
             {
@@ -136,7 +136,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             }
             return new Result(true, "No critical issue found");
         }
-        if(issueTypeFail.equals("high"))
+        if("high".equals(issueTypeFail))
         {
             if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh()) > 0 )
             {
@@ -145,7 +145,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             return new Result(true, "No critical or high issue found");
         }
 
-        if(issueTypeFail.equals("medium"))
+        if("medium".equals(issueTypeFail))
         {
             if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh() + resultParser.numIssuesMedium()) > 0 )
             {

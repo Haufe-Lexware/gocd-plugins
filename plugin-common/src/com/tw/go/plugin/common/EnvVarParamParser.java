@@ -2,10 +2,7 @@ package com.tw.go.plugin.common;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
-import java.security.InvalidParameterException;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**

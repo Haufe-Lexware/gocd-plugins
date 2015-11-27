@@ -47,7 +47,7 @@ public class NessusClientTest {
     }
 
 
-
+    @Test
     public void testCreateScan() throws Exception {
 
         // create a scan client

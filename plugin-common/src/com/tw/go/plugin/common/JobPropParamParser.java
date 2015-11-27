@@ -20,8 +20,8 @@ public class JobPropParamParser extends  ParamParser{
     }
 
     @Override
-    protected String getParamVarValue(String propertiesVar) {
-        propertiesVar = propertiesVar.substring(propertiesVar.indexOf("{") + 1, propertiesVar.indexOf("}"));
+    protected String getParamVarValue(String propertiesVarParam) {
+        String propertiesVar = propertiesVarParam.substring(propertiesVarParam.indexOf("{") + 1, propertiesVarParam.indexOf("}"));
 
         // get property from current job
         try {

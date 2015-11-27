@@ -12,7 +12,7 @@ public abstract class TaskExecutor {
 
     protected JobConsoleLogger console;
     protected Context context;
-    protected Map config; // contains <Key, Value> with value = MAP  {secure=boolean, value=string, required=boolean}
+    protected Map config; // contains a key value pair <Key, Value> where Value is a map with content  {secure=boolean, value=string, required=boolean}
 
 
     public TaskExecutor(JobConsoleLogger console, Context context, Map config){
@@ -49,10 +49,7 @@ public abstract class TaskExecutor {
             EnvVarParamParser parser = new EnvVarParamParser(context.getEnvironmentVariables(), console);
             JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), console);
 
-            Map valueMap = ((Map) entry.getValue());
-
-            //Log ( "Value: " + entry.getValue().toString());
-            //Log ( "Key: " + entry.getKey().toString());
+            Map valueMap = (Map) entry.getValue();
 
             String value = propParser.Parse(parser.Parse((String)valueMap.get("value")));
             Log("config value replaced: " + value);

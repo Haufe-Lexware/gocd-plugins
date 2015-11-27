@@ -3,14 +3,8 @@ package com.tw.go.task.nessusscan;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.net.ssl.*;
 import java.io.*;
-import java.net.URL;
 import java.security.GeneralSecurityException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-
 import com.tw.go.plugin.common.ApiRequestBase;
 
 

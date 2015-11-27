@@ -1,6 +1,5 @@
 package com.tw.go.plugin.common;
 
-import com.google.gson.JsonArray;
 import org.json.JSONArray;
 import org.json.CDL;
 import org.json.JSONObject;
@@ -33,7 +32,7 @@ public class GoApiClient extends ApiRequestBase {
         return  result;
     }
 
-    public String setJobProperty(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName, String propertyValue) throws Exception {
+    public String setJobProperty(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName, String propertyValue) throws IOException {
         String uri = getJobPropertyRequestUri(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
         String urlParameters = "value=" + URLEncoder.encode(propertyValue, "UTF-8");
 
@@ -48,7 +47,7 @@ public class GoApiClient extends ApiRequestBase {
 
     }
 
-    public JSONObject getJobProperties(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName) throws Exception {
+    public JSONObject getJobProperties(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName) throws IOException {
         String uri = getJobPropertyRequestUri(pipelineName, pipelineCounter, stageName, stageCounter, jobName);
         String resultCSV = requestGet(uri);
 

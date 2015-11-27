@@ -3,7 +3,6 @@ package com.tw.go.plugin.common;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
 import java.security.InvalidParameterException;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,11 +25,12 @@ public abstract class ParamParser {
 
     public String Parse(String parameter)
     {
+        String resulParam = parameter;
         while (ContainsParamVarDefinition(parameter))
         {
-            parameter = ReplaceParamVar(parameter);
+            resulParam = ReplaceParamVar(parameter);
         }
-        return parameter;
+        return resulParam;
     }
 
     private boolean ContainsParamVarDefinition(String parameter){

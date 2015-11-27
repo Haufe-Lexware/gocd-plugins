@@ -54,10 +54,10 @@ public class JobPropParamParser extends  ParamParser{
 
         catch (GeneralSecurityException e)
         {
-            Log(e.getMessage());
+            Log(e);
         }
         catch (IOException e) {
-            Log(e.getMessage());
+            Log(e);
         }
 
 
@@ -70,5 +70,8 @@ public class JobPropParamParser extends  ParamParser{
 
     private void Log(String message) {
         this.console.printLine("[JobPropParamParser] " + message);
+    }
+    private void Log(Exception e) {
+        this.console.printLine("[JobPropParamParser] " + e.getMessage() + e.getStackTrace().toString());
     }
 }

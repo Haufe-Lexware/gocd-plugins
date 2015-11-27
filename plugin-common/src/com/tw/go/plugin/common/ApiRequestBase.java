@@ -1,21 +1,15 @@
 package com.tw.go.plugin.common;
 
-import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import javax.net.ssl.*;
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 
@@ -65,24 +59,24 @@ public abstract class ApiRequestBase {
     }
 
 
-    protected String requestGet(String requestUrlString) throws Exception{
+    protected String requestGet(String requestUrlString) throws ApiRequestException, IOException{
         return request(requestUrlString, "GET" );
     }
 
-    protected void requestDelete(String requestUrl) throws Exception
+    protected void requestDelete(String requestUrl) throws ApiRequestException, IOException
     {
         request(requestUrl, "DELETE");
     }
 
-    protected String requestPost(String requestUrlString, String jsonData) throws Exception{
+    protected String requestPost(String requestUrlString, String jsonData) throws ApiRequestException, IOException{
         return request(requestUrlString, jsonData, "POST");
     }
 
-    protected String requestPostFormUrlEncoded(String requestUrlString, String data) throws Exception{
+    protected String requestPostFormUrlEncoded(String requestUrlString, String data) throws ApiRequestException, IOException{
         return request(requestUrlString, data, "POST", "application/x-www-form-urlencoded");
     }
 
-    private String request(String requestUrlString, String requestMethod) throws Exception{
+    private String request(String requestUrlString, String requestMethod) throws ApiRequestException, IOException {
         String result = "";
 
         // HTTP Get
@@ -106,25 +100,38 @@ public abstract class ApiRequestBase {
                 throw new FileNotFoundException("Failed : HTTP error code : "
                     + conn.getResponseCode() + " Reguested Uri: " + requestUrlString);
             }
-            throw new RuntimeException("Failed : HTTP error code : "
+            throw new IOException("Failed : HTTP error code : "
                     + conn.getResponseCode());
         }
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                (conn.getInputStream())));
+        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream()));
 
-        StringBuffer response = new StringBuffer();
-        String inputLine;
+            StringBuilder response = new StringBuilder();
+            String inputLine;
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-            response.append("\n");
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+                response.append("\n");
+            }
+            in.close();
+
+            result = response.toString();
         }
-        in.close();
+        catch (FileNotFoundException e){
+            throw e;
+        }
+        catch (IOException e){
+            throw e;
+        }
+        catch (Exception e){
+            throw new ApiRequestException(e.getMessage());
+        }
+        finally {
+            conn.disconnect();
+        }
 
-        result = response.toString();
-
-        conn.disconnect();
 
 
         return result;
@@ -132,11 +139,11 @@ public abstract class ApiRequestBase {
 
 
 
-    private String request(String requestUrlString, String jsonData, String requestMethod) throws Exception {
+    private String request(String requestUrlString, String jsonData, String requestMethod) throws ApiRequestException, IOException {
         return request(requestUrlString, jsonData, requestMethod, "application/json");
     }
 
-    private String request(String requestUrlString, String data, String requestMethod, String contentType) throws Exception{
+    private String request(String requestUrlString, String data, String requestMethod, String contentType) throws ApiRequestException, IOException{
 
         String result = "";
 
@@ -161,12 +168,10 @@ public abstract class ApiRequestBase {
         out.write(data);
         out.close();
 
-        int responseCode = conn.getResponseCode();
-
         BufferedReader in = new BufferedReader(new InputStreamReader(
-                (conn.getInputStream())));
+                conn.getInputStream()));
 
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
         String inputLine;
 
         while ((inputLine = in.readLine()) != null) {
@@ -199,12 +204,15 @@ public abstract class ApiRequestBase {
         {
             // Create a trust manager that does not validate certificate chains
             TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+                @Override
                 public X509Certificate[] getAcceptedIssuers() {
-                    return null;
+                    return new X509Certificate[0];
                 }
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                    throw new UnsupportedOperationException();
                 }
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    throw new UnsupportedOperationException();
                 }
             }
             };
@@ -216,6 +224,7 @@ public abstract class ApiRequestBase {
 
             // Create all-trusting host name verifier
             HostnameVerifier allHostsValid = new HostnameVerifier() {
+                @Override
                 public boolean verify(String hostname, SSLSession session) {
                     return true;
                 }

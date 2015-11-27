@@ -59,24 +59,24 @@ public abstract class ApiRequestBase {
     }
 
 
-    protected String requestGet(String requestUrlString) throws ApiRequestException, IOException{
+    protected String requestGet(String requestUrlString) throws IOException{
         return request(requestUrlString, "GET" );
     }
 
-    protected void requestDelete(String requestUrl) throws ApiRequestException, IOException
+    protected void requestDelete(String requestUrl) throws IOException
     {
         request(requestUrl, "DELETE");
     }
 
-    protected String requestPost(String requestUrlString, String jsonData) throws ApiRequestException, IOException{
+    protected String requestPost(String requestUrlString, String jsonData) throws IOException{
         return request(requestUrlString, jsonData, "POST");
     }
 
-    protected String requestPostFormUrlEncoded(String requestUrlString, String data) throws ApiRequestException, IOException{
+    protected String requestPostFormUrlEncoded(String requestUrlString, String data) throws IOException{
         return request(requestUrlString, data, "POST", "application/x-www-form-urlencoded");
     }
 
-    private String request(String requestUrlString, String requestMethod) throws ApiRequestException, IOException {
+    private String request(String requestUrlString, String requestMethod) throws IOException {
         String result = "";
 
         // HTTP Get
@@ -125,9 +125,7 @@ public abstract class ApiRequestBase {
         catch (IOException e){
             throw e;
         }
-        catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
-        }
+
         finally {
             conn.disconnect();
         }
@@ -139,11 +137,11 @@ public abstract class ApiRequestBase {
 
 
 
-    private String request(String requestUrlString, String jsonData, String requestMethod) throws ApiRequestException, IOException {
+    private String request(String requestUrlString, String jsonData, String requestMethod) throws  IOException {
         return request(requestUrlString, jsonData, requestMethod, "application/json");
     }
 
-    private String request(String requestUrlString, String data, String requestMethod, String contentType) throws ApiRequestException, IOException{
+    private String request(String requestUrlString, String data, String requestMethod, String contentType) throws IOException{
 
         String result = "";
 

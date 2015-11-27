@@ -20,8 +20,9 @@ public class EnvVarParamParser extends ParamParser {
         this.EnvVars = EnvVars;
     }
 
-    protected String getParamVarValue(String envVar){
-        envVar = envVar.substring(envVar.indexOf("{") + 1, envVar.indexOf("}"));
+    @Override
+    protected String getParamVarValue(String envVarParam){
+        String envVar = envVarParam.substring(envVarParam.indexOf("{") + 1, envVarParam.indexOf("}"));
         if(EnvVars.get(envVar) != null)
         {
             return EnvVars.get(envVar).toString();
@@ -30,6 +31,7 @@ public class EnvVarParamParser extends ParamParser {
         return envVar;
     }
 
+    @Override
     protected Pattern getPattern(){
         return Pattern.compile("\\$\\{(.*?)\\}");
     }

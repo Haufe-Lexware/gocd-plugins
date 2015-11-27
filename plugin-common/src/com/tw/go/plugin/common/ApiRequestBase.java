@@ -193,10 +193,6 @@ public abstract class ApiRequestBase {
         return String.format(apiKeys, _accessKey, _secretKey);
     }
 
-/*    static {
-        disableSslVerification();
-    }
-*/
     // this needs to be done, if there is no proper ssl connection available for nessus api server
     private static void disableSslVerification() throws GeneralSecurityException {
 

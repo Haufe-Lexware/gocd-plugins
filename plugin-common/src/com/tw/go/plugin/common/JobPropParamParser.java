@@ -19,6 +19,7 @@ public class JobPropParamParser extends  ParamParser{
         this.EnvVars = envVars;
     }
 
+    @Override
     protected String getParamVarValue(String propertiesVar) {
         propertiesVar = propertiesVar.substring(propertiesVar.indexOf("{") + 1, propertiesVar.indexOf("}"));
 
@@ -64,6 +65,7 @@ public class JobPropParamParser extends  ParamParser{
         return propertiesVar;
     }
 
+    @Override
     protected Pattern getPattern(){
         return Pattern.compile("\\%\\{(.*?)\\}");
     }

@@ -208,11 +208,13 @@ public abstract class ApiRequestBase {
                 public X509Certificate[] getAcceptedIssuers() {
                     return new X509Certificate[0];
                 }
+                @Override
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                    throw new UnsupportedOperationException();
+                    // do nothing here to disable that
                 }
+                @Override
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                    throw new UnsupportedOperationException();
+                    // do nothing here to disable that
                 }
             }
             };

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
 
 /**
  * Created by MarkusW on 17.11.2015.
@@ -14,11 +15,11 @@ import java.net.URLEncoder;
 public class GoApiClient extends ApiRequestBase {
 
 
-    public GoApiClient(String apiUrl) {
+    public GoApiClient(String apiUrl) throws GeneralSecurityException{
         super(apiUrl, "", "", true);
     }
 
-    public String getJobProperty(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName) throws Exception {
+    public String getJobProperty(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName) throws IOException {
         String uri = getJobPropertyRequestUri(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
         String resultCSV = requestGet(uri);
 

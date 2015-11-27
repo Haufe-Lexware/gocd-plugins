@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -18,7 +19,7 @@ import com.tw.go.plugin.common.ApiRequestBase;
  */
 public class NessusClient extends ApiRequestBase {
 
-    public NessusClient(String apiUrl, String accessKey, String secretKey)
+    public NessusClient(String apiUrl, String accessKey, String secretKey) throws GeneralSecurityException
     {
         super(apiUrl, accessKey, secretKey, true);
     }

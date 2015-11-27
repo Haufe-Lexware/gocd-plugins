@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -25,7 +26,7 @@ public abstract class ApiRequestBase {
     private String _basicAuthEncoding;
     private boolean _basicAuthAvailable;
 
-    public ApiRequestBase(String apiUrl, String accessKey, String secretKey, boolean disableSslVerification)
+    public ApiRequestBase(String apiUrl, String accessKey, String secretKey, boolean disableSslVerification) throws GeneralSecurityException
     {
         _apiUrl = apiUrl;
         if(secretKey.isEmpty() && accessKey.isEmpty())
@@ -192,12 +193,12 @@ public abstract class ApiRequestBase {
         return String.format(apiKeys, _accessKey, _secretKey);
     }
 
-    static {
+/*    static {
         disableSslVerification();
     }
-
+*/
     // this needs to be done, if there is no proper ssl connection available for nessus api server
-    private static void disableSslVerification() {
+    private static void disableSslVerification() throws GeneralSecurityException {
         try
         {
             // Create a trust manager that does not validate certificate chains

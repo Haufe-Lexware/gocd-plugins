@@ -2,6 +2,8 @@ package com.tw.go.plugin.common;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -17,43 +19,47 @@ public class JobPropParamParser extends  ParamParser{
         this.EnvVars = envVars;
     }
 
-    protected String getParamVarValue(String propertiesVar){
+    protected String getParamVarValue(String propertiesVar) {
         propertiesVar = propertiesVar.substring(propertiesVar.indexOf("{") + 1, propertiesVar.indexOf("}"));
 
         // get property from current job
-        GoApiClient client = new GoApiClient(EnvVars.get("GO_SERVER_URL").toString());
-
-        // get go build user authorization
-        if(EnvVars.get("GO_BUILD_USER") != null &&
-           EnvVars.get("GO_BUILD_USER_PASSWORD") != null  )
-        {
-            Log("Authorization set");
-            Log("User: " + EnvVars.get("GO_BUILD_USER").toString());
-            Log("Password: " + EnvVars.get("GO_BUILD_USER_PASSWORD").toString());
-
-            client.setBasicAuthentication(EnvVars.get("GO_BUILD_USER").toString(), EnvVars.get("GO_BUILD_USER_PASSWORD").toString());
-        }
+        try {
+            GoApiClient client = new GoApiClient(EnvVars.get("GO_SERVER_URL").toString());
 
 
-        String jobProperty = "";
-        try
-        {
+            // get go build user authorization
+            if (EnvVars.get("GO_BUILD_USER") != null &&
+                    EnvVars.get("GO_BUILD_USER_PASSWORD") != null) {
+                Log("Authorization set");
+                Log("User: " + EnvVars.get("GO_BUILD_USER").toString());
+                Log("Password: " + EnvVars.get("GO_BUILD_USER_PASSWORD").toString());
+
+                client.setBasicAuthentication(EnvVars.get("GO_BUILD_USER").toString(), EnvVars.get("GO_BUILD_USER_PASSWORD").toString());
+            }
+
+
+            String jobProperty = "";
             jobProperty = client.getJobProperty(
-                    EnvVars.get("GO_PIPELINE_NAME").toString(),
-                    EnvVars.get("GO_PIPELINE_COUNTER").toString(),
-                    EnvVars.get("GO_STAGE_NAME").toString(),
-                    EnvVars.get("GO_STAGE_COUNTER").toString(),
-                    EnvVars.get("GO_JOB_NAME").toString(),
-                    propertiesVar );
+                        EnvVars.get("GO_PIPELINE_NAME").toString(),
+                        EnvVars.get("GO_PIPELINE_COUNTER").toString(),
+                        EnvVars.get("GO_STAGE_NAME").toString(),
+                        EnvVars.get("GO_STAGE_COUNTER").toString(),
+                        EnvVars.get("GO_JOB_NAME").toString(),
+                        propertiesVar);
+
+            if (!jobProperty.isEmpty()) {
+                propertiesVar = jobProperty;
+            }
         }
-        catch (Exception e)
+
+        catch (GeneralSecurityException e)
         {
             Log(e.getMessage());
         }
-        if(!jobProperty.isEmpty())
-        {
-            return jobProperty;
+        catch (IOException e) {
+            Log(e.getMessage());
         }
+
 
         return propertiesVar;
     }

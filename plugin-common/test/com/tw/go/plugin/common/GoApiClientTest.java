@@ -12,6 +12,7 @@ import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.Timestamp;
 import java.text.SimpleDateFormat;
@@ -65,9 +66,9 @@ public class GoApiClientTest {
         setJobProperty(newPropertyName, strDate);
         Assert.assertEquals(strDate, getJobProperty(newPropertyName));
 
-        // if we set a new value later, the original should be returned, because overwriting is not allowed
+
+        exception.expect(IOException.class);
         setJobProperty(newPropertyName, "Hello, I try to overwrite");
-        Assert.assertEquals(strDate, getJobProperty(newPropertyName));
     }
 
     @Test

@@ -33,40 +33,40 @@ public class EnvVarParamParserTest {
     }
 
     @Test
-         public void testOneEnvironmentVarInParameter() throws Exception {
+    public void testOneEnvironmentVarInParameter() throws Exception {
         EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
 
-        Assert.assertEquals("1", envParser.Parse("${GO_PIPELINE_COUNTER}"));
-        Assert.assertEquals("abc1", envParser.Parse("abc${GO_PIPELINE_COUNTER}"));
-        Assert.assertEquals("1abc", envParser.Parse("${GO_PIPELINE_COUNTER}abc"));
-        Assert.assertEquals("abc1abc", envParser.Parse("abc${GO_PIPELINE_COUNTER}abc"));
+        Assert.assertEquals("1", envParser.parse("${GO_PIPELINE_COUNTER}"));
+        Assert.assertEquals("abc1", envParser.parse("abc${GO_PIPELINE_COUNTER}"));
+        Assert.assertEquals("1abc", envParser.parse("${GO_PIPELINE_COUNTER}abc"));
+        Assert.assertEquals("abc1abc", envParser.parse("abc${GO_PIPELINE_COUNTER}abc"));
     }
 
     @Test
     public void testTwoEnvironmentVarsInParameter() throws Exception {
         EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
 
-        Assert.assertEquals("1TestPluginStage", envParser.Parse("${GO_PIPELINE_COUNTER}${GO_STAGE_NAME}"));
-        Assert.assertEquals("1_TestPluginStage", envParser.Parse("${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}"));
-        Assert.assertEquals("abc1_TestPluginStage", envParser.Parse("abc${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}"));
-        Assert.assertEquals("1_TestPluginStageabc", envParser.Parse("${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}abc"));
-        Assert.assertEquals("abc1_TestPluginStageabc", envParser.Parse("abc${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}abc"));
+        Assert.assertEquals("1TestPluginStage", envParser.parse("${GO_PIPELINE_COUNTER}${GO_STAGE_NAME}"));
+        Assert.assertEquals("1_TestPluginStage", envParser.parse("${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}"));
+        Assert.assertEquals("abc1_TestPluginStage", envParser.parse("abc${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}"));
+        Assert.assertEquals("1_TestPluginStageabc", envParser.parse("${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}abc"));
+        Assert.assertEquals("abc1_TestPluginStageabc", envParser.parse("abc${GO_PIPELINE_COUNTER}_${GO_STAGE_NAME}abc"));
     }
 
     @Test
     public void testWithoutEnvironmentVarInParameter() throws Exception {
         EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
 
-        Assert.assertEquals("",         envParser.Parse(""));
-        Assert.assertEquals("abc",      envParser.Parse("abc"));
-        Assert.assertEquals("$abc",     envParser.Parse("$abc"));
-        Assert.assertEquals("${abc",    envParser.Parse("${abc"));
-        Assert.assertEquals("$abc}",    envParser.Parse("$abc}"));
-        Assert.assertEquals("{abc}",    envParser.Parse("{abc}"));
-        Assert.assertEquals("a$bc",     envParser.Parse("a$bc"));
-        Assert.assertEquals("a${bc",    envParser.Parse("a${bc"));
-        Assert.assertEquals("a$b}c",    envParser.Parse("a$b}c"));
-        Assert.assertEquals("a{b}c",    envParser.Parse("a{b}c"));
+        Assert.assertEquals("",         envParser.parse(""));
+        Assert.assertEquals("abc",      envParser.parse("abc"));
+        Assert.assertEquals("$abc",     envParser.parse("$abc"));
+        Assert.assertEquals("${abc",    envParser.parse("${abc"));
+        Assert.assertEquals("$abc}",    envParser.parse("$abc}"));
+        Assert.assertEquals("{abc}",    envParser.parse("{abc}"));
+        Assert.assertEquals("a$bc",     envParser.parse("a$bc"));
+        Assert.assertEquals("a${bc",    envParser.parse("a${bc"));
+        Assert.assertEquals("a$b}c",    envParser.parse("a$b}c"));
+        Assert.assertEquals("a{b}c",    envParser.parse("a{b}c"));
 
     }
 
@@ -74,7 +74,7 @@ public class EnvVarParamParserTest {
     public void testUnavailableEnvironmentVarInParameter() throws Exception {
         EnvVarParamParser envParser = new EnvVarParamParser(context.getEnvironmentVariables(), mockConsole);
 
-        Assert.assertEquals("GO_UNAVAILABLE", envParser.Parse("${GO_UNAVAILABLE}"));
+        Assert.assertEquals("GO_UNAVAILABLE", envParser.parse("${GO_UNAVAILABLE}"));
 
     }
 

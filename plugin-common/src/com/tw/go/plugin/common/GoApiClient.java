@@ -27,9 +27,7 @@ public class GoApiClient extends ApiRequestBase {
         JSONObject obj = array.getJSONObject(0);
 
         // get the request property value
-        String result = obj.getString(propertyName);
-
-        return  result;
+        return obj.getString(propertyName);
     }
 
     public String setJobProperty(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName, String propertyValue) throws IOException {

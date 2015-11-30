@@ -111,7 +111,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
         {
             if (oldNumHosts != NumHosts){
                 oldNumHosts = NumHosts;
-                log("Number of Hosts to scan: " + NumHosts);
+                log("Number of hosts to scan: " + NumHosts);
             }
 
             int scanProgressCurrent = progressParser.scanProgressCurrent();

@@ -31,7 +31,7 @@ public class NessusScanParser
         return remediations.getInt("num_hosts");
     }
 
-    public JSONArray Hosts()
+    public JSONArray hosts()
     {
         return scan.getJSONArray("hosts");
     }
@@ -39,7 +39,7 @@ public class NessusScanParser
     public int numIssuesCritical()
     {
         int total = 0;
-        JSONArray hosts = Hosts();
+        JSONArray hosts = hosts();
         for (int i = 0; i < hosts.length(); i++)
         {
             JSONObject host = (JSONObject) hosts.get(i);
@@ -53,7 +53,7 @@ public class NessusScanParser
     public int numIssuesHigh()
     {
         int total = 0;
-        JSONArray hosts = Hosts();
+        JSONArray hosts = hosts();
         for (int i = 0; i < hosts.length(); i++)
         {
             JSONObject host = (JSONObject) hosts.get(i);
@@ -66,7 +66,7 @@ public class NessusScanParser
     public int numIssuesMedium()
     {
         int total = 0;
-        JSONArray hosts = Hosts();
+        JSONArray hosts = hosts();
         for (int i = 0; i < hosts.length(); i++)
         {
             JSONObject host = (JSONObject) hosts.get(i);
@@ -79,7 +79,7 @@ public class NessusScanParser
     public int numIssuesLow()
     {
         int total = 0;
-        JSONArray hosts = Hosts();
+        JSONArray hosts = hosts();
         for (int i = 0; i < hosts.length(); i++)
         {
             JSONObject host = (JSONObject) hosts.get(i);
@@ -92,7 +92,7 @@ public class NessusScanParser
     public int scanProgressTotal()
     {
         int total = 0;
-        JSONArray hosts = Hosts();
+        JSONArray hosts = hosts();
         for (int i = 0; i < hosts.length(); i++)
         {
             JSONObject host = (JSONObject) hosts.get(i);
@@ -105,7 +105,7 @@ public class NessusScanParser
     public int scanProgressCurrent()
     {
         int total = 0;
-        JSONArray hosts = Hosts();
+        JSONArray hosts = hosts();
         for (int i = 0; i < hosts.length(); i++)
         {
             JSONObject host = (JSONObject) hosts.get(i);

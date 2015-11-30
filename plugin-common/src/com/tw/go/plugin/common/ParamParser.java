@@ -26,9 +26,9 @@ public abstract class ParamParser {
     public String Parse(String parameter)
     {
         String resulParam = parameter;
-        while (ContainsParamVarDefinition(parameter))
+        while (ContainsParamVarDefinition(resulParam))
         {
-            resulParam = ReplaceParamVar(parameter);
+            resulParam = ReplaceParamVar(resulParam);
         }
         return resulParam;
     }

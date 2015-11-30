@@ -11,6 +11,12 @@ import java.util.Map;
 
 public class NessusScanTaskExecutor extends TaskExecutor {
 
+    private int oldNumHosts;
+    private boolean initializingShown;
+    private int oldScanProgressCurrent;
+    private long lastTimeMillis;
+
+
     public NessusScanTaskExecutor(JobConsoleLogger console, Context context, Map config) {
         super(console, context, config);
     }
@@ -51,63 +57,18 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             // run the scan
             nessusClient.launchScan(scanId);
 
-            int oldNumHosts = 0;
-            boolean initializingShown = false;
-            int oldScanProgressCurrent = 0;
-            long lastTimeMillis = System.currentTimeMillis();
+            InitProgres();
+
             // wait until scan is finished.
             while (!nessusClient.isScanFinished(scanId))
             {
                 Thread.sleep(250);
-                JSONObject scanProgress = nessusClient.getScan(scanId);
-                NessusScanParser progressParser = new NessusScanParser(scanProgress);
-                int NumHosts = progressParser.numHosts();
-                if(NumHosts > 0)
-                {
-                    if (oldNumHosts != NumHosts){
-                        oldNumHosts = NumHosts;
-                        Log("Number of Hosts to scan: " + NumHosts);
-                    }
-
-                    int scanProgressCurrent = progressParser.scanProgressCurrent();
-                    if(scanProgressCurrent != oldScanProgressCurrent)
-                    {
-                        oldScanProgressCurrent = scanProgressCurrent;
-                        int scanPercent = (100 * scanProgressCurrent) / progressParser.scanProgressTotal();
-                        Log("Done " + scanPercent + "%");
-                        lastTimeMillis = System.currentTimeMillis();
-                    }
-                    else
-                    {
-                        long currentTimeMillis = System.currentTimeMillis();
-                        if((lastTimeMillis + 1000 * 60) < currentTimeMillis) {
-                            lastTimeMillis = currentTimeMillis;
-                            Log("Done ...");
-                        }
-                    }
-                }
-                else
-                {
-                    if(!initializingShown)
-                    {
-                        initializingShown = true;
-                        Log("Initializing scan...");
-                    }
-                }
-
+                LogProgress(nessusClient.getScan(scanId));
             }
 
             // fetch the result
             JSONObject scanResult = nessusClient.getScan(scanId);
-
-            NessusScanParser resultParser = new NessusScanParser(scanResult);
-            Log("-------- scan summary -------");
-            Log("number of hosts scanned: " + resultParser.numHosts());
-            Log("critical issues: " + resultParser.numIssuesCritical());
-            Log("high issues: " + resultParser.numIssuesHigh());
-            Log("medium issues: " + resultParser.numIssuesMedium());
-            Log("low issues: " + resultParser.numIssuesLow());
-            Log("-----------------------------");
+            LogSummary(scanResult);
 
             // export the scan
             nessusClient.exportScan(scanId, context.getWorkingDir() + "/" + exportFilename, "html");
@@ -116,7 +77,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             nessusClient.deleteScan(scanId);
 
             // get result issues
-            return parseResult(scanResult, issueTypeFail);
+            return ParseResult(scanResult, issueTypeFail);
 
         } catch (Exception e) {
             Log("Error during execution of nessus scan. " + e.getMessage());
@@ -125,7 +86,62 @@ public class NessusScanTaskExecutor extends TaskExecutor {
 
     }
 
-    private Result parseResult(JSONObject scanResult, String issueTypeFail) {
+    private void InitProgres(){
+        oldNumHosts = 0;
+        initializingShown = false;
+        oldScanProgressCurrent = 0;
+        lastTimeMillis = System.currentTimeMillis();
+    }
+
+    private void LogSummary(JSONObject scanResult){
+        NessusScanParser resultParser = new NessusScanParser(scanResult);
+        Log("-------- scan summary -------");
+        Log("number of hosts scanned: " + resultParser.numHosts());
+        Log("critical issues: " + resultParser.numIssuesCritical());
+        Log("high issues: " + resultParser.numIssuesHigh());
+        Log("medium issues: " + resultParser.numIssuesMedium());
+        Log("low issues: " + resultParser.numIssuesLow());
+        Log("-----------------------------");
+    }
+
+    private void LogProgress(JSONObject scanProgress) {
+        NessusScanParser progressParser = new NessusScanParser(scanProgress);
+        int NumHosts = progressParser.numHosts();
+        if(NumHosts > 0)
+        {
+            if (oldNumHosts != NumHosts){
+                oldNumHosts = NumHosts;
+                Log("Number of Hosts to scan: " + NumHosts);
+            }
+
+            int scanProgressCurrent = progressParser.scanProgressCurrent();
+            if(scanProgressCurrent != oldScanProgressCurrent)
+            {
+                oldScanProgressCurrent = scanProgressCurrent;
+                int scanPercent = (100 * scanProgressCurrent) / progressParser.scanProgressTotal();
+                Log("Done " + scanPercent + "%");
+                lastTimeMillis = System.currentTimeMillis();
+            }
+            else
+            {
+                long currentTimeMillis = System.currentTimeMillis();
+                if((lastTimeMillis + 1000 * 60) < currentTimeMillis) {
+                    lastTimeMillis = currentTimeMillis;
+                    Log("Done ...");
+                }
+            }
+        }
+        else
+        {
+            if(!initializingShown)
+            {
+                initializingShown = true;
+                Log("Initializing scan...");
+            }
+        }
+    }
+
+    private Result ParseResult(JSONObject scanResult, String issueTypeFail) {
 
         NessusScanParser resultParser = new NessusScanParser(scanResult);
         if("critical".equals(issueTypeFail))

@@ -35,6 +35,7 @@ public class NessusScanTask implements GoPlugin {
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
+        // not required in most plugins
     }
 
     @Override
@@ -42,7 +43,7 @@ public class NessusScanTask implements GoPlugin {
         if ("configuration".equals(request.requestName())) {
             return handleGetConfigRequest();
         } else if ("validate".equals(request.requestName())) {
-            return handleValidation(request);
+            return handleValidation();
         } else if ("execute".equals(request.requestName())) {
             return handleTaskExecution(request);
         } else if ("view".equals(request.requestName())) {
@@ -77,7 +78,7 @@ public class NessusScanTask implements GoPlugin {
         return createResponse(result.responseCode(), result.toMap());
     }
 
-    private GoPluginApiResponse handleValidation(GoPluginApiRequest request) {
+    private GoPluginApiResponse handleValidation() {
         HashMap validationResult = new HashMap();
         int responseCode = DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
 

@@ -71,7 +71,6 @@ public class NessusClient extends ApiRequestBase {
 
     public JSONObject getScan(int scanId) throws Exception
     {
-        String scanUuid = "";
         String uri = getApiUrl() + "/scans/%1$s";
         uri = String.format(uri, scanId);
         String resultData = requestGet(uri);
@@ -122,7 +121,7 @@ public class NessusClient extends ApiRequestBase {
         uri = String.format(uri, scanId, fileId);
         String resultData = requestGet(uri);
         JSONObject objResult = new JSONObject(resultData);
-        if(objResult.getString("status").equals("ready") )
+        if("ready".equals(objResult.getString("status")) )
         {
             return true;
         }

@@ -71,9 +71,13 @@ public class JobPropParamParser extends  ParamParser{
     }
 
     private void Log(String message) {
-        this.console.printLine("[JobPropParamParser] " + message);
+        this.console.printLine(getLogName() + message);
     }
     private void Log(Exception e) {
-        this.console.printLine("[JobPropParamParser] " + e.getMessage() + e.getStackTrace().toString());
+        this.console.printLine(getLogName() + e.getMessage() + e.getStackTrace().toString());
     }
+    private String getLogName(){
+        return "[JobPropParamParser] ";
+    }
+
 }

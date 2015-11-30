@@ -36,15 +36,8 @@ public class GoApiClient extends ApiRequestBase {
         String uri = getJobPropertyRequestUri(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
         String urlParameters = "value=" + URLEncoder.encode(propertyValue, "UTF-8");
 
-        try {
-            requestPostFormUrlEncoded(uri, urlParameters);
-        }
-        catch (IOException e) {
-            // if we cannot set the property, because it is already available, get the latest one
-        }
-
+        requestPostFormUrlEncoded(uri, urlParameters);
         return getJobProperty(pipelineName, pipelineCounter, stageName, stageCounter, jobName, propertyName);
-
     }
 
     public JSONObject getJobProperties(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName) throws IOException {

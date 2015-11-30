@@ -3,7 +3,9 @@ package com.tw.go.plugin.common;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -74,7 +76,7 @@ public class JobPropParamParser extends  ParamParser{
         this.console.printLine(getLogName() + message);
     }
     private void log(Exception e) {
-        this.console.printLine(getLogName() + e.getMessage() + e.getStackTrace().toString());
+        this.console.printLine(getLogName() + e.getMessage() + Arrays.toString(e.getStackTrace()));
     }
     private String getLogName(){
         return "[JobPropParamParser] ";

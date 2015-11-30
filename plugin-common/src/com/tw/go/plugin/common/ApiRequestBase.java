@@ -14,44 +14,44 @@ import java.security.cert.X509Certificate;
  */
 public abstract class ApiRequestBase {
 
-    private String _apiUrl;
-    private String _secretKey;
-    private String _accessKey;
-    private boolean _apiKeysAvailable;
-    private String _basicAuthEncoding;
-    private boolean _basicAuthAvailable;
+    private String apiUrl;
+    private String secretKey;
+    private String accessKey;
+    private boolean apiKeysAvailable;
+    private String basicAuthEncoding;
+    private boolean basicAuthAvailable;
 
     public ApiRequestBase(String apiUrl, String accessKey, String secretKey, boolean disableSslVerification) throws GeneralSecurityException
     {
-        _apiUrl = apiUrl;
+        this.apiUrl = apiUrl;
         if(secretKey.isEmpty() && accessKey.isEmpty())
         {
-            _apiKeysAvailable = false;
+            apiKeysAvailable = false;
         }
         else
         {
-            _apiKeysAvailable = true;
-            _secretKey = secretKey;
-            _accessKey = accessKey;
+            apiKeysAvailable = true;
+            this.secretKey = secretKey;
+            this.accessKey = accessKey;
         }
 
         if(disableSslVerification){
             disableSslVerification();
         }
 
-        _basicAuthAvailable = false;
+        basicAuthAvailable = false;
     }
 
     public void setBasicAuthentication(String username, String password)
     {
         String userPassword = username + ":" + password;
         byte[] bytesToEncode = userPassword.getBytes();
-        _basicAuthEncoding = DatatypeConverter.printBase64Binary(bytesToEncode);
-        _basicAuthAvailable = true;
+        basicAuthEncoding = DatatypeConverter.printBase64Binary(bytesToEncode);
+        basicAuthAvailable = true;
     }
 
     public String getApiUrl(){
-        return _apiUrl;
+        return apiUrl;
     }
 
 
@@ -81,13 +81,13 @@ public abstract class ApiRequestBase {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod(requestMethod);
 
-        if(_apiKeysAvailable) {
+        if(apiKeysAvailable) {
             conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // API keys for secure access
         }
         conn.setRequestProperty("Accept", "application/json");
 
-        if(_basicAuthAvailable) {
-            conn.setRequestProperty("Authorization", "Basic " + _basicAuthEncoding);
+        if(basicAuthAvailable) {
+            conn.setRequestProperty("Authorization", "Basic " + basicAuthEncoding);
         }
 
         if (conn.getResponseCode() != 200) {
@@ -148,11 +148,11 @@ public abstract class ApiRequestBase {
         conn.setRequestProperty("Content-Type", contentType);
         conn.setRequestProperty("Content-Length", "" +  Integer.toString(data.getBytes().length));
 
-        if(_apiKeysAvailable) {
+        if(apiKeysAvailable) {
             conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // API keys for secure access
         }
-        if(_basicAuthAvailable) {
-            conn.setRequestProperty("Authorization", "Basic " + _basicAuthEncoding);
+        if(basicAuthAvailable) {
+            conn.setRequestProperty("Authorization", "Basic " + basicAuthEncoding);
         }
 
         conn.setConnectTimeout(5000);
@@ -185,7 +185,7 @@ public abstract class ApiRequestBase {
     private String getXApiKeys()
     {
         String apiKeys = "accessKey=%1$s; secretKey=%2$s;";
-        return String.format(apiKeys, _accessKey, _secretKey);
+        return String.format(apiKeys, accessKey, secretKey);
     }
 
     // this needs to be done, if there is no proper ssl connection available for nessus api server

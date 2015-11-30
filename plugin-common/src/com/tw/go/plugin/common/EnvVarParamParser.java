@@ -10,19 +10,19 @@ import java.util.regex.Pattern;
  */
 public class EnvVarParamParser extends ParamParser {
 
-    private Map EnvVars;
+    private Map envVars;
 
-    public EnvVarParamParser(Map EnvVars, JobConsoleLogger console){
+    public EnvVarParamParser(Map envVars, JobConsoleLogger console){
         super(console);
-        this.EnvVars = EnvVars;
+        this.envVars = envVars;
     }
 
     @Override
     protected String getParamVarValue(String envVarParam){
         String envVar = envVarParam.substring(envVarParam.indexOf("{") + 1, envVarParam.indexOf("}"));
-        if(EnvVars.get(envVar) != null)
+        if(envVars.get(envVar) != null)
         {
-            return EnvVars.get(envVar).toString();
+            return envVars.get(envVar).toString();
         }
         // we will not replace then...
         return envVar;

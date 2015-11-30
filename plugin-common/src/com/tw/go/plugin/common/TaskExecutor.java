@@ -10,6 +10,10 @@ import java.util.Map;
  */
 public abstract class TaskExecutor {
 
+    public static final String CONFIG_VALUE = "value";
+    public static final String CONFIG_SECURE = "secure";
+    public static final String CONFIG_REQUIRED = "required";
+
     protected JobConsoleLogger console;
     protected Context context;
     protected Map config; // contains a key value pair <Key, Value> where Value is a map with content  {secure=boolean, value=string, required=boolean}
@@ -21,19 +25,19 @@ public abstract class TaskExecutor {
         this.config = config;
 
         // Replace Parameters
-        ReplaceEnvVarsAndPropertiesInConfig(config);
+        replaceEnvVarsAndPropertiesInConfig(config);
 
         // Log context
-        Log(context.getEnvironmentVariables());
+        log(context.getEnvironmentVariables());
     }
 
     protected abstract String getPluginLogPrefix();
 
-    protected void Log(String message) {
+    protected void log(String message) {
         this.console.printLine(getPluginLogPrefix() + message);
     }
 
-    protected void Log(Map map) {
+    protected void log(Map map) {
         Iterator it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
@@ -42,7 +46,7 @@ public abstract class TaskExecutor {
         }
     }
 
-    protected Map ReplaceEnvVarsAndPropertiesInConfig(Map config){
+    protected Map replaceEnvVarsAndPropertiesInConfig(Map config){
         Iterator it = config.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
@@ -51,8 +55,8 @@ public abstract class TaskExecutor {
 
             Map valueMap = (Map) entry.getValue();
 
-            String value = propParser.Parse(parser.Parse((String)valueMap.get("value")));
-            Log("config value replaced: " + value);
+            String value = propParser.parse(parser.parse((String) valueMap.get("value")));
+            log("config value replaced: " + value);
             valueMap.put("value", value);
 
             entry.setValue(valueMap);

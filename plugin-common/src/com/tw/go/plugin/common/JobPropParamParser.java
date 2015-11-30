@@ -31,9 +31,9 @@ public class JobPropParamParser extends  ParamParser{
             // get go build user authorization
             if (envVars.get("GO_BUILD_USER") != null &&
                     envVars.get("GO_BUILD_USER_PASSWORD") != null) {
-                Log("Authorization set");
-                Log("User: " + envVars.get("GO_BUILD_USER").toString());
-                Log("Password: " + envVars.get("GO_BUILD_USER_PASSWORD").toString());
+                log("Authorization set");
+                log("User: " + envVars.get("GO_BUILD_USER").toString());
+                log("Password: " + envVars.get("GO_BUILD_USER_PASSWORD").toString());
 
                 client.setBasicAuthentication(envVars.get("GO_BUILD_USER").toString(), envVars.get("GO_BUILD_USER_PASSWORD").toString());
             }
@@ -55,10 +55,10 @@ public class JobPropParamParser extends  ParamParser{
 
         catch (GeneralSecurityException e)
         {
-            Log(e);
+            log(e);
         }
         catch (IOException e) {
-            Log(e);
+            log(e);
         }
 
 
@@ -70,10 +70,10 @@ public class JobPropParamParser extends  ParamParser{
         return Pattern.compile("\\%\\{(.*?)\\}");
     }
 
-    private void Log(String message) {
+    private void log(String message) {
         this.console.printLine(getLogName() + message);
     }
-    private void Log(Exception e) {
+    private void log(Exception e) {
         this.console.printLine(getLogName() + e.getMessage() + e.getStackTrace().toString());
     }
     private String getLogName(){

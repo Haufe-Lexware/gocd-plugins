@@ -24,51 +24,51 @@ public class NessusScanTaskExecutor extends TaskExecutor {
 
     public Result execute() {
 
-        String serverToScanIp = (String) ((Map) this.config.get(NessusScanTask.SERVER_IP)).get("value");
-        Log("IP(s) to scan: " + serverToScanIp);
+        String serverToScanIp = (String) ((Map) this.config.get(NessusScanTask.SERVER_IP)).get(CONFIG_VALUE);
+        log("IP(s) to scan: " + serverToScanIp);
 
         try {
             // get input parameter
-            String policy = (String) ((Map) this.config.get(NessusScanTask.POLICY)).get("value");
-            Log("Policy: " + policy);
+            String policy = (String) ((Map) this.config.get(NessusScanTask.POLICY)).get(CONFIG_VALUE);
+            log("Policy: " + policy);
             int nessusScanPolicy = Integer.parseInt(policy);
-            String nessusScanTemplateName = (String) ((Map) this.config.get(NessusScanTask.SCANTEMPLATE)).get("value");
-            Log("Scan Teamplate: " + nessusScanTemplateName);
-            String issueTypeFail = (String) ((Map) this.config.get(NessusScanTask.ISSUE_TYPE_FAIL)).get("value");
-            Log("Fail if: " + issueTypeFail);
-            String nessusApiUrl = (String) ((Map)this.config.get(NessusScanTask.NESSUS_API_URL)).get("value");
-            Log("API Url: " + nessusApiUrl);
-            String nessusApiAccessKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_ACCESS_KEY)).get("value");
-            String nessusApiSecretKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_SECRET_KEY)).get("value");
+            String nessusScanTemplateName = (String) ((Map) this.config.get(NessusScanTask.SCANTEMPLATE)).get(CONFIG_VALUE);
+            log("Scan Teamplate: " + nessusScanTemplateName);
+            String issueTypeFail = (String) ((Map) this.config.get(NessusScanTask.ISSUE_TYPE_FAIL)).get(CONFIG_VALUE);
+            log("Fail if: " + issueTypeFail);
+            String nessusApiUrl = (String) ((Map)this.config.get(NessusScanTask.NESSUS_API_URL)).get(CONFIG_VALUE);
+            log("API Url: " + nessusApiUrl);
+            String nessusApiAccessKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_ACCESS_KEY)).get(CONFIG_VALUE);
+            String nessusApiSecretKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_SECRET_KEY)).get(CONFIG_VALUE);
             String exportFilename = "nessusScanResult.html";
 
             // create a scan client
             NessusClient nessusClient = new NessusClient(nessusApiUrl, nessusApiAccessKey, nessusApiSecretKey);
-            Log("nessus client created");
+            log("nessus client created");
 
             // get scan template uuid
             String scanTemlateUuid = nessusClient.getScanTemplateUuid(nessusScanTemplateName);
-            Log("scan template uuid: " + scanTemlateUuid);
+            log("scan template uuid: " + scanTemlateUuid);
 
             // create scan
             int scanId = nessusClient.createScan("TestScan", "Test Scan Description", serverToScanIp, scanTemlateUuid, nessusScanPolicy );
-            Log("nessus scan id = " + String.valueOf(scanId));
+            log("nessus scan id = " + String.valueOf(scanId));
 
             // run the scan
             nessusClient.launchScan(scanId);
 
-            InitProgres();
+            initProgres();
 
             // wait until scan is finished.
             while (!nessusClient.isScanFinished(scanId))
             {
                 Thread.sleep(250);
-                LogProgress(nessusClient.getScan(scanId));
+                logProgress(nessusClient.getScan(scanId));
             }
 
             // fetch the result
             JSONObject scanResult = nessusClient.getScan(scanId);
-            LogSummary(scanResult);
+            logSummary(scanResult);
 
             // export the scan
             nessusClient.exportScan(scanId, context.getWorkingDir() + "/" + exportFilename, "html");
@@ -77,41 +77,41 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             nessusClient.deleteScan(scanId);
 
             // get result issues
-            return ParseResult(scanResult, issueTypeFail);
+            return parseResult(scanResult, issueTypeFail);
 
         } catch (Exception e) {
-            Log("Error during execution of nessus scan. " + e.getMessage());
+            log("Error during execution of nessus scan. " + e.getMessage());
             return new Result(false, "Failed to execute scan for " + serverToScanIp, e);
         }
 
     }
 
-    private void InitProgres(){
+    private void initProgres(){
         oldNumHosts = 0;
         initializingShown = false;
         oldScanProgressCurrent = 0;
         lastTimeMillis = System.currentTimeMillis();
     }
 
-    private void LogSummary(JSONObject scanResult){
+    private void logSummary(JSONObject scanResult){
         NessusScanParser resultParser = new NessusScanParser(scanResult);
-        Log("-------- scan summary -------");
-        Log("number of hosts scanned: " + resultParser.numHosts());
-        Log("critical issues: " + resultParser.numIssuesCritical());
-        Log("high issues: " + resultParser.numIssuesHigh());
-        Log("medium issues: " + resultParser.numIssuesMedium());
-        Log("low issues: " + resultParser.numIssuesLow());
-        Log("-----------------------------");
+        log("-------- scan summary -------");
+        log("number of hosts scanned: " + resultParser.numHosts());
+        log("critical issues: " + resultParser.numIssuesCritical());
+        log("high issues: " + resultParser.numIssuesHigh());
+        log("medium issues: " + resultParser.numIssuesMedium());
+        log("low issues: " + resultParser.numIssuesLow());
+        log("-----------------------------");
     }
 
-    private void LogProgress(JSONObject scanProgress) {
+    private void logProgress(JSONObject scanProgress) {
         NessusScanParser progressParser = new NessusScanParser(scanProgress);
         int NumHosts = progressParser.numHosts();
         if(NumHosts > 0)
         {
             if (oldNumHosts != NumHosts){
                 oldNumHosts = NumHosts;
-                Log("Number of Hosts to scan: " + NumHosts);
+                log("Number of Hosts to scan: " + NumHosts);
             }
 
             int scanProgressCurrent = progressParser.scanProgressCurrent();
@@ -119,7 +119,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             {
                 oldScanProgressCurrent = scanProgressCurrent;
                 int scanPercent = (100 * scanProgressCurrent) / progressParser.scanProgressTotal();
-                Log("Done " + scanPercent + "%");
+                log("Done " + scanPercent + "%");
                 lastTimeMillis = System.currentTimeMillis();
             }
             else
@@ -127,7 +127,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
                 long currentTimeMillis = System.currentTimeMillis();
                 if((lastTimeMillis + 1000 * 60) < currentTimeMillis) {
                     lastTimeMillis = currentTimeMillis;
-                    Log("Done ...");
+                    log("Done ...");
                 }
             }
         }
@@ -136,12 +136,12 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             if(!initializingShown)
             {
                 initializingShown = true;
-                Log("Initializing scan...");
+                log("Initializing scan...");
             }
         }
     }
 
-    private Result ParseResult(JSONObject scanResult, String issueTypeFail) {
+    private Result parseResult(JSONObject scanResult, String issueTypeFail) {
 
         NessusScanParser resultParser = new NessusScanParser(scanResult);
         if("critical".equals(issueTypeFail))

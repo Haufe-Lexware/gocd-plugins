@@ -11,34 +11,35 @@ import java.util.regex.Pattern;
  */
 public abstract class ParamParser {
 
+
+    protected JobConsoleLogger console;
+
     // has to return the value of the parameter
     protected abstract String getParamVarValue(String paramVar);
 
     // has to return the regex pattern to search for
     protected abstract Pattern getPattern();
 
-    protected JobConsoleLogger console;
-
     public ParamParser(JobConsoleLogger console){
         this.console = console;
     }
 
-    public String Parse(String parameter)
+    public String parse(String parameter)
     {
         String resulParam = parameter;
-        while (ContainsParamVarDefinition(resulParam))
+        while (containsParamVarDefinition(resulParam))
         {
-            resulParam = ReplaceParamVar(resulParam);
+            resulParam = replaceParamVar(resulParam);
         }
         return resulParam;
     }
 
-    private boolean ContainsParamVarDefinition(String parameter){
+    private boolean containsParamVarDefinition(String parameter){
         Matcher m = getMatcher(parameter);
         return m.find();
     }
 
-    private String ReplaceParamVar(String parameter)
+    private String replaceParamVar(String parameter)
     {
         String envVar = getFirstParam(parameter);
         String envVarValue = getParamVarValue(envVar);

@@ -14,15 +14,15 @@ public abstract class ParamParser {
 
     protected JobConsoleLogger console;
 
+    public ParamParser(JobConsoleLogger console){
+        this.console = console;
+    }
+
     // has to return the value of the parameter
     protected abstract String getParamVarValue(String paramVar);
 
     // has to return the regex pattern to search for
     protected abstract Pattern getPattern();
-
-    public ParamParser(JobConsoleLogger console){
-        this.console = console;
-    }
 
     public String parse(String parameter)
     {

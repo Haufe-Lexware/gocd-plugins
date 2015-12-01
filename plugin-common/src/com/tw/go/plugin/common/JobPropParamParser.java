@@ -13,10 +13,6 @@ import java.util.regex.Pattern;
  */
 public class JobPropParamParser extends  ParamParser{
 
-    private static final String GO_SERVER_URL = "GO_SERVER_URL";
-    private static final String GO_BUILD_USER = "GO_BUILD_USER";
-    private static final String GO_BUILD_USER_PASSWORD = "GO_BUILD_USER_PASSWORD";
-
     private Map envVars;
 
     public JobPropParamParser( Map envVars, JobConsoleLogger console){
@@ -30,17 +26,17 @@ public class JobPropParamParser extends  ParamParser{
 
         // get property from current job
         try {
-            GoApiClient client = new GoApiClient(envVars.get(GO_SERVER_URL).toString());
+            GoApiClient client = new GoApiClient(envVars.get(GoApiConstants.ENVVAR_NAME_GO_SERVER_URL).toString());
 
 
             // get go build user authorization
-            if (envVars.get(GO_BUILD_USER) != null &&
-                    envVars.get(GO_BUILD_USER_PASSWORD) != null) {
+            if (envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER) != null &&
+                    envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD) != null) {
                 log("Authorization set");
-                log("User: " + envVars.get(GO_BUILD_USER).toString());
-                log("Password: " + envVars.get(GO_BUILD_USER_PASSWORD).toString());
+                log("User: " + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString());
+                log("Password: " + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
 
-                client.setBasicAuthentication(envVars.get(GO_BUILD_USER).toString(), envVars.get(GO_BUILD_USER_PASSWORD).toString());
+                client.setBasicAuthentication(envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString(), envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
             }
 
 

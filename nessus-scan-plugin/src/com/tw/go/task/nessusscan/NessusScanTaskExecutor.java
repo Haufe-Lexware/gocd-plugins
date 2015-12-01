@@ -144,38 +144,28 @@ public class NessusScanTaskExecutor extends TaskExecutor {
     private Result parseResult(JSONObject scanResult, String issueTypeFail) {
 
         NessusScanParser resultParser = new NessusScanParser(scanResult);
-        if("critical".equals(issueTypeFail))
-        {
-            if (resultParser.numIssuesCritical() > 0)
-            {
-                return new Result(false, "Failed: at least 1 critical issue");
-            }
-            return new Result(true, "No critical issue found");
+        switch (issueTypeFail) {
+            case "critical" :
+                if (resultParser.numIssuesCritical() > 0) {
+                    return new Result(false, "Failed: at least 1 critical issue");
+                }
+                return new Result(true, "No critical issue found");
+            case "high" :
+                if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh()) > 0) {
+                    return new Result(false, "Failed: at least 1 critical or high issue");
+                }
+                return new Result(true, "No critical or high issue found");
+            case "medium" :
+                if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh() + resultParser.numIssuesMedium()) > 0) {
+                    return new Result(false, "Failed: at least 1 critical, high or medium issue");
+                }
+                return new Result(true, "No critical, high or medium issue found");
+            default:
+                if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh() + resultParser.numIssuesMedium() + resultParser.numIssuesLow()) > 0) {
+                    return new Result(false, "Failed: at least 1 issue found ");
+                }
+                return new Result(true, "No issue found");
         }
-        if("high".equals(issueTypeFail))
-        {
-            if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh()) > 0 )
-            {
-                return new Result(false, "Failed: at least 1 critical or high issue");
-            }
-            return new Result(true, "No critical or high issue found");
-        }
-
-        if("medium".equals(issueTypeFail))
-        {
-            if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh() + resultParser.numIssuesMedium()) > 0 )
-            {
-                return new Result(false, "Failed: at least 1 critical, high or medium issue");
-            }
-            return new Result(true, "No critical, high or medium issue found");
-        }
-
-        if ((resultParser.numIssuesCritical() + resultParser.numIssuesHigh() + resultParser.numIssuesMedium() + resultParser.numIssuesLow()) > 0 )
-        {
-            return new Result(false, "Failed: at least 1 issue found ");
-        }
-        return new Result(true, "No issue found");
-
     }
 
     protected String getPluginLogPrefix(){

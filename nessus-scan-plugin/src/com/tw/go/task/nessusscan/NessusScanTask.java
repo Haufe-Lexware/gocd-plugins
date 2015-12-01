@@ -32,7 +32,7 @@ public class NessusScanTask implements GoPlugin {
     public static final String NESSUS_API_URL = "NessusApiUrl";
     public static final String NESSUS_API_ACCESS_KEY = "NessusApiAccessKey";
     public static final String NESSUS_API_SECRET_KEY = "NessusApiAccessSecret";
-    private Logger logger = Logger.getLoggerFor(NessusScanTask.class);
+    private static final Logger LOGGER = Logger.getLoggerFor(NessusScanTask.class);
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
@@ -63,7 +63,7 @@ public class NessusScanTask implements GoPlugin {
             responseCode = DefaultGoApiResponse.INTERNAL_ERROR;
             String errorMessage = "Failed to find template: " + e.getMessage();
             view.put("exception", errorMessage);
-            logger.error(errorMessage, e);
+            LOGGER.error(errorMessage, e);
         }
         return createResponse(responseCode, view);
     }

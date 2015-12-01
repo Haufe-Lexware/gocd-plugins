@@ -75,20 +75,8 @@ public abstract class ApiRequestBase {
     private String request(String requestUrlString, String requestMethod) throws IOException {
         String result = "";
 
-        // HTTP Get
-        URL url = new URL(requestUrlString);
-
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        HttpURLConnection conn = createConnection(requestUrlString, requestMethod, "application/json");
         conn.setRequestMethod(requestMethod);
-
-        if(apiKeysAvailable) {
-            conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // API keys for secure access
-        }
-        conn.setRequestProperty("Accept", "application/json");
-
-        if(basicAuthAvailable) {
-            conn.setRequestProperty("Authorization", "Basic " + basicAuthEncoding);
-        }
 
         if (conn.getResponseCode() != 200) {
             if(conn.getResponseCode() == 404)
@@ -126,12 +114,8 @@ public abstract class ApiRequestBase {
             conn.disconnect();
         }
 
-
-
         return result;
     }
-
-
 
     private String request(String requestUrlString, String jsonData, String requestMethod) throws  IOException {
         return request(requestUrlString, jsonData, requestMethod, "application/json");
@@ -141,23 +125,10 @@ public abstract class ApiRequestBase {
 
         String result = "";
 
-        URL url = new URL(requestUrlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setRequestMethod(requestMethod);
-        conn.setRequestProperty("Content-Type", contentType);
-        conn.setRequestProperty("Content-Length", "" +  Integer.toString(data.getBytes().length));
-
-        if(apiKeysAvailable) {
-            conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // API keys for secure access
-        }
-        if(basicAuthAvailable) {
-            conn.setRequestProperty("Authorization", "Basic " + basicAuthEncoding);
-        }
-
-        conn.setConnectTimeout(5000);
-        conn.setReadTimeout(5000);
+        HttpURLConnection conn = createConnection(requestUrlString, requestMethod, contentType);
+        conn.setRequestProperty("Content-Length", "" + Integer.toString(data.getBytes().length));
         conn.setDoOutput(true);
+
         OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
         out.write(data);
         out.close();
@@ -176,11 +147,31 @@ public abstract class ApiRequestBase {
         result = response.toString();
 
         in.close();
+        conn.disconnect();
 
 
         return result;
     }
 
+    private HttpURLConnection createConnection(String requestUrlString, String requestMethod, String contentType) throws IOException{
+        URL url = new URL(requestUrlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod(requestMethod);
+        conn.setRequestProperty("Content-Type", contentType);
+
+        if(apiKeysAvailable) {
+            conn.setRequestProperty("X-ApiKeys", getXApiKeys()); // API keys for secure access
+        }
+        if(basicAuthAvailable) {
+            conn.setRequestProperty("Authorization", "Basic " + basicAuthEncoding);
+        }
+
+        conn.setConnectTimeout(5000);
+        conn.setReadTimeout(5000);
+
+        return conn;
+    }
 
     private String getXApiKeys()
     {

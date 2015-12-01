@@ -52,7 +52,7 @@ public class NessusScanTaskExecutor extends TaskExecutor {
 
             // create scan
             int scanId = nessusClient.createScan("TestScan", "Test Scan Description", serverToScanIp, scanTemlateUuid, nessusScanPolicy );
-            log("nessus scan id = " + String.valueOf(scanId));
+            log("nessus scan id = " + scanId);
 
             // run the scan
             nessusClient.launchScan(scanId);
@@ -106,12 +106,12 @@ public class NessusScanTaskExecutor extends TaskExecutor {
 
     private void logProgress(JSONObject scanProgress) {
         NessusScanParser progressParser = new NessusScanParser(scanProgress);
-        int NumHosts = progressParser.numHosts();
-        if(NumHosts > 0)
+        int numHosts = progressParser.numHosts();
+        if(numHosts > 0)
         {
-            if (oldNumHosts != NumHosts){
-                oldNumHosts = NumHosts;
-                log("Number of hosts to scan: " + NumHosts);
+            if (oldNumHosts != numHosts){
+                oldNumHosts = numHosts;
+                log("Number of hosts to scan: " + numHosts);
             }
 
             int scanProgressCurrent = progressParser.scanProgressCurrent();

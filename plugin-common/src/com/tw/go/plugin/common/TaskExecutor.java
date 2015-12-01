@@ -10,10 +10,6 @@ import java.util.Map;
  */
 public abstract class TaskExecutor {
 
-    public static final String CONFIG_VALUE = "value";
-    public static final String CONFIG_SECURE = "secure";
-    public static final String CONFIG_REQUIRED = "required";
-
     protected JobConsoleLogger console;
     protected Context context;
     protected Map config; // contains a key value pair <Key, Value> where Value is a map with content  {secure=boolean, value=string, required=boolean}
@@ -57,7 +53,7 @@ public abstract class TaskExecutor {
 
             String value = propParser.parse(parser.parse((String) valueMap.get("value")));
             log("config value replaced: " + value);
-            valueMap.put("value", value);
+            valueMap.put(GoApiConstants.PROPERTY_NAME_VALUE, value);
 
             entry.setValue(valueMap);
         }

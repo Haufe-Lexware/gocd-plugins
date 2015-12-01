@@ -13,6 +13,7 @@ import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.task.*;
 import com.tw.go.plugin.common.Context;
+import com.tw.go.plugin.common.GoApiConstants;
 import com.tw.go.plugin.common.Result;
 import org.apache.commons.io.IOUtils;
 import com.google.gson.GsonBuilder;
@@ -92,46 +93,46 @@ public class NessusScanTask implements GoPlugin {
         HashMap config = new HashMap();
 
         HashMap serverIp = new HashMap();
-        serverIp.put("display-order", "0");
-        serverIp.put("display-name", "Server Ip");
-        serverIp.put("required", true);
+        serverIp.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "0");
+        serverIp.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Server Ip");
+        serverIp.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(SERVER_IP, serverIp);
 
         HashMap policy = new HashMap();
-        policy.put("display-order", "1");
-        policy.put("display-name", "Policy");
-        policy.put("required", true);
+        policy.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "1");
+        policy.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Policy");
+        policy.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(POLICY, policy);
 
         HashMap scanTemplate = new HashMap();
-        policy.put("display-order", "2");
-        policy.put("display-name", "Scan Template Name");
-        policy.put("required", true);
+        policy.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "2");
+        policy.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Scan Template Name");
+        policy.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(SCANTEMPLATE, scanTemplate);
 
         HashMap issueTypeFail = new HashMap();
-        issueTypeFail.put("default-value", "critical");
-        issueTypeFail.put("display-order", "3");
-        issueTypeFail.put("display-name", "Issue Type Fail");
-        issueTypeFail.put("required", false);
+        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DEFAULT_VALUE, "critical");
+        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "3");
+        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Issue Type Fail");
+        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
         config.put(ISSUE_TYPE_FAIL, issueTypeFail);
 
         HashMap nessusApiUrl = new HashMap();
-        nessusApiUrl.put("display-order", "4");
-        nessusApiUrl.put("display-name", "Nessus Api Url");
-        nessusApiUrl.put("required", true);
+        nessusApiUrl.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "4");
+        nessusApiUrl.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Nessus Api Url");
+        nessusApiUrl.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(NESSUS_API_URL, nessusApiUrl);
 
         HashMap nessusApiAccessKey = new HashMap();
-        nessusApiAccessKey.put("display-order", "5");
-        nessusApiAccessKey.put("display-name", "Nessus Api Access Key");
-        nessusApiAccessKey.put("required", true);
+        nessusApiAccessKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "5");
+        nessusApiAccessKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Nessus Api Access Key");
+        nessusApiAccessKey.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(NESSUS_API_ACCESS_KEY, nessusApiAccessKey);
 
         HashMap nessusApiSecretKey = new HashMap();
-        nessusApiSecretKey.put("display-order", "6");
-        nessusApiSecretKey.put("display-name", "Nessus Api Secret Key");
-        nessusApiSecretKey.put("required", true);
+        nessusApiSecretKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "6");
+        nessusApiSecretKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Nessus Api Secret Key");
+        nessusApiSecretKey.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(NESSUS_API_SECRET_KEY, nessusApiSecretKey);
 
         return createResponse(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, config);

@@ -24,22 +24,22 @@ public class NessusScanTaskExecutor extends TaskExecutor {
 
     public Result execute() {
 
-        String serverToScanIp = (String) ((Map) this.config.get(NessusScanTask.SERVER_IP)).get(CONFIG_VALUE);
+        String serverToScanIp = (String) ((Map) this.config.get(NessusScanTask.SERVER_IP)).get(GoApiConstants.PROPERTY_NAME_VALUE);
         log("IP(s) to scan: " + serverToScanIp);
 
         try {
             // get input parameter
-            String policy = (String) ((Map) this.config.get(NessusScanTask.POLICY)).get(CONFIG_VALUE);
+            String policy = (String) ((Map) this.config.get(NessusScanTask.POLICY)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("Policy: " + policy);
             int nessusScanPolicy = Integer.parseInt(policy);
-            String nessusScanTemplateName = (String) ((Map) this.config.get(NessusScanTask.SCANTEMPLATE)).get(CONFIG_VALUE);
+            String nessusScanTemplateName = (String) ((Map) this.config.get(NessusScanTask.SCANTEMPLATE)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("Scan Teamplate: " + nessusScanTemplateName);
-            String issueTypeFail = (String) ((Map) this.config.get(NessusScanTask.ISSUE_TYPE_FAIL)).get(CONFIG_VALUE);
+            String issueTypeFail = (String) ((Map) this.config.get(NessusScanTask.ISSUE_TYPE_FAIL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("Fail if: " + issueTypeFail);
-            String nessusApiUrl = (String) ((Map)this.config.get(NessusScanTask.NESSUS_API_URL)).get(CONFIG_VALUE);
+            String nessusApiUrl = (String) ((Map)this.config.get(NessusScanTask.NESSUS_API_URL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("API Url: " + nessusApiUrl);
-            String nessusApiAccessKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_ACCESS_KEY)).get(CONFIG_VALUE);
-            String nessusApiSecretKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_SECRET_KEY)).get(CONFIG_VALUE);
+            String nessusApiAccessKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_ACCESS_KEY)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String nessusApiSecretKey = (String) ((Map) this.config.get(NessusScanTask.NESSUS_API_SECRET_KEY)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             String exportFilename = "nessusScanResult.html";
 
             // create a scan client

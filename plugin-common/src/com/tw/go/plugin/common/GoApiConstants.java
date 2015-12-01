@@ -18,5 +18,6 @@ public class GoApiConstants {
     public static final String PROPERTY_NAME_DISPLAY_NAME = "display-name";
     public static final String PROPERTY_NAME_DEFAULT_VALUE = "display-name";
 
-
+    // prevent from class creation
+    private GoApiConstants() {}
 }

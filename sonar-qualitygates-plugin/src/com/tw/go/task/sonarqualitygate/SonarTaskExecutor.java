@@ -11,16 +11,9 @@ import java.util.Map;
 
 public class SonarTaskExecutor extends TaskExecutor {
 
-    private int oldNumHosts;
-    private boolean initializingShown;
-    private int oldScanProgressCurrent;
-    private long lastTimeMillis;
-
-
     public SonarTaskExecutor(JobConsoleLogger console, Context context, Map config) {
         super(console, context, config);
     }
-
 
     public Result execute() {
 
@@ -57,21 +50,25 @@ public class SonarTaskExecutor extends TaskExecutor {
 
     private Result parseResult(String qgResult, String issueTypeFail) {
 
+        Result result = null;
+
         switch (issueTypeFail) {
             case "error" :
                 if("ERROR".equals(qgResult))
                 {
-                    return new Result(false, "At least one Error in Quality Gate");
+                    result = new Result(false, "At least one Error in Quality Gate");
                 }
                 break;
             case "warning" :
                 if("ERROR".equals(qgResult) || "WARN".equals(qgResult))
                 {
-                    return new Result(false, "At least one Error or Warning in Quality Gate");
+                    result =  new Result(false, "At least one Error or Warning in Quality Gate");
                 }
                 break;
+            default:
+                result =  new Result(true, "SonarQube quality gate passed");
         }
-        return new Result(true, "SonarQube quality gate passed");
+        return result;
     }
 
     protected String getPluginLogPrefix(){

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<go-plugin id="sonar.quality.gate.plugin" version="1">
+    <about>
+        <name>SonarQube Quality Gates Task Plugin</name>
+        <version>PLUGIN_VERSION_NUMBER</version>
+        <target-go-version>GO_TARGET_VERSION_NUMBER</target-go-version>
+        <description>
+           Task plugin that evaluates SonarQube quality gates
+        </description>
+        <vendor>
+            <name>Markus Wehrle</name>
+            <url></url>
+        </vendor>
+    </about>
+</go-plugin>

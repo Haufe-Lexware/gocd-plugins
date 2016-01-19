@@ -7,3 +7,6 @@ Validate SonarQube quality gates from your go.cd pipeline. Checks if a specific 
 
 ## Nessus Scan Plugin
 Execute nessus security scans from go.CD. Configure your pipeline bahaviour based on the result of a scan. More at [Nessus Scan Wiki Page](https://github.com/Haufe-Lexware/gocd-plugins/wiki/Nessus-Scan-Task-Plugin)
+
+## Check_MK monitoring plugin
+Manage a host on a Check_MK monitoring server from a go.cd pipeline. Add or remove hosts directly to Check_MK using pipelines. More at [Check_MK Monitoring Wiki Page](https://github.com/Haufe-Lexware/gocd-plugins/wiki/Check_Mk-Monitoring-Task-Plugin)

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<go-plugin id="check.mk.task.plugin" version="1">
+    <about>
+        <name>Check Mk plugin</name>
+        <version>PLUGIN_VERSION_NUMBER</version>
+        <target-go-version>GO_TARGET_VERSION_NUMBER</target-go-version>
+        <description>
+           Task plugin that adds a host to monitoring server
+        </description>
+        <vendor>
+            <name>Boc Radu</name>
+            <url></url>
+        </vendor>
+    </about>
+</go-plugin>

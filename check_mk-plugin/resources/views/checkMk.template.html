@@ -1,0 +1,75 @@
+<div class="form_item_block">
+    <label>CheckMK server:<span class="asterisk">*</span>
+    </label>
+    <textarea ng-model="Server" ng-required="true"></textarea>
+    <div role="alert">
+      <span class="error" color="red" ng-show="GOINPUTNAME[Server].$error.required" >Required!</span>
+    </div>
+</div>
+<div class="form_item_block">
+    <label>Username:<span class="asterisk">*</span>
+    </label>
+    <input type="text" ng-model="Username" ng-required="true">
+    <div role="alert">
+        <span class="error" color="red" ng-show="GOINPUTNAME[Username].$error.required" >Required!</span>
+    </div>
+</div>
+<div class="form_item_block">
+    <label>Password:<span class="asterisk">*</span>
+    </label>
+    <input type="password" name="password" ng-model="Password" ng-required="true">
+    <div role="alert">
+        <span class="error" color="red" ng-show="GOINPUTNAME[Password].$error.required" >Required!</span>
+    </div>
+</div>
+<select ng-init="SelectedAction='default'" ng-model="SelectedAction" >
+    <option selected disabled value="default">Select action</option>
+    <option value="add">Add Host</option>
+    <option value="remove">Remove Host</option>
+</select>
+</br>
+</br>
+<div ng-switch="SelectedAction">
+    <div ng-switch-when="add">
+        <div class="form_item_block">
+            <label>Hostname:<span class="asterisk">*</span>
+            </label>
+            <input type="text" ng-model="Hostname" ng-required="true">
+            </input>
+            <div role="alert">
+                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required" >Required!</span>
+            </div>
+        </div>
+        <div class="form_item_block">
+            <label>Host ip:<span class="asterisk">*</span>
+            </label>
+            <input type="text" ng-model="HostIp" ng-required="true">
+            </input>
+            <div role="alert">
+                <span class="error" color="red" ng-show="GOINPUTNAME[HostIp].$error.required" >Required!</span>
+            </div>
+        </div>
+        <div class="form_item_block">
+            <label>Folder path:<span class="asterisk">*</span>
+            </label>
+            <input type="text" ng-model="FolderPath" ng-required="true">
+            </input>
+            <div role="alert">
+                <span class="error" color="red" ng-show="GOINPUTNAME[FolderPath].$error.required" >Required!</span>
+            </div>
+        </div>
+    </div>
+    <div ng-switch-when="remove">
+        <div class="form_item_block">
+            <label>Hostname:<span class="asterisk">*</span>
+            </label>
+            <input type="text" ng-model="Hostname" ng-required="true">
+            </input>
+            <div role="alert">
+                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required" >Required!</span>
+            </div>
+        </div>
+    </div>
+    <div ng-switch-when="default">
+    </div>
+</div>

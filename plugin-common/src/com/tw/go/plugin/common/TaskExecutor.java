@@ -19,10 +19,8 @@ public abstract class TaskExecutor {
         this.console = console;
         this.context = context;
         this.config = config;
-
         // Replace Parameters
         replaceEnvVarsAndPropertiesInConfig(config);
-
         // Log context
         log(context.getEnvironmentVariables());
     }
@@ -45,17 +43,18 @@ public abstract class TaskExecutor {
     protected Map replaceEnvVarsAndPropertiesInConfig(Map config){
         Iterator it = config.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
+            Map.Entry entry = (Map.Entry) it.next();
             EnvVarParamParser parser = new EnvVarParamParser(context.getEnvironmentVariables(), console);
             JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), console);
 
             Map valueMap = (Map) entry.getValue();
+            if (valueMap.containsKey("value")) {
+                String value = propParser.parse(parser.parse((String) valueMap.get("value")));
+                log("config value replaced: " + value);
+                valueMap.put(GoApiConstants.PROPERTY_NAME_VALUE, value);
 
-            String value = propParser.parse(parser.parse((String) valueMap.get("value")));
-            log("config value replaced: " + value);
-            valueMap.put(GoApiConstants.PROPERTY_NAME_VALUE, value);
-
-            entry.setValue(valueMap);
+                entry.setValue(valueMap);
+            }
         }
 
         return config;

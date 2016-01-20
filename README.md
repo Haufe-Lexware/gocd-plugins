@@ -10,3 +10,6 @@ Execute nessus security scans from go.CD. Configure your pipeline bahaviour base
 
 ## Check_MK monitoring plugin
 Manage a host on a Check_MK monitoring server from a go.cd pipeline. Add or remove hosts directly to Check_MK using pipelines. More at [Check_MK Monitoring Wiki Page](https://github.com/Haufe-Lexware/gocd-plugins/wiki/Check_Mk-Monitoring-Task-Plugin)
+
+## Docker pipeline plugin
+Builds a docker image from you material, tags it with the tag you set, pushes it to a registry you specify and then cleans up everything.

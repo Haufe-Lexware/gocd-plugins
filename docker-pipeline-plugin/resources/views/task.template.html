@@ -1,0 +1,118 @@
+<h3>Build settings:</h3>
+
+<div class="form_item_block">
+  <label>Registry :
+  </label>
+
+  <input type="text" ng-model="RegistryURL" ng-required="false">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[RegistryURL].$error.registryurl">Incorrect registry URL</span>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+
+  <label>Image name:<span class="asterisk">*</span>
+  </label>
+
+  <input type="text" ng-model="ImageName" ng-required="true">
+  </input>
+    <span class="form_error" ng-show="GOINPUTNAME[ImageName].$error.imagename">Incorrect image name</span>
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <label>Docker file name: <span class="">*</span>(only if you have multiple docker files, specify the name of the one you want to build)
+  </label>
+
+  <input type="text" ng-model="DockerFileName" ng-required="false">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[DockerFileName].$error.dockerfilename">Incorrect docker file name</span>
+</div>
+
+
+
+
+<h3>Tag settings:</h3>
+
+<div class="form_item_block">
+  <label>Username:<span class="asterisk">*</span>
+  </label>
+
+  <input type="text" ng-model="Username" ng-required="true">
+  </input>
+    <span class="form_error" ng-show="GOINPUTNAME[Username].$error.usernameurl">Incorrect username for the registry URL</span>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <label>Image tag:<span class="asterisk">*</span>
+        </label>
+
+  <input type="text" ng-model="ImageTag" ng-required="true">
+  </input>
+    <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag">Incorrect image tag</span>
+</div>
+
+
+
+
+<h3>Login settings:</h3>
+
+<div class="form_item_block">
+  <label>Username:<span class="asterisk">*</span>
+  </label>
+
+  <input type="text" ng-model="RegistryUsername" ng-required="true">
+  </input>
+    <span class="form_error" ng-show="GOINPUTNAME[RegistryUsername].$error.registryusername">Incorrect registry username</span>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+  <label>Password:<span class="asterisk">*</span>
+  </label>
+
+  <input type="password" ng-model="RegistryPassword" ng-required="true">
+  </input>
+    <span class="form_error" ng-show="GOINPUTNAME[RegistryPassword].$error.registrypassword">Incorrect registry password</span>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+  <label>E-mail adress:<span class="asterisk">*</span>
+  </label>
+
+  <input type="text" ng-model="RegistryEmail" ng-required="true">
+  </input>
+    <span class="form_error" ng-show="GOINPUTNAME[RegistryEmail].$error.registryemail">Incorrect registry email</span>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+  <label>Registry URL for login:<span class="asterisk">*</span>
+  </label>
+
+  <input type="text" ng-model="RegistryURLForLogin" ng-required="true">
+  </input>
+    <span class="form_error" ng-show="GOINPUTNAME[RegistryURLForLogin].$error.registryurlforlogin">Incorrect registry URL for login</span>
+</div>

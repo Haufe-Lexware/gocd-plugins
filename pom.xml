@@ -61,6 +61,8 @@
     <modules>
         <module>plugin-common</module>
         <module>nessus-scan-plugin</module>
+		<module>docker-pipeline-plugin</module>
+
     </modules>
 
     <build>

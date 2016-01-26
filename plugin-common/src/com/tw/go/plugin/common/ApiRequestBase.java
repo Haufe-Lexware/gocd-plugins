@@ -168,7 +168,7 @@ public abstract class ApiRequestBase {
         }
 
         conn.setConnectTimeout(5000);
-        conn.setReadTimeout(5000);
+        conn.setReadTimeout(20000);
 
         return conn;
     }

@@ -50,12 +50,13 @@ public abstract class TaskExecutor {
             JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), console);
 
             Map valueMap = (Map) entry.getValue();
+            if (valueMap.containsKey("value")) {
+                String value = propParser.parse(parser.parse((String) valueMap.get("value")));
+                log("config value replaced: " + value);
+                valueMap.put(GoApiConstants.PROPERTY_NAME_VALUE, value);
 
-            String value = propParser.parse(parser.parse((String) valueMap.get("value")));
-            log("config value replaced: " + value);
-            valueMap.put(GoApiConstants.PROPERTY_NAME_VALUE, value);
-
-            entry.setValue(valueMap);
+                entry.setValue(valueMap);
+            }
         }
 
         return config;

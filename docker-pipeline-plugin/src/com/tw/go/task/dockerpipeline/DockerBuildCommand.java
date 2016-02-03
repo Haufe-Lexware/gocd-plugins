@@ -34,7 +34,7 @@ public class DockerBuildCommand extends DockerCommand
             command.add("build");
             command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.imageName);
             command.add("--file=" + taskContext.getWorkingDir() + "/" + taskConfig.dockerFileName);
-            command.add(".");
+            command.add(taskContext.getWorkingDir());
         }
     }
 

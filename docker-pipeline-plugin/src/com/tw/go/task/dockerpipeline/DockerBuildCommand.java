@@ -20,8 +20,6 @@ public class DockerBuildCommand extends DockerCommand
     @Override
     protected void buildCommand(Context taskContext, Config taskConfig)
     {
-        String dockerPath = taskConfig.dockerFileName.substring(0, taskConfig.dockerFileName.lastIndexOf("/"));
-
         if (taskConfig.dockerFileName.equals(""))
         {
             command.add("docker");
@@ -32,6 +30,20 @@ public class DockerBuildCommand extends DockerCommand
         }
         else
         {
+            String dockerPath = "";
+
+            try
+            {
+                dockerPath = taskConfig.dockerFileName.substring(0, taskConfig.dockerFileName.lastIndexOf("/"));
+            }
+            catch (Exception e)
+            {
+                if (e != null)
+                {
+                    dockerPath = "";
+                }
+            }
+
             command.add("docker");
             command.add("build");
             command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.imageName);

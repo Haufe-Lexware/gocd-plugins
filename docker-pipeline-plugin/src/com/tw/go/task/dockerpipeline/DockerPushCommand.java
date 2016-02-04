@@ -17,7 +17,7 @@ public class DockerPushCommand extends DockerCommand
     {
         command.add("docker");
         command.add("push");
-        command.add(taskConfig.registryURL + "/" + taskConfig.imageName + ":" + taskConfig.imageTag);
+        command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag);
     }
 
     protected String getCommand()

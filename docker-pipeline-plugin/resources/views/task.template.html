@@ -34,7 +34,14 @@
   <input type="text" ng-model="DockerFileName" ng-required="false">
   </input>
   <br>
-  <label>Note: don't include "/var/lib/go-agent/pipelines/pipeline_name/" and only fill this field if the Dockerfile is in a folder and has a different name than Dockerfile</label>
+  <br>
+  <label>Note: </label>
+  <ul>
+    <li>  - only fill this field if the Dockerfile is in a folder and/or if it has a different name than Dockerfile</li>
+    <br>
+    <br>
+    <li>  - don't include "/var/lib/go-agent/pipelines/pipeline_name/"</li>
+  </ul>
   <span class="form_error" ng-show="GOINPUTNAME[DockerFileName].$error.dockerfilename">Incorrect docker file name</span>
 </div>
 

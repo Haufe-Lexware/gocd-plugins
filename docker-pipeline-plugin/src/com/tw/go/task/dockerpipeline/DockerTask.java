@@ -149,10 +149,9 @@ public class DockerTask implements GoPlugin
 
         HashMap dockerFileName = new HashMap();
         dockerFileName.put("default-value", "");
-        dockerFileName.put("required", true);
+        dockerFileName.put("required", false);
 
         config.put(DOCKER_FILE_NAME, dockerFileName);
-
     }
 
     private void addDockerTagConfig(HashMap config)

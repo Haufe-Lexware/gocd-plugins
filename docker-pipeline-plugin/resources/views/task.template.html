@@ -28,11 +28,13 @@
   <br>
   <br>
 
-  <label>Docker file name: (only if you have multiple docker files, specify the name of the one you want to build)
+  <label>Dockerfile path and its name :
   </label>
 
   <input type="text" ng-model="DockerFileName" ng-required="false">
   </input>
+  <br>
+  <label>Note: don't include "/var/lib/go-agent/pipelines/pipeline_name/" and only fill this field if the Dockerfile is in a folder</label>
   <span class="form_error" ng-show="GOINPUTNAME[DockerFileName].$error.dockerfilename">Incorrect docker file name</span>
 </div>
 

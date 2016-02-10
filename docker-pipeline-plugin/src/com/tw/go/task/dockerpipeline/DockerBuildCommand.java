@@ -20,18 +20,22 @@ public class DockerBuildCommand extends DockerCommand
             command.add("docker");
             command.add("build");
             command.add("-t");
+
             command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
             imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+
             if (!("".equals(taskConfig.imageTag2)))
             {
                 command.add("-t");
                 command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+
                 imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
             }
             if (!("".equals(taskConfig.imageTag3)))
             {
                 command.add("-t");
                 command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+
                 imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
             }
             command.add("/var/lib/go-agent/" + taskContext.getWorkingDir());
@@ -54,8 +58,10 @@ public class DockerBuildCommand extends DockerCommand
 
             command.add("docker");
             command.add("build");
+
             command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
             imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+
             if (!("".equals(taskConfig.imageTag2)))
             {
                 command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);

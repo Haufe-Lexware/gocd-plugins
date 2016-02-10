@@ -1,11 +1,6 @@
 package com.tw.go.task.dockerpipeline;
 
-import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.Context;
-
-import java.io.Console;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by BradeaC on 21/12/2015.
@@ -25,7 +20,20 @@ public class DockerBuildCommand extends DockerCommand
             command.add("docker");
             command.add("build");
             command.add("-t");
-            command.add(taskConfig.registryURL + "/" + taskConfig.imageName);
+            command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            if (!("".equals(taskConfig.imageTag2)))
+            {
+                command.add("-t");
+                command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+            }
+            if (!("".equals(taskConfig.imageTag3)))
+            {
+                command.add("-t");
+                command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+            }
             command.add("/var/lib/go-agent/" + taskContext.getWorkingDir());
         }
         else
@@ -46,7 +54,18 @@ public class DockerBuildCommand extends DockerCommand
 
             command.add("docker");
             command.add("build");
-            command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.imageName);
+            command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            if (!("".equals(taskConfig.imageTag2)))
+            {
+                command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+            }
+            if (!("".equals(taskConfig.imageTag3)))
+            {
+                command.add("--tag=" + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+            }
             command.add("--file=" + taskContext.getWorkingDir() + "/" + taskConfig.dockerFileName);
             command.add(taskContext.getWorkingDir() + "/" + dockerPath);
         }

@@ -12,6 +12,7 @@ import java.util.List;
 public abstract class DockerCommand implements ICommand
 {
     protected List<String> command = new ArrayList<>();
+    protected List<String> imageAndTag = new ArrayList<>();
 
     protected static JobConsoleLogger logger = JobConsoleLogger.getConsoleLogger();
 

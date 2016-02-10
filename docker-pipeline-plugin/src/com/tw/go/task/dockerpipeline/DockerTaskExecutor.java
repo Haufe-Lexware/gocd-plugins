@@ -33,21 +33,33 @@ public class DockerTaskExecutor extends TaskExecutor
     {
         try
         {
+            if (taskConfig.isDockerClean)
+            {
+                DockerCleanBefore cleanBefore = new DockerCleanBefore(taskContext, taskConfig);
+                log("Cleaning the pipeline ...");
+                cleanBefore.run();
+            }
+
+            log("1:." + taskConfig.imageTag1 + ".2:." + taskConfig.imageTag2 + ".3:." + taskConfig.imageTag3 + ".");
+
             DockerBuildCommand build = new DockerBuildCommand(taskContext, taskConfig);
             log("Build command: " + build.getCommand());
             build.run();
-
-            DockerTagCommand tag = new DockerTagCommand(taskContext, taskConfig);
-            log("Tag command: " + tag.getCommand());
-            tag.run();
 
             DockerLoginCommand login = new DockerLoginCommand(taskContext, taskConfig);
             log("Login command: " + login.getCommand());
             login.run();
 
-            DockerPushCommand push = new DockerPushCommand(taskContext, taskConfig);
-            log("Push command: " + push.getCommand());
-            push.run();
+            for (String imageAndTag : build.imageAndTag)
+            {
+                if (imageAndTag != null)
+                {
+                    DockerPushCommand.imgAndTag = imageAndTag;
+                    DockerPushCommand push = new DockerPushCommand(taskContext, taskConfig);
+                    log("Push command: " + push.getCommand());
+                    push.run();
+                }
+            }
 
             return new Result(true, "Finished");
         }
@@ -58,6 +70,7 @@ public class DockerTaskExecutor extends TaskExecutor
         finally
         {
             new DockerCleanCommand(taskContext, taskConfig).run();
+            DockerPushCommand.imgAndTag = "";
         }
     }
 

@@ -7,6 +7,8 @@ import com.tw.go.plugin.common.Context;
  */
 public class DockerPushCommand extends DockerCommand
 {
+    protected static String imgAndTag;
+
     public DockerPushCommand(Context taskContext, Config taskConfig)
     {
         super(taskContext, taskConfig);
@@ -17,7 +19,7 @@ public class DockerPushCommand extends DockerCommand
     {
         command.add("docker");
         command.add("push");
-        command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag);
+        command.add(imgAndTag);
     }
 
     protected String getCommand()

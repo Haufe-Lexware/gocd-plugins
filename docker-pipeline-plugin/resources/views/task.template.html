@@ -1,3 +1,11 @@
+<div class="form_item_block">
+  <div class="checkbox_row">
+    <input id="IsDockerClean1" type="checkbox" ng-model="IsDockerClean1" ng-init="IsDockerClean1 = IsDockerClean" ng-change="IsDockerClean = IsDockerClean1" ng-true-value="true" ng-false-value="false">
+    <input id="IsDockerClean" type="hidden" ng-model="IsDockerClean" value="{{IsDockerClean}}">
+    <label for="IsDockerClean">Clean before build</label>
+  </div>
+</div>
+
 <h3>Build settings:</h3>
 
 <div class="form_item_block">
@@ -65,12 +73,38 @@
     <br>
 
 
-    <label>Image tag:<span class="asterisk">*</span>
+    <label>Image tag 1:<span class="asterisk">*</span>
         </label>
 
-  <input type="text" ng-model="ImageTag" ng-required="true">
+  <input type="text" ng-model="ImageTag1" ng-required="true">
   </input>
-    <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag">Incorrect image tag</span>
+    <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag1">Incorrect image tag</span>
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+
+  <label>Image tag 2 (optional):
+  </label>
+
+  <input type="text" ng-model="ImageTag2" ng-required="false">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag2">Incorrect image tag</span>
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+
+  <label>Image tag 3 (optional):
+  </label>
+
+  <input type="text" ng-model="ImageTag3" ng-required="false">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag3">Incorrect image tag</span>
 </div>
 
 
@@ -118,7 +152,7 @@
     <br>
     <br>
 
-  <label>Registry URL for login:<span class="asterisk">*</span>
+  <label>Registry URL for login and push:<span class="asterisk">*</span>
   </label>
 
   <input type="text" ng-model="RegistryURLForLogin" ng-required="true">

@@ -27,12 +27,16 @@ import java.util.Map;
 @Extension
 public class DockerTask implements GoPlugin
 {
+    public static final String IS_DOCKER_CLEAN = "IsDockerClean";
+
     public static final String REGISTRY_URL = "RegistryURL";
     public static final String IMAGE_NAME = "ImageName";
     public static final String DOCKER_FILE_NAME = "DockerFileName";
 
     public static final String USERNAME = "Username";
-    public static final String IMAGE_TAG = "ImageTag";
+    public static final String IMAGE_TAG1 = "ImageTag1";
+    public static final String IMAGE_TAG2 = "ImageTag2";
+    public static final String IMAGE_TAG3 = "ImageTag3";
 
     public static final String REGISTRY_USERNAME = "RegistryUsername";
     public static final String REGISTRY_PASSWORD = "RegistryPassword";
@@ -124,11 +128,20 @@ public class DockerTask implements GoPlugin
     {
         HashMap config = new HashMap();
 
+        addDockerCleanConfig(config);
         addDockerBuildConfig(config);
         addDockerTagConfig(config);
         addDockerLoginConfig(config);
 
         return createResponse(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, config);
+    }
+
+    private void addDockerCleanConfig(HashMap config)
+    {
+        HashMap isDockerClean = new HashMap();
+        isDockerClean.put("default-value", "true");
+        isDockerClean.put("required", true);
+        config.put(IS_DOCKER_CLEAN, isDockerClean);
     }
 
     private void addDockerBuildConfig(HashMap config)
@@ -163,11 +176,23 @@ public class DockerTask implements GoPlugin
         config.put(USERNAME, username);
 
 
-        HashMap imageTag = new HashMap();
-        imageTag.put("default-value", "");
-        imageTag.put("required", false);
+        HashMap imageTag1 = new HashMap();
+        imageTag1.put("default-value", "");
+        imageTag1.put("required", false);
 
-        config.put(IMAGE_TAG, imageTag);
+        config.put(IMAGE_TAG1, imageTag1);
+
+        HashMap imageTag2 = new HashMap();
+        imageTag2.put("default-value", "");
+        imageTag2.put("required", false);
+
+        config.put(IMAGE_TAG2, imageTag2);
+
+        HashMap imageTag3 = new HashMap();
+        imageTag3.put("default-value", "");
+        imageTag3.put("required", false);
+
+        config.put(IMAGE_TAG3, imageTag3);
     }
 
     private void addDockerLoginConfig(HashMap config)
@@ -179,7 +204,6 @@ public class DockerTask implements GoPlugin
         config.put(REGISTRY_USERNAME, registryUsername);
 
 
-
         HashMap registryPassword = new HashMap();
         registryPassword.put("default-value", "");
         registryPassword.put("required", true);
@@ -187,13 +211,11 @@ public class DockerTask implements GoPlugin
         config.put(REGISTRY_PASSWORD, registryPassword);
 
 
-
         HashMap registryEmail = new HashMap();
         registryEmail.put("default-value", "");
         registryEmail.put("required", true);
 
         config.put(REGISTRY_EMAIL, registryEmail);
-
 
 
         HashMap registryURLForLogin = new HashMap();

@@ -1,6 +1,5 @@
 package com.tw.go.task.dockerpipeline;
 
-import javax.print.Doc;
 import java.util.Map;
 
 /**
@@ -23,7 +22,7 @@ public class Config
 
     public Config (Map config)
     {
-        isDockerClean = getValue(config, DockerTask.IS_DOCKER_CLEAN).equals("true");
+        isDockerClean = "true".equals(getValue(config, DockerTask.IS_DOCKER_CLEAN));
         registryURL = getValue(config, DockerTask.REGISTRY_URL);
         imageName = getValue(config, DockerTask.IMAGE_NAME);
         dockerFileName = getValue(config, DockerTask.DOCKER_FILE_NAME);
@@ -39,7 +38,7 @@ public class Config
         registryUrlForLogin = getValue(config, DockerTask.REGISTRY_URL_FOR_LOGIN);
     }
 
-    private String getValue(Map config, String property)
+    private static String getValue(Map config, String property)
     {
         return (String) ((Map) config.get(property)).get("value");
     }

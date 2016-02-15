@@ -16,7 +16,6 @@ import com.tw.go.plugin.common.Context;
 import com.tw.go.plugin.common.Result;
 import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,16 +38,26 @@ public class DockerTask implements GoPlugin
     public static final String IMAGE_TAG3 = "ImageTag3";
 
     public static final String REGISTRY_USERNAME = "RegistryUsername";
-    public static final String REGISTRY_PASSWORD = "RegistryPassword";
+    public static final String REGISTRY_PASSWORD = getPasswordName();
+
     public static final String REGISTRY_EMAIL = "RegistryEmail";
     public static final String REGISTRY_URL_FOR_LOGIN = "RegistryURLForLogin";
 
-    Logger logger = Logger.getLoggerFor(DockerTask.class);
+    private static final Logger LOGGER = Logger.getLoggerFor(DockerTask.class);
+
+    private static final String DEFAULTVALUE = "default-value";
+    private static final String REQUIRED = "required";
+
+    private static String getPasswordName()
+    {
+        return "RegistryPassword";
+    }
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor)
     {
-
+        //shouldn't be
+        //implemented
     }
 
     @Override
@@ -60,7 +69,7 @@ public class DockerTask implements GoPlugin
         }
         else if ("validate".equals(request.requestName()))
         {
-            return handleValidation(request);
+            return handleValidation();
         }
         else if ("execute".equals(request.requestName()))
         {
@@ -90,7 +99,7 @@ public class DockerTask implements GoPlugin
             String errorMessage = "Failed to find template: " + e.getMessage();
             view.put("exception", errorMessage);
 
-            logger.error(errorMessage, e);
+            LOGGER.error(errorMessage, e);
         }
         return createResponse(responseCode, view);
     }
@@ -108,7 +117,7 @@ public class DockerTask implements GoPlugin
         return createResponse(result.responseCode(), result.toMap());
     }
 
-    private GoPluginApiResponse handleValidation(GoPluginApiRequest request)
+    private GoPluginApiResponse handleValidation()
     {
         HashMap validationResult = new HashMap();
         int responseCode = DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
@@ -136,91 +145,91 @@ public class DockerTask implements GoPlugin
         return createResponse(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, config);
     }
 
-    private void addDockerCleanConfig(HashMap config)
+    private static void addDockerCleanConfig(HashMap config)
     {
         HashMap isDockerClean = new HashMap();
-        isDockerClean.put("default-value", "true");
-        isDockerClean.put("required", true);
+        isDockerClean.put(DEFAULTVALUE, "true");
+        isDockerClean.put(REQUIRED, true);
         config.put(IS_DOCKER_CLEAN, isDockerClean);
     }
 
-    private void addDockerBuildConfig(HashMap config)
+    private static void addDockerBuildConfig(HashMap config)
     {
         HashMap registryURL = new HashMap();
-        registryURL.put("default-value", "");
-        registryURL.put("required", true);
+        registryURL.put(DEFAULTVALUE, "");
+        registryURL.put(REQUIRED, true);
 
         config.put(REGISTRY_URL, registryURL);
 
 
         HashMap imageName = new HashMap();
-        imageName.put("default-value", "");
-        imageName.put("required", true);
+        imageName.put(DEFAULTVALUE, "");
+        imageName.put(REQUIRED, true);
 
         config.put(IMAGE_NAME, imageName);
 
 
         HashMap dockerFileName = new HashMap();
-        dockerFileName.put("default-value", "");
-        dockerFileName.put("required", false);
+        dockerFileName.put(DEFAULTVALUE, "");
+        dockerFileName.put(REQUIRED, false);
 
         config.put(DOCKER_FILE_NAME, dockerFileName);
     }
 
-    private void addDockerTagConfig(HashMap config)
+    private static void addDockerTagConfig(HashMap config)
     {
         HashMap username = new HashMap();
-        username.put("default-value", "");
-        username.put("required", true);
+        username.put(DEFAULTVALUE, "");
+        username.put(REQUIRED, true);
 
         config.put(USERNAME, username);
 
 
         HashMap imageTag1 = new HashMap();
-        imageTag1.put("default-value", "");
-        imageTag1.put("required", false);
+        imageTag1.put(DEFAULTVALUE, "");
+        imageTag1.put(REQUIRED, false);
 
         config.put(IMAGE_TAG1, imageTag1);
 
         HashMap imageTag2 = new HashMap();
-        imageTag2.put("default-value", "");
-        imageTag2.put("required", false);
+        imageTag2.put(DEFAULTVALUE, "");
+        imageTag2.put(REQUIRED, false);
 
         config.put(IMAGE_TAG2, imageTag2);
 
         HashMap imageTag3 = new HashMap();
-        imageTag3.put("default-value", "");
-        imageTag3.put("required", false);
+        imageTag3.put(DEFAULTVALUE, "");
+        imageTag3.put(REQUIRED, false);
 
         config.put(IMAGE_TAG3, imageTag3);
     }
 
-    private void addDockerLoginConfig(HashMap config)
+    private static void addDockerLoginConfig(HashMap config)
     {
         HashMap registryUsername = new HashMap();
-        registryUsername.put("default-value", "");
-        registryUsername.put("required", true);
+        registryUsername.put(DEFAULTVALUE, "");
+        registryUsername.put(REQUIRED, true);
 
         config.put(REGISTRY_USERNAME, registryUsername);
 
 
         HashMap registryPassword = new HashMap();
-        registryPassword.put("default-value", "");
-        registryPassword.put("required", true);
+        registryPassword.put(DEFAULTVALUE, "");
+        registryPassword.put(REQUIRED, true);
 
         config.put(REGISTRY_PASSWORD, registryPassword);
 
 
         HashMap registryEmail = new HashMap();
-        registryEmail.put("default-value", "");
-        registryEmail.put("required", true);
+        registryEmail.put(DEFAULTVALUE, "");
+        registryEmail.put(REQUIRED, true);
 
         config.put(REGISTRY_EMAIL, registryEmail);
 
 
         HashMap registryURLForLogin = new HashMap();
-        registryURLForLogin.put("default-value", "");
-        registryURLForLogin.put("required", true);
+        registryURLForLogin.put(DEFAULTVALUE, "");
+        registryURLForLogin.put(REQUIRED, true);
 
         config.put(REGISTRY_URL_FOR_LOGIN, registryURLForLogin);
     }

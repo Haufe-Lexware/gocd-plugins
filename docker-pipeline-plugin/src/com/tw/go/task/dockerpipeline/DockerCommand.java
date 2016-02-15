@@ -23,6 +23,7 @@ public abstract class DockerCommand implements ICommand
 
     protected abstract void buildCommand(Context taskContext, Config taskConfig);
 
+    @Override
     public void run() throws Exception
     {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
@@ -36,7 +37,15 @@ public abstract class DockerCommand implements ICommand
 
         if (exitCode != 0)
         {
-            throw new Exception("Failed while running task");
+            throw new ExitCodeNotZeroException("Failed while running task");
+        }
+    }
+
+    public class ExitCodeNotZeroException extends Exception
+    {
+        public ExitCodeNotZeroException(String s)
+        {
+            super(s);
         }
     }
 }

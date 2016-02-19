@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <go-plugin id="docker.pipeline.plugin" version="1">
-    <about>
-        <name>Docker pipeline plugin</name>
-        <version>1.0</version>
-        <target-go-version>15.2.0</target-go-version>
-        <description>
-           Plugin that builds a docker file, tags the images, pushes it to the artifactory and cleans everything
-        </description>
-        <vendor>
-            <name>Camil Bradea</name>
-            <url></url>
-        </vendor>
-    </about>
-</go-plugin>
+<about>
+<name>Docker pipeline plugin</name>
+<version>1.0</version>
+<target-go-version>15.2.0</target-go-version>
+<description>
+    Plugin that builds a docker file, tags the images, pushes it to the artifactory and cleans everything
+</description>
+<vendor>
+    <name>Camil Bradea</name>
+    <url></url>
+</vendor>
+</about>
+        </go-plugin>

@@ -15,6 +15,7 @@ public class DockerCleanBeforeCommand1 extends DockerCommand
     @Override
     protected void buildCommand(Context taskContext, Config taskConfig)
     {
+        command.add("sudo");
         command.add("service");
         command.add("docker");
         command.add("restart");

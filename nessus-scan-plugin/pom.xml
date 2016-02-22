@@ -20,7 +20,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.thoughtworks.go</groupId>
+            <groupId>cd.go.plugin</groupId>
             <artifactId>go-plugin-api</artifactId>
             <version>${go.version}</version>
             <scope>provided</scope>

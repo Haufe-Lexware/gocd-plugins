@@ -17,28 +17,35 @@ public class DockerBuildCommand extends DockerCommand
     @Override
     protected void buildCommand(Context taskContext, Config taskConfig)
     {
+        String username = taskConfig.username;
+
+        if ("".equals(taskConfig.username))
+        {
+            username = taskConfig.registryUsername;
+        }
+
         if ("".equals(taskConfig.dockerFileName))
         {
             command.add("docker");
             command.add("build");
             command.add("-t");
 
-            command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
-            imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            command.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
 
             if (!("".equals(taskConfig.imageTag2)))
             {
                 command.add("-t");
-                command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+                command.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
 
-                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
             }
             if (!("".equals(taskConfig.imageTag3)))
             {
                 command.add("-t");
-                command.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+                command.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
 
-                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
             }
             command.add("/var/lib/go-agent/" + taskContext.getWorkingDir());
         }
@@ -61,18 +68,18 @@ public class DockerBuildCommand extends DockerCommand
             command.add("docker");
             command.add("build");
 
-            command.add(tag + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
-            imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            command.add(tag + getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
+            imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
 
             if (!("".equals(taskConfig.imageTag2)))
             {
-                command.add(tag + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
-                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+                command.add(tag + getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
             }
             if (!("".equals(taskConfig.imageTag3)))
             {
-                command.add(tag + taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
-                imageAndTag.add(taskConfig.registryURL + "/" + taskConfig.username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+                command.add(tag + getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
+                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
             }
             command.add("--file=" + taskContext.getWorkingDir() + "/" + taskConfig.dockerFileName);
             command.add(taskContext.getWorkingDir() + "/" + dockerPath);
@@ -82,5 +89,22 @@ public class DockerBuildCommand extends DockerCommand
     protected String getCommand()
     {
         return command.toString();
+    }
+
+    protected String getRegistryName(String registryAddress)
+    {
+        String result;
+        String[] split = registryAddress.split("/");
+
+        if (split.length <= 2)
+        {
+            result = split[0];
+        }
+        else
+        {
+            result = split[2];
+        }
+
+        return result;
     }
 }

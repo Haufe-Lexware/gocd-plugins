@@ -9,20 +9,6 @@
 <h3>Build settings:</h3>
 
 <div class="form_item_block">
-  <label>Registry :
-  </label>
-
-  <input type="text" ng-model="RegistryURL" ng-required="false">
-  </input>
-  <span class="form_error" ng-show="GOINPUTNAME[RegistryURL].$error.registryurl">Incorrect registry URL</span>
-
-
-  <br>
-  <br>
-  <br>
-  <br>
-
-
   <label>Image name:<span class="asterisk">*</span>
   </label>
 
@@ -60,10 +46,10 @@
 <h3>Tag settings:</h3>
 
 <div class="form_item_block">
-  <label>Username:<span class="asterisk">*</span>
+  <label>Username:
   </label>
 
-  <input type="text" ng-model="Username" ng-required="true">
+  <input type="text" ng-model="Username" ng-required="false">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[Username].$error.usernameurl">Incorrect username for the registry URL</span>
 
@@ -114,10 +100,10 @@
 <h3>Login settings:</h3>
 
 <div class="form_item_block">
-  <label>Username:<span class="asterisk">*</span>
+  <label>Username:
   </label>
 
-  <input type="text" ng-model="RegistryUsername" ng-required="true">
+  <input type="text" ng-model="RegistryUsername" ng-required="false">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[RegistryUsername].$error.registryusername">Incorrect registry username</span>
 
@@ -127,10 +113,10 @@
     <br>
     <br>
 
-  <label>Password:<span class="asterisk">*</span>
+  <label>Password:
   </label>
 
-  <input type="password" ng-model="RegistryPassword" ng-required="true">
+  <input type="password" ng-model="RegistryPassword" ng-required="false">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[RegistryPassword].$error.registrypassword">Incorrect registry password</span>
 
@@ -140,10 +126,10 @@
     <br>
     <br>
 
-  <label>E-mail adress:<span class="asterisk">*</span>
+  <label>E-mail adress:
   </label>
 
-  <input type="text" ng-model="RegistryEmail" ng-required="true">
+  <input type="text" ng-model="RegistryEmail" ng-required="false">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[RegistryEmail].$error.registryemail">Incorrect registry email</span>
 
@@ -153,7 +139,7 @@
     <br>
     <br>
 
-  <label>Registry URL for login and push:<span class="asterisk">*</span>
+  <label>Registry URL:<span class="asterisk">*</span>
   </label>
 
   <input type="text" ng-model="RegistryURLForLogin" ng-required="true">

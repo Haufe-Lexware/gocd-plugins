@@ -40,13 +40,16 @@ public class DockerTaskExecutor extends TaskExecutor
                 cleanBefore.run();
             }
 
+            if (!("".equals(taskConfig.registryUsername)) && !("".equals(taskConfig.registryPassword)))
+            {
+                DockerLoginCommand login = new DockerLoginCommand(taskContext, taskConfig);
+                log("Login command: " + login.getCommand());
+                login.run();
+            }
+
             DockerBuildCommand build = new DockerBuildCommand(taskContext, taskConfig);
             log("Build command: " + build.getCommand());
             build.run();
-
-            DockerLoginCommand login = new DockerLoginCommand(taskContext, taskConfig);
-            log("Login command: " + login.getCommand());
-            login.run();
 
             for (String imageAndTag : build.imageAndTag)
             {

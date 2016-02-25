@@ -8,7 +8,6 @@ import java.util.Map;
 public class Config
 {
     public final boolean isDockerClean;
-    public final String registryURL;
     public final String imageName;
     public final String dockerFileName;
     public final String username;
@@ -23,7 +22,6 @@ public class Config
     public Config (Map config)
     {
         isDockerClean = "true".equals(getValue(config, DockerTask.IS_DOCKER_CLEAN));
-        registryURL = getValue(config, DockerTask.REGISTRY_URL);
         imageName = getValue(config, DockerTask.IMAGE_NAME);
         dockerFileName = getValue(config, DockerTask.DOCKER_FILE_NAME);
 

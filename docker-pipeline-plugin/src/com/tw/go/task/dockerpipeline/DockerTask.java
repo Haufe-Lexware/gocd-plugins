@@ -28,7 +28,6 @@ public class DockerTask implements GoPlugin
 {
     public static final String IS_DOCKER_CLEAN = "IsDockerClean";
 
-    public static final String REGISTRY_URL = "RegistryURL";
     public static final String IMAGE_NAME = "ImageName";
     public static final String DOCKER_FILE_NAME = "DockerFileName";
 
@@ -155,13 +154,6 @@ public class DockerTask implements GoPlugin
 
     private static void addDockerBuildConfig(HashMap config)
     {
-        HashMap registryURL = new HashMap();
-        registryURL.put(DEFAULTVALUE, "");
-        registryURL.put(REQUIRED, true);
-
-        config.put(REGISTRY_URL, registryURL);
-
-
         HashMap imageName = new HashMap();
         imageName.put(DEFAULTVALUE, "");
         imageName.put(REQUIRED, true);
@@ -180,14 +172,14 @@ public class DockerTask implements GoPlugin
     {
         HashMap username = new HashMap();
         username.put(DEFAULTVALUE, "");
-        username.put(REQUIRED, true);
+        username.put(REQUIRED, false);
 
         config.put(USERNAME, username);
 
 
         HashMap imageTag1 = new HashMap();
         imageTag1.put(DEFAULTVALUE, "");
-        imageTag1.put(REQUIRED, false);
+        imageTag1.put(REQUIRED, true);
 
         config.put(IMAGE_TAG1, imageTag1);
 
@@ -208,21 +200,21 @@ public class DockerTask implements GoPlugin
     {
         HashMap registryUsername = new HashMap();
         registryUsername.put(DEFAULTVALUE, "");
-        registryUsername.put(REQUIRED, true);
+        registryUsername.put(REQUIRED, false);
 
         config.put(REGISTRY_USERNAME, registryUsername);
 
 
         HashMap registryPassword = new HashMap();
         registryPassword.put(DEFAULTVALUE, "");
-        registryPassword.put(REQUIRED, true);
+        registryPassword.put(REQUIRED, false);
 
         config.put(REGISTRY_PASSWORD, registryPassword);
 
 
         HashMap registryEmail = new HashMap();
         registryEmail.put(DEFAULTVALUE, "");
-        registryEmail.put(REQUIRED, true);
+        registryEmail.put(REQUIRED, false);
 
         config.put(REGISTRY_EMAIL, registryEmail);
 

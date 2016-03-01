@@ -38,16 +38,18 @@ public class SonarScanTask implements GoPlugin {
 
     @Override
     public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
-        if ("configuration".equals(request.requestName())) {
-            return handleGetConfigRequest();
-        } else if ("validate".equals(request.requestName())) {
-            return handleValidation();
-        } else if ("execute".equals(request.requestName())) {
-            return handleTaskExecution(request);
-        } else if ("view".equals(request.requestName())) {
-            return handleTaskView();
+        switch (request.requestName()) {
+            case "configuration":
+                return handleGetConfigRequest();
+            case "validate":
+                return handleValidation();
+            case "execute":
+                return handleTaskExecution(request);
+            case "view":
+                return handleTaskView();
+            default:
+                throw new UnhandledRequestTypeException(request.requestName());
         }
-        throw new UnhandledRequestTypeException(request.requestName());
     }
 
     private GoPluginApiResponse handleTaskView() {

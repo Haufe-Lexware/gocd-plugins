@@ -74,7 +74,14 @@ public class NessusScanTaskExecutor extends TaskExecutor {
             nessusClient.exportScan(scanId, context.getWorkingDir() + "/" + exportFilename, "html");
 
             // delete the scan
-            nessusClient.deleteScan(scanId);
+            try
+            {
+                nessusClient.deleteScan(scanId);
+            }
+            catch(Exception e)
+            {
+                log("Warning: Can't remove the scan.");
+            }
 
             // get result issues
             return parseResult(scanResult, issueTypeFail);

@@ -28,6 +28,9 @@ public class SonarScanTask implements GoPlugin {
     public static final String ISSUE_TYPE_FAIL = "IssueTypeFail";
     public static final String SONAR_API_URL = "SonarApiUrl";
     public static final String SONAR_PROJECT_KEY = "SonarProjectKey";
+    public static final String STAGE_NAME = "StageName";
+    public static final String JOB_NAME = "JobName";
+    public static final String JOB_COUNTER = "JobCounter";
 
     private static final Logger LOGGER = Logger.getLoggerFor(SonarScanTask.class);
 
@@ -91,21 +94,40 @@ public class SonarScanTask implements GoPlugin {
 
         HashMap config = new HashMap();
 
+        HashMap stageName = new HashMap();
+        stageName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "1");
+        stageName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Stage name");
+        stageName.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
+        config.put(STAGE_NAME, stageName);
+
+        HashMap jobName = new HashMap();
+        jobName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "2");
+        jobName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Job name");
+        jobName.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
+        config.put(JOB_NAME, jobName);
+
+        HashMap stageCounter = new HashMap();
+        stageCounter.put(GoApiConstants.PROPERTY_NAME_DEFAULT_VALUE, "1");
+        stageCounter.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "3");
+        stageCounter.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Stage counter");
+        stageCounter.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
+        config.put(JOB_COUNTER, stageCounter);
+
         HashMap sonarProjectKey = new HashMap();
-        sonarProjectKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "1");
+        sonarProjectKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "4");
         sonarProjectKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Key of the SonarQube project");
         sonarProjectKey.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
         config.put(SONAR_PROJECT_KEY, sonarProjectKey);
 
         HashMap issueTypeFail = new HashMap();
         issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DEFAULT_VALUE, "error");
-        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "3");
+        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "5");
         issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Fail Quality Gate result");
         issueTypeFail.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
         config.put(ISSUE_TYPE_FAIL, issueTypeFail);
 
         HashMap sonarApiUrl = new HashMap();
-        sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "4");
+        sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "6");
         sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Sonar Api Url");
         sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(SONAR_API_URL, sonarApiUrl);

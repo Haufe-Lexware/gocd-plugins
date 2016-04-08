@@ -38,7 +38,6 @@ public abstract class TaskExecutor {
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
             this.console.printLine(getPluginLogPrefix() + entry.getKey() + " : " + entry.getValue());
-            it.remove(); // avoids a ConcurrentModificationException
         }
     }
 

@@ -15,7 +15,7 @@ public class DockerPushCommand extends DockerCommand
     }
 
     @Override
-    protected void buildCommand(Context taskContext, Config taskConfig)
+    protected void command(Context taskContext, Config taskConfig)
     {
         command.add("docker");
         command.add("push");

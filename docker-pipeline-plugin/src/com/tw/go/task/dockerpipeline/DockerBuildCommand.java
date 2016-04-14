@@ -15,7 +15,7 @@ public class DockerBuildCommand extends DockerCommand
     }
 
     @Override
-    protected void buildCommand(Context taskContext, Config taskConfig)
+    protected void command(Context taskContext, Config taskConfig)
     {
         String username = taskConfig.username;
 

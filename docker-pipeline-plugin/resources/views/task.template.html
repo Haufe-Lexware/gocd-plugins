@@ -126,10 +126,10 @@
     <br>
     <br>
 
-  <label>E-mail adress:
+  <label>E-mail adress:<span class="asterisk">*</span>
   </label>
 
-  <input type="text" ng-model="RegistryEmail" ng-required="false">
+  <input type="text" ng-model="RegistryEmail" ng-required="true">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[RegistryEmail].$error.registryemail">Incorrect registry email</span>
 
@@ -145,4 +145,13 @@
   <input type="text" ng-model="RegistryURLForLogin" ng-required="true">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[RegistryURLForLogin].$error.registryurlforlogin">Incorrect registry URL for login</span>
+</div>
+
+
+<div class="form_item_block">
+  <div class="checkbox_row">
+    <input id="IsDockerCleanAfter1" type="checkbox" ng-model="IsDockerCleanAfter1" ng-init="IsDockerCleanAfter1 = IsDockerCleanAfter" ng-change="IsDockerCleanAfter = IsDockerCleanAfter1" ng-true-value="true" ng-false-value="false">
+    <input id="IsDockerCleanAfter" type="hidden" ng-model="IsDockerCleanAfter" value="{{IsDockerCleanAfter}}">
+    <label for="IsDockerCleanAfter">Clean after build</label>
+  </div>
 </div>

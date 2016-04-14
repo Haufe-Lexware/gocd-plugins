@@ -13,7 +13,7 @@ public class DockerCleanCommand extends DockerCommand
     }
 
     @Override
-    protected void buildCommand(Context taskContext, Config taskConfig)
+    protected void command(Context taskContext, Config taskConfig)
     {
         command.add("/bin/sh");
         command.add("-c");

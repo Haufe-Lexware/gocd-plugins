@@ -70,7 +70,11 @@ public class DockerTaskExecutor extends TaskExecutor
         }
         finally
         {
-            new DockerCleanCommand(taskContext, taskConfig).run();
+            if (taskConfig.isDockerCleanAfter)
+            {
+                new DockerCleanCommand(taskContext, taskConfig).run();
+            }
+
             DockerPushCommand.imgAndTag = "";
         }
     }

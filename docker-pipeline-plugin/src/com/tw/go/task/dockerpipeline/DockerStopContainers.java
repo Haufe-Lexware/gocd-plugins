@@ -3,17 +3,17 @@ package com.tw.go.task.dockerpipeline;
 import com.tw.go.plugin.common.Context;
 
 /**
- * Created by BradeaC on 08/02/2016.
+ * Created by BradeaC on 13/04/2016.
  */
-public class DockerCleanBeforeCommand2 extends DockerCommand
+public class DockerStopContainers extends DockerCommand
 {
-    public DockerCleanBeforeCommand2(Context taskContext, Config taskConfig)
+    public DockerStopContainers(Context taskContext, Config taskConfig)
     {
         super(taskContext, taskConfig);
     }
 
     @Override
-    protected void buildCommand(Context taskContext, Config taskConfig)
+    protected void command(Context taskContext, Config taskConfig)
     {
         command.add("/bin/sh");
         command.add("-c");

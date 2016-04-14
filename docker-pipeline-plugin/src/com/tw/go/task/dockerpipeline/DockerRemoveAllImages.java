@@ -3,17 +3,17 @@ package com.tw.go.task.dockerpipeline;
 import com.tw.go.plugin.common.Context;
 
 /**
- * Created by BradeaC on 08/02/2016.
+ * Created by BradeaC on 13/04/2016.
  */
-public class DockerCleanBeforeCommand4 extends DockerCommand
+public class DockerRemoveAllImages extends DockerCommand
 {
-    public DockerCleanBeforeCommand4(Context taskContext, Config taskConfig)
+    public DockerRemoveAllImages(Context taskContext, Config taskConfig)
     {
         super(taskContext, taskConfig);
     }
 
     @Override
-    protected void buildCommand(Context taskContext, Config taskConfig)
+    protected void command(Context taskContext, Config taskConfig)
     {
         command.add("/bin/sh");
         command.add("-c");

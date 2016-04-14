@@ -18,10 +18,10 @@ public abstract class DockerCommand implements ICommand
 
     public DockerCommand(Context taskContext, Config taskConfig)
     {
-        buildCommand(taskContext, taskConfig);
+        command(taskContext, taskConfig);
     }
 
-    protected abstract void buildCommand(Context taskContext, Config taskConfig);
+    protected abstract void command(Context taskContext, Config taskConfig);
 
     @Override
     public void run() throws Exception

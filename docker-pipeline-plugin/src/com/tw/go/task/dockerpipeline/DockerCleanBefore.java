@@ -15,10 +15,10 @@ public class DockerCleanBefore extends DockerMultipleCommand
     @Override
     protected void setupCommands(Context taskContext, Config taskConfig)
     {
-        runCommand(new DockerCleanBeforeCommand1(taskContext, taskConfig))
-                .then(new DockerCleanBeforeCommand2(taskContext, taskConfig))
-                .then(new DockerCleanBeforeCommand3(taskContext, taskConfig))
-                .then(new DockerCleanBeforeCommand4(taskContext, taskConfig));
+        runCommand(new DockerRestartCommand(taskContext, taskConfig))
+                .then(new DockerStopContainers(taskContext, taskConfig))
+                .then(new DockerRemoveAllContainers(taskContext, taskConfig))
+                .then(new DockerRemoveAllImages(taskContext, taskConfig));
     }
 
 

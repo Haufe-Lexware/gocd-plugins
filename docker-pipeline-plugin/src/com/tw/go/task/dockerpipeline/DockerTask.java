@@ -42,6 +42,8 @@ public class DockerTask implements GoPlugin
     public static final String REGISTRY_EMAIL = "RegistryEmail";
     public static final String REGISTRY_URL_FOR_LOGIN = "RegistryURLForLogin";
 
+    public static final String IS_DOCKER_CLEAN_AFTER = "IsDockerCleanAfter";
+
     private static final Logger LOGGER = Logger.getLoggerFor(DockerTask.class);
 
     private static final String DEFAULTVALUE = "default-value";
@@ -140,6 +142,7 @@ public class DockerTask implements GoPlugin
         addDockerBuildConfig(config);
         addDockerTagConfig(config);
         addDockerLoginConfig(config);
+        addDockerCleanAfter(config);
 
         return createResponse(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, config);
     }
@@ -214,7 +217,7 @@ public class DockerTask implements GoPlugin
 
         HashMap registryEmail = new HashMap();
         registryEmail.put(DEFAULTVALUE, "");
-        registryEmail.put(REQUIRED, false);
+        registryEmail.put(REQUIRED, true);
 
         config.put(REGISTRY_EMAIL, registryEmail);
 
@@ -224,6 +227,14 @@ public class DockerTask implements GoPlugin
         registryURLForLogin.put(REQUIRED, true);
 
         config.put(REGISTRY_URL_FOR_LOGIN, registryURLForLogin);
+    }
+
+    private static void addDockerCleanAfter(HashMap config)
+    {
+        HashMap isDockerCleanAfter = new HashMap();
+        isDockerCleanAfter.put(DEFAULTVALUE, "true");
+        isDockerCleanAfter.put(REQUIRED, true);
+        config.put(IS_DOCKER_CLEAN_AFTER, isDockerCleanAfter);
     }
 
     @Override

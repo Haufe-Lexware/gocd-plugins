@@ -18,6 +18,7 @@ public class Config
     public final String registryPassword;
     public final String registryEmail;
     public final String registryUrlForLogin;
+    public final boolean isDockerCleanAfter;
 
     public Config (Map config)
     {
@@ -34,6 +35,8 @@ public class Config
         registryPassword = getValue(config, DockerTask.REGISTRY_PASSWORD);
         registryEmail = getValue(config, DockerTask.REGISTRY_EMAIL);
         registryUrlForLogin = getValue(config, DockerTask.REGISTRY_URL_FOR_LOGIN);
+
+        isDockerCleanAfter = "true".equals(getValue(config, DockerTask.IS_DOCKER_CLEAN_AFTER));
     }
 
     private static String getValue(Map config, String property)

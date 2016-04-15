@@ -16,16 +16,11 @@ public abstract class DockerCommand implements ICommand
 
     protected static JobConsoleLogger logger = JobConsoleLogger.getConsoleLogger();
 
-    public DockerCommand(Context taskContext, Config taskConfig)
-    {
-        command(taskContext, taskConfig);
-    }
-
-    protected abstract void command(Context taskContext, Config taskConfig);
-
     @Override
     public void run() throws Exception
     {
+        logger.printLine("Run [" + command + "]");
+
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
 
@@ -39,6 +34,11 @@ public abstract class DockerCommand implements ICommand
         {
             throw new ExitCodeNotZeroException("Failed while running task");
         }
+    }
+
+    public String getCommand()
+    {
+        return command.toString();
     }
 
     public class ExitCodeNotZeroException extends Exception

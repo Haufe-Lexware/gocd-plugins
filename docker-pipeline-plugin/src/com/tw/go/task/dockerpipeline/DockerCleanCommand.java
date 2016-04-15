@@ -9,12 +9,6 @@ public class DockerCleanCommand extends DockerCommand
 {
     public DockerCleanCommand(Context taskContext, Config taskConfig)
     {
-        super(taskContext, taskConfig);
-    }
-
-    @Override
-    protected void command(Context taskContext, Config taskConfig)
-    {
         command.add("/bin/sh");
         command.add("-c");
         command.add("test -n \"$(docker images -qa)\" && docker rmi -f $(docker images -qa) || echo \"No images to delete\"");

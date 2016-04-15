@@ -10,10 +10,9 @@ public class Config
     public final boolean isDockerClean;
     public final String imageName;
     public final String dockerFileName;
+    public final String buildArgs;
     public final String username;
-    public final String imageTag1;
-    public final String imageTag2;
-    public final String imageTag3;
+    public final String imageTag;
     public final String registryUsername;
     public final String registryPassword;
     public final String registryEmail;
@@ -25,11 +24,10 @@ public class Config
         isDockerClean = "true".equals(getValue(config, DockerTask.IS_DOCKER_CLEAN));
         imageName = getValue(config, DockerTask.IMAGE_NAME);
         dockerFileName = getValue(config, DockerTask.DOCKER_FILE_NAME);
+        buildArgs = getValue(config, DockerTask.BUILD_ARGS);
 
         username = getValue(config, DockerTask.USERNAME);
-        imageTag1 = getValue(config, DockerTask.IMAGE_TAG1);
-        imageTag2 = getValue(config, DockerTask.IMAGE_TAG2);
-        imageTag3 = getValue(config, DockerTask.IMAGE_TAG3);
+        imageTag = getValue(config, DockerTask.IMAGE_TAG);
 
         registryUsername = getValue(config, DockerTask.REGISTRY_USERNAME);
         registryPassword = getValue(config, DockerTask.REGISTRY_PASSWORD);

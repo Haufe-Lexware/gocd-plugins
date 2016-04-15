@@ -9,12 +9,6 @@ public class DockerRestartCommand extends DockerCommand
 {
     public DockerRestartCommand(Context taskContext, Config taskConfig)
     {
-        super(taskContext, taskConfig);
-    }
-
-    @Override
-    protected void command(Context taskContext, Config taskConfig)
-    {
         command.add("sudo");
         command.add("service");
         command.add("docker");

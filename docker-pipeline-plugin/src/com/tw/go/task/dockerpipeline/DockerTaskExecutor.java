@@ -35,30 +35,25 @@ public class DockerTaskExecutor extends TaskExecutor
         {
             if (taskConfig.isDockerClean)
             {
-                DockerCleanBefore cleanBefore = new DockerCleanBefore(taskContext, taskConfig);
-                log("Cleaning the pipeline ...");
-                cleanBefore.run();
+                ICommand cmd = new DockerCleanBefore(taskContext, taskConfig);
+                cmd.run();
             }
 
-            if (!("".equals(taskConfig.registryUsername)) && !("".equals(taskConfig.registryPassword)))
+            if (!(taskConfig.registryUsername.isEmpty()) && !(taskConfig.registryPassword.isEmpty()))
             {
-                DockerLoginCommand login = new DockerLoginCommand(taskContext, taskConfig);
-                log("Login command: " + login.getCommand());
-                login.run();
+                ICommand cmd = new DockerLoginCommand(taskContext, taskConfig);
+                cmd.run();
             }
 
             DockerBuildCommand build = new DockerBuildCommand(taskContext, taskConfig);
-            log("Build command: " + build.getCommand());
             build.run();
 
-            for (String imageAndTag : build.imageAndTag)
+            for (String tag : build.imageAndTag)
             {
-                if (imageAndTag != null)
+                if (tag != null)
                 {
-                    DockerPushCommand.imgAndTag = imageAndTag;
-                    DockerPushCommand push = new DockerPushCommand(taskContext, taskConfig);
-                    log("Push command: " + push.getCommand());
-                    push.run();
+                    ICommand cmd = new DockerPushCommand(taskContext, taskConfig, tag);
+                    cmd.run();
                 }
             }
 
@@ -74,8 +69,6 @@ public class DockerTaskExecutor extends TaskExecutor
             {
                 new DockerCleanCommand(taskContext, taskConfig).run();
             }
-
-            DockerPushCommand.imgAndTag = "";
         }
     }
 

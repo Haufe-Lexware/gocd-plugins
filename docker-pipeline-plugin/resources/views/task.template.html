@@ -22,7 +22,7 @@
   <br>
   <br>
 
-  <label>Dockerfile path and its name :
+  <label>Dockerfile path and name:
   </label>
 
   <input type="text" ng-model="DockerFileName" ng-required="false">
@@ -32,12 +32,37 @@
   <br>
   <label>Note: </label>
   <ul>
-    <li>  - only fill this field if the Dockerfile is in a folder and/or if it has a different name than Dockerfile</li>
+    <li>  - only if the Dockerfile is in a folder and/or if it has a different name than "Dockerfile"</li>
     <br>
     <br>
     <li>  - don't include "/var/lib/go-agent/pipelines/pipeline_name/"</li>
   </ul>
   <span class="form_error" ng-show="GOINPUTNAME[DockerFileName].$error.dockerfilename">Incorrect docker file name</span>
+
+  <br>
+  <br>
+  <br>
+  <br>
+
+  <label>Build args:
+  </label>
+
+  <input type="text" ng-model="BuildArgs" ng-required="true">
+  </input>
+  <span class="form_error" ng-show="GOINPUTNAME[BuildArgs].$error.buildargs">Incorrect build args</span>
+  <br>
+  <br>
+  <br>
+  <ul>
+    <li>Note: You can specify multiple arguments by separating them using a semi-colon. Example: arg1=value1;arg2=value2</li>
+    <br>
+    <br>
+    <li>Or, you can use what separator you like, by entering your desired separator as the first character</li>
+    <br>
+    <br>
+    <li>Example: |arg1=value1|arg2=value</li>
+  </ul>
+  <br>
 </div>
 
 
@@ -53,47 +78,38 @@
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[Username].$error.usernameurl">Incorrect username for the registry URL</span>
 
-
-    <br>
     <br>
     <br>
     <br>
 
+  <label>Note: Username will be used when naming the image. Resulting image name: registryName/username/imageName</label>
 
-    <label>Image tag 1:<span class="asterisk">*</span>
-        </label>
+    <br>
+    <br>
 
-  <input type="text" ng-model="ImageTag1" ng-required="true">
+
+
+  <label>Image tags:<span class="asterisk">*</span>
+  </label>
+
+  <input type="text" ng-model="ImageTag" ng-required="true">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag1">Incorrect image tag</span>
 
   <br>
   <br>
   <br>
+  <ul>
+    <li>Note: You can specify multiple tags by separating them using a semi-colon. Example: tag1;tag2</li>
+    <br>
+    <br>
+    <li>Or, you can use what separator you like, by entering your desired separator as the first character.</li>
+    <br>
+    <br>
+    <li>Example: |tag1|tag2</li>
+  </ul>
   <br>
-
-
-  <label>Image tag 2 (optional):
-  </label>
-
-  <input type="text" ng-model="ImageTag2" ng-required="false">
-  </input>
-  <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag2">Incorrect image tag</span>
-
-  <br>
-  <br>
-  <br>
-  <br>
-
-
-  <label>Image tag 3 (optional):
-  </label>
-
-  <input type="text" ng-model="ImageTag3" ng-required="false">
-  </input>
-  <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag3">Incorrect image tag</span>
 </div>
-
 
 
 
@@ -126,10 +142,10 @@
     <br>
     <br>
 
-  <label>E-mail adress:<span class="asterisk">*</span>
+  <label>E-mail adress:
   </label>
 
-  <input type="text" ng-model="RegistryEmail" ng-required="true">
+  <input type="text" ng-model="RegistryEmail" ng-required="false">
   </input>
     <span class="form_error" ng-show="GOINPUTNAME[RegistryEmail].$error.registryemail">Incorrect registry email</span>
 

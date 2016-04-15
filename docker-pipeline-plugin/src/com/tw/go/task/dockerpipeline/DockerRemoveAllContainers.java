@@ -9,12 +9,6 @@ public class DockerRemoveAllContainers extends DockerCommand
 {
     public DockerRemoveAllContainers(Context taskContext, Config taskConfig)
     {
-        super(taskContext, taskConfig);
-    }
-
-    @Override
-    protected void command(Context taskContext, Config taskConfig)
-    {
         command.add("/bin/sh");
         command.add("-c");
         command.add("test -n \"$(docker ps -a -q)\" && docker rm -f $(docker ps -a -q) || echo \"No containers to delete\"");

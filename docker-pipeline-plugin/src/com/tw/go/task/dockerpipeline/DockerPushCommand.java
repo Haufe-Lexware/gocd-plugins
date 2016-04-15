@@ -7,23 +7,10 @@ import com.tw.go.plugin.common.Context;
  */
 public class DockerPushCommand extends DockerCommand
 {
-    protected static String imgAndTag;
-
-    public DockerPushCommand(Context taskContext, Config taskConfig)
-    {
-        super(taskContext, taskConfig);
-    }
-
-    @Override
-    protected void command(Context taskContext, Config taskConfig)
+    public DockerPushCommand(Context taskContext, Config taskConfig, String tag)
     {
         command.add("docker");
         command.add("push");
-        command.add(imgAndTag);
-    }
-
-    protected String getCommand()
-    {
-        return command.toString();
+        command.add(tag);
     }
 }

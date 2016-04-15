@@ -2,108 +2,116 @@ package com.tw.go.task.dockerpipeline;
 
 import com.tw.go.plugin.common.Context;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.regex.Pattern;
+
 /**
  * Created by BradeaC on 21/12/2015.
  */
 public class DockerBuildCommand extends DockerCommand
 {
-    static String tag = "--tag=";
-
     public DockerBuildCommand(Context taskContext, Config taskConfig)
     {
-        super(taskContext,taskConfig);
+        String context = getDockerfilePath(taskContext, taskConfig).getParent().toString(); // the path without the Dockerfile. Used for obtaining the build context
+        String dockerfilePath = getDockerfileName(taskContext, taskConfig); // the path including the Dockerfile. Used for pointing to the Dockerfile
+        String username = getUsername(taskConfig);
+        String registryName = getRegistryName(taskConfig.registryUrlForLogin);
+        String baseImageName = makeBaseName(registryName, username, taskConfig.imageName);
+
+        command.add("docker");
+        command.add("build");
+
+        command.add("-f");
+        command.add(dockerfilePath);
+
+        addBuildArgs(taskConfig.buildArgs);
+
+        addImageTag(baseImageName, taskConfig.imageTag);
+
+        command.add(context);
     }
 
-    @Override
-    protected void command(Context taskContext, Config taskConfig)
+    private void addBuildArgs(String buildArgs)
     {
-        String username = taskConfig.username;
-
-        if ("".equals(taskConfig.username))
+        for (String buildArg : splitByFirstOrDefault(buildArgs, ';'))
         {
-            username = taskConfig.registryUsername;
-        }
-
-        if ("".equals(taskConfig.dockerFileName))
-        {
-            command.add("docker");
-            command.add("build");
-            command.add("-t");
-
-            command.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
-            imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
-
-            if (!("".equals(taskConfig.imageTag2)))
+            if(!buildArg.isEmpty())
             {
+                command.add("--build-arg");
+                command.add(buildArg);
+            }
+        }
+    }
+
+    private void addImageTag(String baseName, String tags)
+    {
+        for (String tag : splitByFirstOrDefault(tags, ';'))
+        {
+            if(!tag.isEmpty())
+            {
+                String taggedName = baseName + ":" + tag;
                 command.add("-t");
-                command.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
-
-                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
+                command.add(taggedName);
+                imageAndTag.add(taggedName);
             }
-            if (!("".equals(taskConfig.imageTag3)))
-            {
-                command.add("-t");
-                command.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
-
-                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
-            }
-            command.add("/var/lib/go-agent/" + taskContext.getWorkingDir());
         }
-        else
+    }
+
+    private String[] splitByFirstOrDefault(String args, Character separator)
+    {
+        if(!args.isEmpty())
         {
-            String dockerPath = "";
+            Character first = args.charAt(0);
 
-            try
+            if(!(Character.isLetter(first)))
             {
-                dockerPath = taskConfig.dockerFileName.substring(0, taskConfig.dockerFileName.lastIndexOf("/"));
-            }
-            catch (Exception e)
-            {
-                if (e != null)
-                {
-                    dockerPath = "";
-                }
+                separator = first;
+                args = args.substring(1);
             }
 
-            command.add("docker");
-            command.add("build");
-
-            command.add(tag + getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
-            imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag1);
-
-            if (!("".equals(taskConfig.imageTag2)))
-            {
-                command.add(tag + getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
-                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag2);
-            }
-            if (!("".equals(taskConfig.imageTag3)))
-            {
-                command.add(tag + getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
-                imageAndTag.add(getRegistryName(taskConfig.registryUrlForLogin) + "/" + username + "/" + taskConfig.imageName + ":" + taskConfig.imageTag3);
-            }
-            command.add("--file=" + taskContext.getWorkingDir() + "/" + taskConfig.dockerFileName);
-            command.add(taskContext.getWorkingDir() + "/" + dockerPath);
+            return args.split(Pattern.quote(separator.toString()));
         }
+
+        return new String[]{};
     }
 
-    protected String getCommand()
+    private String makeBaseName(String registry, String username, String imageName)
     {
-        return command.toString();
+        return registry + "/" + username + imageName;
     }
 
-    protected String getRegistryName(String registryAddress)
+    private String getDockerfileName(Context taskContext, Config taskConfig)
     {
-        String result;
+        String result = taskConfig.dockerFileName.isEmpty() ?
+                taskContext.getWorkingDir() + "/" + "Dockerfile" :
+                taskContext.getWorkingDir() + "/" + taskConfig.dockerFileName;
+
+        return result;
+    }
+
+    private String getUsername(Config taskConfig)
+    {
+        if(!taskConfig.registryUsername.isEmpty())
+        {
+            return taskConfig.username.isEmpty() ? taskConfig.registryUsername + "/" : taskConfig.username + "/";
+        }
+
+        return "";
+    }
+
+    private Path getDockerfilePath(Context taskContext, Config taskConfig)
+    {
+        Path dockerPath = Paths.get(getDockerfileName(taskContext, taskConfig)).toAbsolutePath().normalize();
+
+        return dockerPath;
+    }
+
+    private String getRegistryName(String registryAddress)
+    {
         String[] split = registryAddress.split("/");
 
-        if (split.length <= 2)
-        {
-            result = split[0];
-        }
-        else
-        {
-            result = split[2];
-        }
+        String result = split.length <= 2 ? split[0] : split[2];
 
         return result;
     }

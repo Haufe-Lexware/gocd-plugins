@@ -30,11 +30,10 @@ public class DockerTask implements GoPlugin
 
     public static final String IMAGE_NAME = "ImageName";
     public static final String DOCKER_FILE_NAME = "DockerFileName";
+    public static final String BUILD_ARGS = "BuildArgs";
 
     public static final String USERNAME = "Username";
-    public static final String IMAGE_TAG1 = "ImageTag1";
-    public static final String IMAGE_TAG2 = "ImageTag2";
-    public static final String IMAGE_TAG3 = "ImageTag3";
+    public static final String IMAGE_TAG = "ImageTag";
 
     public static final String REGISTRY_USERNAME = "RegistryUsername";
     public static final String REGISTRY_PASSWORD = getPasswordName();
@@ -169,6 +168,12 @@ public class DockerTask implements GoPlugin
         dockerFileName.put(REQUIRED, false);
 
         config.put(DOCKER_FILE_NAME, dockerFileName);
+
+        HashMap buildArgs = new HashMap();
+        buildArgs.put(DEFAULTVALUE, "");
+        buildArgs.put(REQUIRED, false);
+
+        config.put(BUILD_ARGS, buildArgs);
     }
 
     private static void addDockerTagConfig(HashMap config)
@@ -180,23 +185,11 @@ public class DockerTask implements GoPlugin
         config.put(USERNAME, username);
 
 
-        HashMap imageTag1 = new HashMap();
-        imageTag1.put(DEFAULTVALUE, "");
-        imageTag1.put(REQUIRED, true);
+        HashMap imageTag = new HashMap();
+        imageTag.put(DEFAULTVALUE, "");
+        imageTag.put(REQUIRED, true);
 
-        config.put(IMAGE_TAG1, imageTag1);
-
-        HashMap imageTag2 = new HashMap();
-        imageTag2.put(DEFAULTVALUE, "");
-        imageTag2.put(REQUIRED, false);
-
-        config.put(IMAGE_TAG2, imageTag2);
-
-        HashMap imageTag3 = new HashMap();
-        imageTag3.put(DEFAULTVALUE, "");
-        imageTag3.put(REQUIRED, false);
-
-        config.put(IMAGE_TAG3, imageTag3);
+        config.put(IMAGE_TAG, imageTag);
     }
 
     private static void addDockerLoginConfig(HashMap config)
@@ -217,7 +210,7 @@ public class DockerTask implements GoPlugin
 
         HashMap registryEmail = new HashMap();
         registryEmail.put(DEFAULTVALUE, "");
-        registryEmail.put(REQUIRED, true);
+        registryEmail.put(REQUIRED, false);
 
         config.put(REGISTRY_EMAIL, registryEmail);
 

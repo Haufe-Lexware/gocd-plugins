@@ -9,12 +9,6 @@ public class DockerRemoveAllImages extends DockerCommand
 {
     public DockerRemoveAllImages(Context taskContext, Config taskConfig)
     {
-        super(taskContext, taskConfig);
-    }
-
-    @Override
-    protected void command(Context taskContext, Config taskConfig)
-    {
         command.add("/bin/sh");
         command.add("-c");
         command.add("test -n \"$(docker images -q)\" && docker rmi -f $(docker images -q) || echo \"No images to delete\"");

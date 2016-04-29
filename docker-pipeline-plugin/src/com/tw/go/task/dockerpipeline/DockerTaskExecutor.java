@@ -7,9 +7,6 @@ import com.tw.go.plugin.common.TaskExecutor;
 
 import java.util.Map;
 
-/**
- * Created by BradeaC on 15/12/2015.
- */
 public class DockerTaskExecutor extends TaskExecutor
 {
     public DockerTaskExecutor(JobConsoleLogger console, Context context, Map config)
@@ -17,11 +14,13 @@ public class DockerTaskExecutor extends TaskExecutor
         super(console, context, config);
     }
 
-    public Result execute (Config config, Context context)
+    public Result execute (ConfigVars configVars)
     {
         try
         {
-            return runCommand (context, config);
+            configVars.printConfig(console, getPluginLogPrefix());
+            DockerCommand.setConfigVars(configVars);
+            return runCommand(new Config(configVars));
         }
         catch (Exception e)
         {
@@ -29,52 +28,52 @@ public class DockerTaskExecutor extends TaskExecutor
         }
     }
 
-    public Result runCommand (Context taskContext, Config taskConfig) throws Exception
+    public Result runCommand (Config taskConfig) throws Exception
     {
         try
         {
-            if (taskConfig.isDockerClean)
+            DockerCommand.setPrefix(getPluginLogPrefix());
+
+            if (taskConfig.cleanBeforeTask)
             {
-                ICommand cmd = new DockerCleanBefore(taskContext, taskConfig);
+                ICommand cmd = new DockerCleanBefore(context, taskConfig);
                 cmd.run();
             }
 
-            if (!(taskConfig.registryUsername.isEmpty()) && !(taskConfig.registryPassword.isEmpty()))
+            if (!(taskConfig.registryUsername.toString().isEmpty()) && !(taskConfig.registryPassword.toString().isEmpty()))
             {
-                ICommand cmd = new DockerLoginCommand(taskContext, taskConfig);
+                ICommand cmd = new DockerLoginCommand(context, taskConfig);
                 cmd.run();
             }
 
-            DockerBuildCommand build = new DockerBuildCommand(taskContext, taskConfig);
+            DockerBuildCommand build = new DockerBuildCommand(context, taskConfig);
             build.run();
 
             for (String tag : build.imageAndTag)
             {
                 if (tag != null)
                 {
-                    ICommand cmd = new DockerPushCommand(taskContext, taskConfig, tag);
+                    ICommand cmd = new DockerPushCommand(context, taskConfig, tag);
                     cmd.run();
                 }
             }
+        }
 
-            return new Result(true, "Finished");
-        }
-        catch (Exception e)
-        {
-            return new Result(false, "Failed", e);
-        }
         finally
         {
-            if (taskConfig.isDockerCleanAfter)
+            if (taskConfig.cleanAfterTask)
             {
-                new DockerCleanCommand(taskContext, taskConfig).run();
+                ICommand cmd = new DockerRemoveAllImages(context, taskConfig);
+                cmd.run();
             }
         }
+
+        return new Result(true, "Finished");
     }
 
     @Override
     protected String getPluginLogPrefix()
     {
-        return "Docker pipeline plugin: ";
+        return "[Docker] ";
     }
 }

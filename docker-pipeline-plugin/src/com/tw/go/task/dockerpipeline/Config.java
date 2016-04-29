@@ -1,13 +1,9 @@
 package com.tw.go.task.dockerpipeline;
 
-import java.util.Map;
-
-/**
- * Created by BradeaC on 14/12/2015.
- */
 public class Config
 {
-    public final boolean isDockerClean;
+    public final boolean cleanBeforeTask;
+    public final boolean cleanAfterTask;
     public final String imageName;
     public final String dockerFileName;
     public final String buildArgs;
@@ -17,30 +13,23 @@ public class Config
     public final String registryPassword;
     public final String registryEmail;
     public final String registryUrlForLogin;
-    public final boolean isDockerCleanAfter;
 
-    public Config (Map config)
+    public Config (ConfigVars config)
     {
-        isDockerClean = "true".equals(getValue(config, DockerTask.IS_DOCKER_CLEAN));
-        imageName = getValue(config, DockerTask.IMAGE_NAME);
-        dockerFileName = getValue(config, DockerTask.DOCKER_FILE_NAME);
-        buildArgs = getValue(config, DockerTask.BUILD_ARGS);
+        cleanBeforeTask = Boolean.parseBoolean(config.getValue(DockerTask.CLEAN_BEFORE_TASK));
 
-        username = getValue(config, DockerTask.USERNAME);
-        imageTag = getValue(config, DockerTask.IMAGE_TAG);
+        imageName = config.getValue(DockerTask.IMAGE_NAME);
+        dockerFileName = config.getValue(DockerTask.DOCKER_FILE_NAME);
+        buildArgs = config.getValue(DockerTask.BUILD_ARGS);
 
-        registryUsername = getValue(config, DockerTask.REGISTRY_USERNAME);
-        registryPassword = getValue(config, DockerTask.REGISTRY_PASSWORD);
-        registryEmail = getValue(config, DockerTask.REGISTRY_EMAIL);
-        registryUrlForLogin = getValue(config, DockerTask.REGISTRY_URL_FOR_LOGIN);
+        username = config.getValue(DockerTask.USERNAME);
+        imageTag = config.getValue(DockerTask.IMAGE_TAG);
 
-        isDockerCleanAfter = "true".equals(getValue(config, DockerTask.IS_DOCKER_CLEAN_AFTER));
+        registryUsername = config.getValue(DockerTask.REGISTRY_USERNAME);
+        registryPassword = config.getValue(DockerTask.REGISTRY_PASSWORD);
+        registryEmail = config.getValue(DockerTask.REGISTRY_EMAIL);
+        registryUrlForLogin = config.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN);
+
+        cleanAfterTask = Boolean.parseBoolean(config.getValue(DockerTask.CLEAN_AFTER_TASK));
     }
-
-    private static String getValue(Map config, String property)
-    {
-        return (String) ((Map) config.get(property)).get("value");
-    }
-
-
 }

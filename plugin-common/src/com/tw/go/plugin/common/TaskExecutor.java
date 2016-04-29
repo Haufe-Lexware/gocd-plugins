@@ -45,13 +45,17 @@ public abstract class TaskExecutor {
         Iterator it = config.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
-            EnvVarParamParser parser = new EnvVarParamParser(context.getEnvironmentVariables(), console);
             JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), console);
 
             Map valueMap = (Map) entry.getValue();
             if (valueMap.containsKey("value")) {
-                String value = propParser.parse(parser.parse((String) valueMap.get("value")));
-                log("config value replaced: " + value);
+                String valueRaw = (String) valueMap.get("value");
+                String value = propParser.parse(valueRaw);
+                if (!value.equals(valueRaw))
+                {
+                    log("build value replaced in: " + entry.getKey());
+                }
+
                 valueMap.put(GoApiConstants.PROPERTY_NAME_VALUE, value);
 
                 entry.setValue(valueMap);

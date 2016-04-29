@@ -2,13 +2,12 @@ package com.tw.go.task.dockerpipeline;
 
 import com.tw.go.plugin.common.Context;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
-/**
- * Created by BradeaC on 21/12/2015.
- */
 public class DockerBuildCommand extends DockerCommand
 {
     public DockerBuildCommand(Context taskContext, Config taskConfig)
@@ -19,17 +18,17 @@ public class DockerBuildCommand extends DockerCommand
         String registryName = getRegistryName(taskConfig.registryUrlForLogin);
         String baseImageName = makeBaseName(registryName, username, taskConfig.imageName);
 
-        command.add("docker");
-        command.add("build");
+        add("docker");
+        add("build");
 
-        command.add("-f");
-        command.add(dockerfilePath);
+        add("-f");
+        add(dockerfilePath);
 
         addBuildArgs(taskConfig.buildArgs);
 
         addImageTag(baseImageName, taskConfig.imageTag);
 
-        command.add(context);
+        add(context);
     }
 
     private void addBuildArgs(String buildArgs)
@@ -64,7 +63,7 @@ public class DockerBuildCommand extends DockerCommand
         {
             Character first = args.charAt(0);
 
-            if(!(Character.isLetter(first)))
+            if(!(Character.isLetterOrDigit(first)))
             {
                 separator = first;
                 args = args.substring(1);
@@ -109,10 +108,21 @@ public class DockerBuildCommand extends DockerCommand
 
     private String getRegistryName(String registryAddress)
     {
-        String[] split = registryAddress.split("/");
+        try
+        {
+            if (-1 == registryAddress.indexOf("://"))
+            {
+                registryAddress = "http://" + registryAddress;
+            }
 
-        String result = split.length <= 2 ? split[0] : split[2];
+            return new URL(registryAddress).getAuthority();
+        }
 
-        return result;
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }

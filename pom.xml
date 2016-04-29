@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.thoughtworks.go</groupId>
@@ -8,6 +9,11 @@
     <version>1.0.0</version>
     <name>go.cd plugins</name>
     <packaging>pom</packaging>
+
+    <scm>
+        <connection>scm:git:http://somerepository.com/svn_repo/trunk</connection>
+        <developerConnection>scm:git:https://somerepository.com/svn_repo/trunk</developerConnection>
+    </scm>
 
     <properties>
         <go.version>15.1.0</go.version>
@@ -20,11 +26,6 @@
         <sonar.language>java</sonar.language>
 
     </properties>
-
-    <scm>
-        <connection>scm:git:http://somerepository.com/svn_repo/trunk</connection>
-        <developerConnection>scm:git:https://somerepository.com/svn_repo/trunk</developerConnection>
-    </scm>
 
     <dependencies>
         <dependency>

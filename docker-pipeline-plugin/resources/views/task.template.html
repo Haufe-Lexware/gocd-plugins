@@ -1,173 +1,99 @@
 <div class="form_item_block">
-  <div class="checkbox_row">
-    <input id="IsDockerClean1" type="checkbox" ng-model="IsDockerClean1" ng-init="IsDockerClean1 = IsDockerClean" ng-change="IsDockerClean = IsDockerClean1" ng-true-value="true" ng-false-value="false">
-    <input id="IsDockerClean" type="hidden" ng-model="IsDockerClean" value="{{IsDockerClean}}">
-    <label for="IsDockerClean">Clean before build</label>
+  <div class="form_item_block">
+    <div class="checkbox_row">
+      <input id="CleanBeforeTask1" type="checkbox" ng-model="CleanBeforeTask1"
+             ng-init="CleanBeforeTask1 = CleanBeforeTask"
+             ng-change="CleanBeforeTask = CleanBeforeTask1"
+             ng-true-value="true"
+             ng-false-value="false">
+      <input id="CleanBeforeTask" type="hidden" ng-model="CleanBeforeTask" value="{{CleanBeforeTask}}">
+      <label for="CleanBeforeTask">Restart Docker service, stop and remove all containers and images</label>
+    </div>
+  </div>
+
+  <div class="form_item_block">
+    <div class="checkbox_row">
+      <input id="CleanAfterTask1" type="checkbox" ng-model="CleanAfterTask1"
+             ng-init="CleanAfterTask1 = CleanAfterTask"
+             ng-change="CleanAfterTask = CleanAfterTask1"
+             ng-true-value="true"
+             ng-false-value="false">
+      <input id="CleanAfterTask" type="hidden" ng-model="CleanAfterTask" value="{{CleanAfterTask}}">
+      <label for="CleanAfterTask">Remove all images after push</label>
+    </div>
   </div>
 </div>
 
 <h3>Build settings:</h3>
+<div class="form_item_block">
+  <label>Build args:</label>
+  <input type="text" ng-model="BuildArgs" ng-required="false">
+  <div class="inline_instruction">Provide one or multiple tags separated by ';'. Define a different separator as the VERY FIRST character (example "|arg1=xyz|arg2=123") </div>
+  <span class="form_error" ng-show="GOINPUTNAME[BuildArgs].$error.server">{{ GOINPUTNAME[BuildArgs].$error.server }}</span>
+</div>
 
 <div class="form_item_block">
   <label>Image name:<span class="asterisk">*</span>
   </label>
-
   <input type="text" ng-model="ImageName" ng-required="true">
-  </input>
-    <span class="form_error" ng-show="GOINPUTNAME[ImageName].$error.imagename">Incorrect image name</span>
-
-
-  <br>
-  <br>
-  <br>
-  <br>
-
-  <label>Dockerfile path and name:
-  </label>
-
-  <input type="text" ng-model="DockerFileName" ng-required="false">
-  </input>
-  <br>
-  <br>
-  <br>
-  <label>Note: </label>
-  <ul>
-    <li>  - only if the Dockerfile is in a folder and/or if it has a different name than "Dockerfile"</li>
-    <br>
-    <br>
-    <li>  - don't include "/var/lib/go-agent/pipelines/pipeline_name/"</li>
-  </ul>
-  <span class="form_error" ng-show="GOINPUTNAME[DockerFileName].$error.dockerfilename">Incorrect docker file name</span>
-
-  <br>
-  <br>
-  <br>
-  <br>
-
-  <label>Build args:
-  </label>
-
-  <input type="text" ng-model="BuildArgs" ng-required="true">
-  </input>
-  <span class="form_error" ng-show="GOINPUTNAME[BuildArgs].$error.buildargs">Incorrect build args</span>
-  <br>
-  <br>
-  <br>
-  <ul>
-    <li>Note: You can specify multiple arguments by separating them using a semi-colon. Example: arg1=value1;arg2=value2</li>
-    <br>
-    <br>
-    <li>Or, you can use what separator you like, by entering your desired separator as the first character</li>
-    <br>
-    <br>
-    <li>Example: |arg1=value1|arg2=value</li>
-  </ul>
-  <br>
+  <span class="form_error" ng-show="GOINPUTNAME[ImageName].$error.server">{{ GOINPUTNAME[ImageName].$error.server }}</span>
 </div>
 
-
-
+<div class="form_item_block">
+  <label>Dockerfile path and its name :
+  </label>
+  <input type="text" ng-model="DockerFileName" ng-required="false">
+  <div class="inline_instruction">Path and name of Dockerfile relative to repository-root (default is ./Dockerfile).
+  </div>
+<span class="form_error"
+      ng-show="GOINPUTNAME[DockerFileName].$error.server">{{ GOINPUTNAME[DockerFileName].$error.server }}</span>
+</div>
 
 <h3>Tag settings:</h3>
-
 <div class="form_item_block">
   <label>Username:
   </label>
-
   <input type="text" ng-model="Username" ng-required="false">
-  </input>
-    <span class="form_error" ng-show="GOINPUTNAME[Username].$error.usernameurl">Incorrect username for the registry URL</span>
-
-    <br>
-    <br>
-    <br>
-
-  <label>Note: Username will be used when naming the image. Resulting image name: registryName/username/imageName</label>
-
-    <br>
-    <br>
-
-
-
-  <label>Image tags:<span class="asterisk">*</span>
-  </label>
-
-  <input type="text" ng-model="ImageTag" ng-required="true">
-  </input>
-    <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.imagetag1">Incorrect image tag</span>
-
-  <br>
-  <br>
-  <br>
-  <ul>
-    <li>Note: You can specify multiple tags by separating them using a semi-colon. Example: tag1;tag2</li>
-    <br>
-    <br>
-    <li>Or, you can use what separator you like, by entering your desired separator as the first character.</li>
-    <br>
-    <br>
-    <li>Example: |tag1|tag2</li>
-  </ul>
-  <br>
+<span class="form_error"
+      ng-show="GOINPUTNAME[Username].$error.server">{{ GOINPUTNAME[Username].$error.server }}</span>
 </div>
 
+<div class="form_item_block">
+  <label>Image tag:<span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="ImageTag" ng-required="true">
+  <div class="inline_instruction">You must specify at least one tag. Provide multiple tags separated by ';'. Define a different separator as the VERY FIRST character (example "|tag1|tag2") </div>
+  <span class="form_error" ng-show="GOINPUTNAME[ImageTag].$error.server">{{ GOINPUTNAME[ImageTag].$error.server }}</span>
+</div>
 
-
-<h3>Login settings:</h3>
-
+<h3>Push settings:</h3>
 <div class="form_item_block">
   <label>Username:
   </label>
-
   <input type="text" ng-model="RegistryUsername" ng-required="false">
-  </input>
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryUsername].$error.registryusername">Incorrect registry username</span>
+<span class="form_error"
+      ng-show="GOINPUTNAME[RegistryUsername].$error.server">{{ GOINPUTNAME[RegistryUsername].$error.server }}</span>
+</div>
 
-
-    <br>
-    <br>
-    <br>
-    <br>
-
+<div class="form_item_block">
   <label>Password:
   </label>
-
   <input type="password" ng-model="RegistryPassword" ng-required="false">
-  </input>
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryPassword].$error.registrypassword">Incorrect registry password</span>
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-
-  <label>E-mail adress:
-  </label>
-
-  <input type="text" ng-model="RegistryEmail" ng-required="false">
-  </input>
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryEmail].$error.registryemail">Incorrect registry email</span>
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-
-  <label>Registry URL:<span class="asterisk">*</span>
-  </label>
-
-  <input type="text" ng-model="RegistryURLForLogin" ng-required="true">
-  </input>
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryURLForLogin].$error.registryurlforlogin">Incorrect registry URL for login</span>
+<span class="form_error"
+      ng-show="GOINPUTNAME[RegistryPassword].$error.server">{{ GOINPUTNAME[RegistryPassword].$error.server }}</span>
 </div>
 
+<div class="form_item_block">
+  <label>E-mail adress:
+  </label>
+  <input type="text" ng-model="RegistryEmail" ng-required="false">
+  <div class="inline_instruction">Deprecated since docker 1.11</div>
+  <span class="form_error" ng-show="GOINPUTNAME[RegistryEmail].$error.server">{{ GOINPUTNAME[RegistryEmail].$error.server }}</span>
+</div>
 
 <div class="form_item_block">
-  <div class="checkbox_row">
-    <input id="IsDockerCleanAfter1" type="checkbox" ng-model="IsDockerCleanAfter1" ng-init="IsDockerCleanAfter1 = IsDockerCleanAfter" ng-change="IsDockerCleanAfter = IsDockerCleanAfter1" ng-true-value="true" ng-false-value="false">
-    <input id="IsDockerCleanAfter" type="hidden" ng-model="IsDockerCleanAfter" value="{{IsDockerCleanAfter}}">
-    <label for="IsDockerCleanAfter">Clean after build</label>
-  </div>
+  <label>Registry URL:<span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="RegistryURLForLogin" ng-required="true">
+  <span class="form_error" ng-show="GOINPUTNAME[RegistryURLForLogin].$error.server">{{ GOINPUTNAME[RegistryURLForLogin].$error.server }}</span>
 </div>

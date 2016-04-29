@@ -25,7 +25,7 @@ import java.util.Map;
 @Extension
 public class DockerTask extends BaseGoPlugin
 {
-    public static final String CLEAN_BEFORE_TASK = "IsDockerClean";
+    public static final String CLEAN_BEFORE_TASK = "CleanBeforeTask";
 
     public static final String IMAGE_NAME = "ImageName";
     public static final String DOCKER_FILE_NAME = "DockerFileName";
@@ -40,7 +40,7 @@ public class DockerTask extends BaseGoPlugin
     public static final String REGISTRY_EMAIL = "RegistryEmail";
     public static final String REGISTRY_URL_FOR_LOGIN = "RegistryURLForLogin";
 
-    public static final String CLEAN_AFTER_TASK = "IsDockerCleanAfter";
+    public static final String CLEAN_AFTER_TASK = "CleanAfterTask";
 
     private static final Logger LOGGER = Logger.getLoggerFor(DockerTask.class);
 
@@ -135,7 +135,7 @@ public class DockerTask extends BaseGoPlugin
     {
         return new ConfigDef()
                 // cleaning ...
-                .add(CLEAN_AFTER_TASK, "false", Required.No)
+                .add(CLEAN_AFTER_TASK, "true", Required.No)
                 .add(CLEAN_BEFORE_TASK, "false", Required.No)
 
                 // build

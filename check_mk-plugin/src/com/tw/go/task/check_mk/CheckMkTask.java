@@ -2,29 +2,25 @@
 package com.tw.go.task.check_mk;
 
 import com.google.gson.GsonBuilder;
-import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
-import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
-import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
-import com.tw.go.plugin.common.Context;
-import com.tw.go.plugin.common.Result;
+import com.tw.go.plugin.common.*;
 import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 @Extension
-public class CheckMkTask implements GoPlugin {
+public class CheckMkTask extends BaseGoPlugin {
 
-    public static final String CHECK_MK_SERVER="Server";
+    public static final String CHECK_MK_SERVER = "Server";
     public static final String HOSTNAME = "Hostname";
     public static final String HOST_IP = "HostIp";
     public static final String FOLDER_PATH = "FolderPath";
@@ -34,29 +30,12 @@ public class CheckMkTask implements GoPlugin {
     private Logger logger = Logger.getLoggerFor(CheckMkTask.class);
 
     @Override
-    public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
-    }
-
-    @Override
-    public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
-        if ("configuration".equals(request.requestName())) {
-            return handleGetConfigRequest();
-        } else if ("validate".equals(request.requestName())) {
-            return handleValidation(request);
-        } else if ("execute".equals(request.requestName())) {
-            return handleTaskExecution(request);
-        } else if ("view".equals(request.requestName())) {
-            return handleTaskView();
-        }
-        throw new UnhandledRequestTypeException(request.requestName());
-    }
-
-    private GoPluginApiResponse handleTaskView() {
+    protected GoPluginApiResponse handleTaskView(GoPluginApiRequest request) {
         int responseCode = DefaultGoApiResponse.SUCCESS_RESPONSE_CODE;
         HashMap view = new HashMap();
         view.put("displayValue", "Monitoring - Check MK");
         try {
-            String checkMkTemplate=IOUtils.toString(getClass().getResourceAsStream("/views/checkMk.template.html"), "UTF-8");
+            String checkMkTemplate = IOUtils.toString(getClass().getResourceAsStream("/views/checkMk.template.html"), "UTF-8");
             view.put("template", checkMkTemplate);
         } catch (Exception e) {
             responseCode = DefaultGoApiResponse.INTERNAL_ERROR;
@@ -67,29 +46,26 @@ public class CheckMkTask implements GoPlugin {
         return createResponse(responseCode, view);
     }
 
-    private GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) {
+    @Override
+    protected GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) throws Exception {
         Map executionRequest = (Map) new GsonBuilder().create().fromJson(request.requestBody(), Object.class);
-        Map config = (Map) executionRequest.get("config");
-        Map contextMap = (Map) executionRequest.get("context");
-        JobConsoleLogger consoleLogger=JobConsoleLogger.getConsoleLogger();
+
+        Map<String, Map> config = (Map) executionRequest.get("config");
+
+        Context context = new Context((Map) executionRequest.get("context"));
+
         try {
-            CheckMkTaskExecutor checkMkTaskExecutor=TaskExecutorFactory.Create(consoleLogger, new Context(contextMap), config);
+            CheckMkTaskExecutor checkMkTaskExecutor = TaskExecutorFactory.Create(MaskingJobConsoleLogger.getConsoleLogger(),
+                    context, config);
             Result result = checkMkTaskExecutor.execute();
             return createResponse(result.responseCode(), result.toMap());
-        }
-        catch (JobNotSupportedException e)
-        {
-            consoleLogger.printLine(e.getMessage());
-            return createResponse( DefaultGoApiResponse.INTERNAL_ERROR,null);
-        }
-        catch(Exception e)
-        {
-            consoleLogger.printLine(e.getMessage());
-            return createResponse( DefaultGoApiResponse.INTERNAL_ERROR,null);
+        } catch (JobNotSupportedException | IOException e) {
+            return success(new Result(false, e.getMessage()));
         }
     }
 
-    private GoPluginApiResponse handleValidation(GoPluginApiRequest request) {
+    @Override
+    protected GoPluginApiResponse handleValidation(GoPluginApiRequest request) {
         HashMap validationResult = new HashMap();
         int responseCode = DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
         Map configMap = (Map) new GsonBuilder().create().fromJson(request.requestBody(), Object.class);
@@ -104,7 +80,8 @@ public class CheckMkTask implements GoPlugin {
 
     // return json description to tell go.cd which config properties need to be stored
     // sample and schema can be found at http://www.go.cd/documentation/developer/writing_go_plugins/task/version_1_0/configuration.html
-    private GoPluginApiResponse handleGetConfigRequest() {
+    @Override
+    protected GoPluginApiResponse handleGetConfigRequest(GoPluginApiRequest request) {
 
         HashMap config = new HashMap();
 

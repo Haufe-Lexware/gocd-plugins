@@ -2,7 +2,6 @@ package com.tw.go.task.check_mk;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.Context;
-import com.tw.go.plugin.common.Result;
 import com.tw.go.plugin.common.TaskExecutor;
 import org.json.JSONObject;
 
@@ -14,8 +13,6 @@ public abstract class CheckMkTaskExecutor extends TaskExecutor {
     public CheckMkTaskExecutor(JobConsoleLogger console, Context context, Map config) {
         super(console, context, config);
     }
-
-    public abstract Result execute() ;
 
     protected String getPluginLogPrefix() {
         return "[Check_Mk Task] ";

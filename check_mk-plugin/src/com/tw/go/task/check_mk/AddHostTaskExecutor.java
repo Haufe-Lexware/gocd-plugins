@@ -15,7 +15,7 @@ public class AddHostTaskExecutor extends CheckMkTaskExecutor {
         super(console, context, config);
     }
 
-    public Result execute() {
+    public Result execute() throws Exception {
         try {
             String hostname = (String) ((Map) this.config.get(CheckMkTask.HOSTNAME)).get("value");
             String serverIp = (String) ((Map) this.config.get(CheckMkTask.HOST_IP)).get("value");

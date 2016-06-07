@@ -15,7 +15,7 @@ public class RemoveHostTaskExecutor extends CheckMkTaskExecutor {
         super(console, context, config);
     }
 
-    public Result execute() {
+    public Result execute() throws Exception {
         try {
             String hostname = (String) ((Map) this.config.get(CheckMkTask.HOSTNAME)).get("value");
             ServerCredentials credentials = CreateCredentials();

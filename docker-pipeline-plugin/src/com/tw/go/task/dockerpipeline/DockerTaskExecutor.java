@@ -5,66 +5,59 @@ import com.tw.go.plugin.common.Context;
 import com.tw.go.plugin.common.Result;
 import com.tw.go.plugin.common.TaskExecutor;
 
+
 import java.util.Map;
 
-public class DockerTaskExecutor extends TaskExecutor
-{
-    public DockerTaskExecutor(JobConsoleLogger console, Context context, Map config)
-    {
+public class DockerTaskExecutor extends TaskExecutor {
+    public DockerTaskExecutor(JobConsoleLogger console, Context context, Map config) {
         super(console, context, config);
     }
 
-    public Result execute (ConfigVars configVars)
-    {
-        try
-        {
-            configVars.printConfig(console, getPluginLogPrefix());
-            DockerCommand.setConfigVars(configVars);
-            return runCommand(new Config(configVars));
-        }
-        catch (Exception e)
-        {
+    public Result execute() {
+        try {
+            return runCommand();
+        } catch (Exception e) {
             return new Result(false, "Failed while running the task", e);
         }
     }
 
-    public Result runCommand (Config taskConfig) throws Exception
-    {
-        try
-        {
-            DockerCommand.setPrefix(getPluginLogPrefix());
-
-            if (taskConfig.cleanBeforeTask)
-            {
-                ICommand cmd = new DockerCleanBefore(context, taskConfig);
-                cmd.run();
+    public Result runCommand() throws Exception {
+        try {
+            if(configVars.isChecked(DockerTask.CLEAN_BEFORE_TASK)) {
+                new DockerRestartCommand(console, configVars)
+                        .run();
+                new DockerStopContainers(console, configVars)
+                        .run();
+                new DockerRemoveAllContainers(console, configVars)
+                        .run();
+                new DockerRemoveAllImages(console, configVars)
+                        .run();
             }
 
-            if (!(taskConfig.registryUsername.toString().isEmpty()) && !(taskConfig.registryPassword.toString().isEmpty()))
-            {
-                ICommand cmd = new DockerLoginCommand(context, taskConfig);
-                cmd.run();
+            if (!configVars.isEmpty(DockerTask.REGISTRY_USERNAME) && !configVars.isEmpty(DockerTask.REGISTRY_PASSWORD)) {
+                new DockerLoginCommand(console, configVars)
+                        .run();
             }
 
-            DockerBuildCommand build = new DockerBuildCommand(context, taskConfig);
-            build.run();
+            if (!configVars.isEmpty(DockerTask.IMAGE_TAG)) {
+                DockerBuildCommand build = new DockerBuildCommand(console, configVars);
+                build.run();
 
-            for (String tag : build.imageAndTag)
-            {
-                if (tag != null)
-                {
-                    ICommand cmd = new DockerPushCommand(context, taskConfig, tag);
-                    cmd.run();
+                if (!configVars.isEmpty(DockerTask.REGISTRY_URL_FOR_LOGIN)) {
+                    for (String tag : build.imageAndTag) {
+                        if (tag != null) {
+                            new DockerPushCommand(console, configVars, tag)
+                                    .run();
+                        }
+                    }
                 }
             }
-        }
-
-        finally
-        {
-            if (taskConfig.cleanAfterTask)
-            {
-                ICommand cmd = new DockerRemoveAllImages(context, taskConfig);
-                cmd.run();
+        } finally {
+            if (configVars.isChecked(DockerTask.CLEAN_AFTER_TASK)) {
+                new DockerRemoveAllContainers(console, configVars)
+                        .run();
+                new DockerRemoveAllImages(console, configVars)
+                        .run();
             }
         }
 
@@ -72,8 +65,7 @@ public class DockerTaskExecutor extends TaskExecutor
     }
 
     @Override
-    protected String getPluginLogPrefix()
-    {
+    protected String getPluginLogPrefix() {
         return "[Docker] ";
     }
 }

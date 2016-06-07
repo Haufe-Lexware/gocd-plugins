@@ -1,17 +1,18 @@
 package com.tw.go.task.dockerpipeline;
 
-import com.tw.go.plugin.common.Context;
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.tw.go.plugin.common.AbstractCommand;
+import com.tw.go.plugin.common.ConfigVars;
 
-/**
- * Created by BradeaC on 13/04/2016.
- */
-public class DockerRestartCommand extends DockerCommand
+public class DockerRestartCommand extends AbstractCommand
 {
-    public DockerRestartCommand(Context taskContext, Config taskConfig)
+    public DockerRestartCommand(JobConsoleLogger console, ConfigVars configVars)
     {
-        command.add("sudo");
-        command.add("service");
-        command.add("docker");
-        command.add("restart");
+        super(console);
+
+        add("sudo");
+        add("service");
+        add("docker");
+        add("restart");
     }
 }

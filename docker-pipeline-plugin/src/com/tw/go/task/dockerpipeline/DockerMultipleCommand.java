@@ -2,6 +2,7 @@ package com.tw.go.task.dockerpipeline;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tw.go.plugin.common.ICommand;
 
 public abstract class DockerMultipleCommand implements ICommand
 {

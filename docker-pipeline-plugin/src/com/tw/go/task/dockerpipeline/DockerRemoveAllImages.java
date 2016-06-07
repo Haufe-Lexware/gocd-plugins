@@ -1,16 +1,27 @@
 package com.tw.go.task.dockerpipeline;
 
-import com.tw.go.plugin.common.Context;
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.tw.go.plugin.common.AbstractCommand;
+import com.tw.go.plugin.common.ConfigVars;
+import java.util.List;
 
-/**
- * Created by BradeaC on 13/04/2016.
- */
-public class DockerRemoveAllImages extends DockerCommand
-{
-    public DockerRemoveAllImages(Context taskContext, Config taskConfig)
-    {
-        command.add("/bin/sh");
-        command.add("-c");
-        command.add("test -n \"$(docker images -q)\" && docker rmi -f $(docker images -q) || echo \"No images to delete\"");
+public class DockerRemoveAllImages extends AbstractCommand {
+    public DockerRemoveAllImages(JobConsoleLogger console, ConfigVars configVars) {
+        super(console);
+    }
+
+    @Override
+    public void run() throws Exception {
+
+        List<String> ids = DockerEngine.getIds(new String[]{"docker", "images", "-f", "dangling=true", "-q"});
+
+        if (ids.size() > 0) {
+            add("docker");
+            add("rmi");
+            for (String s : ids) {
+                add(s);
+            }
+            super.run();
+        }
     }
 }

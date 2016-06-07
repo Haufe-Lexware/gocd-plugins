@@ -1,21 +1,24 @@
 package com.tw.go.task.dockerpipeline;
 
-import com.tw.go.plugin.common.Context;
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.tw.go.plugin.common.AbstractCommand;
+import com.tw.go.plugin.common.ConfigVars;
 
-public class DockerLoginCommand extends DockerCommand
+public class DockerLoginCommand extends AbstractCommand
 {
-    public DockerLoginCommand(Context taskContext, Config taskConfig)
+    public DockerLoginCommand(JobConsoleLogger console, ConfigVars configVars)
     {
+        super(console);
+
         add("docker");
         add("login");
-        add("--username=" + taskConfig.registryUsername);
-        add("--password=" + taskConfig.registryPassword);
 
-        if(!(taskConfig.registryEmail.isEmpty()))
-        {
-            add("--email=" + taskConfig.registryEmail);
-        }
+        add("--username");
+        add(configVars.getValue(DockerTask.REGISTRY_USERNAME));
 
-        add(taskConfig.registryUrlForLogin);
+        add("--password");
+        add(configVars.getValue(DockerTask.REGISTRY_PASSWORD));
+
+        add(configVars.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN));
     }
 }

@@ -1,16 +1,18 @@
 package com.tw.go.task.dockerpipeline;
 
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.tw.go.plugin.common.AbstractCommand;
+import com.tw.go.plugin.common.ConfigVars;
 import com.tw.go.plugin.common.Context;
 
-/**
- * Created by BradeaC on 13/04/2016.
- */
-public class DockerStopContainers extends DockerCommand
+public class DockerStopContainers extends AbstractCommand
 {
-    public DockerStopContainers(Context taskContext, Config taskConfig)
+    public DockerStopContainers(JobConsoleLogger console, ConfigVars configVars)
     {
-        command.add("/bin/sh");
-        command.add("-c");
-        command.add("test -n \"$(docker ps -a -q)\" && docker stop $(docker ps -a -q) || echo \"No containers to stop\"");
+        super(console);
+
+        add("/bin/sh");
+        add("-c");
+        add("test -n \"$(docker ps -a -q)\" && docker stop $(docker ps -a -q) || echo \"No containers to stop\"");
     }
 }

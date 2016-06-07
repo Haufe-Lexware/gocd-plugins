@@ -1,41 +1,48 @@
 package com.tw.go.task.dockerpipeline;
 
-import com.tw.go.plugin.common.Context;
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.tw.go.plugin.common.AbstractCommand;
+import com.tw.go.plugin.common.ConfigVars;
+import com.tw.go.plugin.common.GoApiConstants;
+import com.tw.go.plugin.common.ListUtil;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DockerBuildCommand extends DockerCommand
-{
-    public DockerBuildCommand(Context taskContext, Config taskConfig)
+public class DockerBuildCommand extends AbstractCommand {
+    protected List<String> imageAndTag = new ArrayList<>();
+
+    public DockerBuildCommand(JobConsoleLogger console, ConfigVars configVars)
     {
-        String context = getDockerfilePath(taskContext, taskConfig).getParent().toString(); // the path without the Dockerfile. Used for obtaining the build context
-        String dockerfilePath = getDockerfileName(taskContext, taskConfig); // the path including the Dockerfile. Used for pointing to the Dockerfile
-        String username = getUsername(taskConfig);
-        String registryName = getRegistryName(taskConfig.registryUrlForLogin);
-        String baseImageName = makeBaseName(registryName, username, taskConfig.imageName);
+        super(console);
+        String dockerfileAbsolutePath = getDockerfileAbsolutePath(configVars); // the path including the Dockerfile. Used for pointing to the Dockerfile
+        String context = getDirectory(dockerfileAbsolutePath); // the path without the Dockerfile. Used for obtaining the build context
+
+        String username = getUsername(configVars);
+        String registryName = getRegistryName(configVars.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN));
+        String baseImageName = makeBaseName(registryName, username, configVars.getValue(DockerTask.IMAGE_NAME));
 
         add("docker");
         add("build");
 
         add("-f");
-        add(dockerfilePath);
+        add(dockerfileAbsolutePath);
 
-        addBuildArgs(taskConfig.buildArgs);
+        addBuildArgs(configVars.getValue(DockerTask.BUILD_ARGS));
 
-        addImageTag(baseImageName, taskConfig.imageTag);
+        addImageTag(baseImageName, configVars.getValue(DockerTask.IMAGE_TAG));
 
         add(context);
     }
 
     private void addBuildArgs(String buildArgs)
     {
-        for (String buildArg : splitByFirstOrDefault(buildArgs, ';'))
+        for (String buildArg : ListUtil.splitByFirstOrDefault(buildArgs, ';'))
         {
-            if(!buildArg.isEmpty())
+            if (!buildArg.isEmpty())
             {
                 command.add("--build-arg");
                 command.add(buildArg);
@@ -45,9 +52,9 @@ public class DockerBuildCommand extends DockerCommand
 
     private void addImageTag(String baseName, String tags)
     {
-        for (String tag : splitByFirstOrDefault(tags, ';'))
+        for (String tag : ListUtil.splitByFirstOrDefault(tags, ';'))
         {
-            if(!tag.isEmpty())
+            if (!tag.isEmpty())
             {
                 String taggedName = baseName + ":" + tag;
                 command.add("-t");
@@ -57,53 +64,35 @@ public class DockerBuildCommand extends DockerCommand
         }
     }
 
-    private String[] splitByFirstOrDefault(String args, Character separator)
-    {
-        if(!args.isEmpty())
-        {
-            Character first = args.charAt(0);
-
-            if(!(Character.isLetterOrDigit(first)))
-            {
-                separator = first;
-                args = args.substring(1);
-            }
-
-            return args.split(Pattern.quote(separator.toString()));
-        }
-
-        return new String[]{};
-    }
-
     private String makeBaseName(String registry, String username, String imageName)
     {
-        return registry + "/" + username + imageName;
+        return registry + "/" + username + "/" + imageName;
     }
 
-    private String getDockerfileName(Context taskContext, Config taskConfig)
+    private String getDockerfileAbsolutePath(ConfigVars configVars)
     {
-        String result = taskConfig.dockerFileName.isEmpty() ?
-                taskContext.getWorkingDir() + "/" + "Dockerfile" :
-                taskContext.getWorkingDir() + "/" + taskConfig.dockerFileName;
+        String dockerfile = configVars.isEmpty(DockerTask.DOCKER_FILE_NAME) ?
+                "Dockerfile" : configVars.getValue(DockerTask.DOCKER_FILE_NAME);
 
-        return result;
+        return Paths.get(configVars.getValue(GoApiConstants.ENVVAR_NAME_GO_WORKING_DIR) + "/" + dockerfile)
+                .toAbsolutePath()
+                .normalize()
+                .toString();
     }
 
-    private String getUsername(Config taskConfig)
+    private String getUsername(ConfigVars configVars)
     {
-        if(!taskConfig.registryUsername.isEmpty())
+        if (!configVars.isEmpty(DockerTask.USERNAME))
         {
-            return taskConfig.username.isEmpty() ? taskConfig.registryUsername + "/" : taskConfig.username + "/";
+            return configVars.getValue(DockerTask.USERNAME);
         }
 
-        return "";
+        return configVars.getValue(DockerTask.REGISTRY_USERNAME);
     }
 
-    private Path getDockerfilePath(Context taskContext, Config taskConfig)
+    private String getDirectory(String dockerFile)
     {
-        Path dockerPath = Paths.get(getDockerfileName(taskContext, taskConfig)).toAbsolutePath().normalize();
-
-        return dockerPath;
+        return Paths.get(dockerFile).getParent().toString();
     }
 
     private String getRegistryName(String registryAddress)
@@ -117,7 +106,6 @@ public class DockerBuildCommand extends DockerCommand
 
             return new URL(registryAddress).getAuthority();
         }
-
         catch (MalformedURLException e)
         {
             e.printStackTrace();

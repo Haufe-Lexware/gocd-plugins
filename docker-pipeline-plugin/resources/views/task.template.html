@@ -28,7 +28,7 @@
 <div class="form_item_block">
   <label>Build args:</label>
   <input type="text" ng-model="BuildArgs" ng-required="false">
-  <div class="inline_instruction">Provide one or multiple tags separated by ';'. Define a different separator as the VERY FIRST character (example "|arg1=xyz|arg2=123") </div>
+  <div class="inline_instruction">Provide one or multiple build args separated by ';'. Define a different separator as the VERY FIRST character (example "|arg1=xyz|arg2=123") </div>
   <span class="form_error" ng-show="GOINPUTNAME[BuildArgs].$error.server">{{ GOINPUTNAME[BuildArgs].$error.server }}</span>
 </div>
 
@@ -81,14 +81,6 @@
   <input type="password" ng-model="RegistryPassword" ng-required="false">
 <span class="form_error"
       ng-show="GOINPUTNAME[RegistryPassword].$error.server">{{ GOINPUTNAME[RegistryPassword].$error.server }}</span>
-</div>
-
-<div class="form_item_block">
-  <label>E-mail adress:
-  </label>
-  <input type="text" ng-model="RegistryEmail" ng-required="false">
-  <div class="inline_instruction">Deprecated since docker 1.11</div>
-  <span class="form_error" ng-show="GOINPUTNAME[RegistryEmail].$error.server">{{ GOINPUTNAME[RegistryEmail].$error.server }}</span>
 </div>
 
 <div class="form_item_block">

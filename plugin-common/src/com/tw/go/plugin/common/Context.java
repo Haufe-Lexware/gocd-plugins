@@ -1,5 +1,3 @@
-
-
 package com.tw.go.plugin.common;
 
 import java.util.Map;
@@ -13,7 +11,7 @@ public class Context {
         workingDir = (String) context.get("workingDirectory");
     }
 
-    public Map getEnvironmentVariables() {
+    public Map<String,String> getEnvironmentVariables() {
         return environmentVariables;
     }
 

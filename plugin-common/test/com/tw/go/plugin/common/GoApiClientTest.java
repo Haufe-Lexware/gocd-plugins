@@ -1,26 +1,19 @@
 package com.tw.go.plugin.common;
 
-import com.google.gson.JsonArray;
-import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
-import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
-import com.tw.go.plugin.common.mock.MockJobConsoleLogger;
-import com.tw.go.plugin.common.mock.MockTaskExecutionContext;
 import com.tw.go.plugin.common.utils.Environment;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by MarkusW on 18.11.2015.
@@ -47,6 +40,15 @@ public class GoApiClientTest {
     public final ExpectedException exception = ExpectedException.none();
 
     @Test
+    public void convert() throws Exception {
+        String test = "1234.0";
+        float f = new Float(test);
+        System.out.println(f);
+        int i = (int)f;
+        System.out.println(i);
+    }
+
+    @Test
     public void testGetJobProperty() throws Exception {
         // just read some properties from plugin test pipeline
         Assert.assertEquals("1", getJobProperty("cruise_pipeline_counter"));
@@ -54,6 +56,13 @@ public class GoApiClientTest {
         exception.expect(FileNotFoundException.class);
         getJobProperty("cruise_pipeline_counter_bla");
     }
+
+    @Test
+    public void maskPwd() {
+        String s = "download https://theuser:blablubb@bitbucket.org/haufegroup/dummy-container.git to me.";
+        s = s.replaceAll("(?<=://)[^:@]+(:[^@]+)?(?=@)","*******");
+        System.out.println(s);
+        }
 
     @Test
     public void testSetJobProperty() throws Exception {
@@ -73,8 +82,8 @@ public class GoApiClientTest {
 
     @Test
     public void testGetJobProperties() throws Exception {
-        JSONObject obj = getJobProperties();
-        Assert.assertTrue(10 < obj.length());
+        Map obj = getJobProperties();
+        Assert.assertTrue(10 < obj.size());
 
     }
 
@@ -89,7 +98,7 @@ public class GoApiClientTest {
     }
 
     private String setJobProperty(String propertyName, String propertyValue) throws Exception{
-         return client.setJobProperty(
+        return client.setJobProperty(
                 envVars.get("GO_PIPELINE_NAME").toString(),
                 envVars.get("GO_PIPELINE_COUNTER").toString(),
                 envVars.get("GO_STAGE_NAME").toString(),
@@ -99,7 +108,7 @@ public class GoApiClientTest {
                 propertyValue);
     }
 
-    private JSONObject getJobProperties() throws Exception{
+    private Map getJobProperties() throws Exception{
         return  client.getJobProperties(
                 envVars.get("GO_PIPELINE_NAME").toString(),
                 envVars.get("GO_PIPELINE_COUNTER").toString(),

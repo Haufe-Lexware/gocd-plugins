@@ -40,8 +40,8 @@ public class ConfigDef {
         HashMap<String, Object> entry = new HashMap<>();
 
         entry.put("default-value", defaultValue);
-        entry.put("secure", secure);
-        entry.put("required", required);
+        entry.put("secure", new Boolean(secure));
+        entry.put("required", new Boolean(required));
         map.put(id, entry);
 
         return this;

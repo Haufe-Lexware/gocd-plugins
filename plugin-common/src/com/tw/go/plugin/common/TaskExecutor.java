@@ -57,7 +57,7 @@ public abstract class TaskExecutor {
         return new ConfigVars(config, envVars);
     }
 
-    public abstract Result execute() throws IOException;
+    public abstract Result execute() throws Exception;
 
     protected abstract String getPluginLogPrefix();
 

@@ -56,7 +56,7 @@ public abstract class BaseGoPlugin extends AbstractGoPlugin {
     abstract protected GoPluginApiResponse handleValidation(GoPluginApiRequest request);
 
     // https://developer.go.cd/current/writing_go_plugins/task/version_1_0/execute.html
-    abstract protected GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) throws GeneralSecurityException, IOException;
+    abstract protected GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) throws Exception;
 
     // https://developer.go.cd/current/writing_go_plugins/task/version_1_0/view.html
     abstract protected GoPluginApiResponse handleTaskView(GoPluginApiRequest request);

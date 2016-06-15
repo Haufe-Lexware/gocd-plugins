@@ -16,7 +16,8 @@
     </scm>
 
     <properties>
-        <go.version>15.1.0</go.version>
+        <go.target.version>16.4.0</go.target.version>
+        <go.version>16.4.0</go.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Sonar -->
@@ -29,7 +30,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.thoughtworks.go</groupId>
+            <groupId>cd.go.plugin</groupId>
             <artifactId>go-plugin-api</artifactId>
             <version>${go.version}</version>
             <scope>provided</scope>
@@ -65,6 +66,8 @@
         <module>sonar-qualitygates-plugin</module>
         <module>check_mk-plugin</module>
 		<module>docker-pipeline-plugin</module>
+
+        <module>fetch-any-artifact-plugin</module>
 
     </modules>
 

@@ -1,0 +1,59 @@
+<!-- <div class="form_item_block">
+    <div class="checkbox_row">
+        <input id="Masking2" type="checkbox" ng-model="Masking2" ng-init="Masking2 = Masking"
+               ng-change="Masking = Masking2" ng-true-value="true" ng-false-value="false">
+        <input id="specifytargets" type="hidden" ng-model="Masking" value="{{Masking}}">
+        <label>Masking
+        </label>
+    </div>
+</div> -->
+<div class="form_item_block">
+    <h1>Prerequisites</h1>
+    This plugin uses the environment variables <b>GO_BUILD_USER</b> and <b>GO_BUILD_USER_PASSWORD</b> to access the go-servers REST API.
+    <a href="https://docs.go.cd/current/faq/dev_use_current_revision_in_build.html">See documentation in GoCD</a>
+</div>
+<div class="form_item_block">
+    <label>Pipeline
+    </label>
+    <input type="text" ng-model="FAA_PIPELINE_NAME">
+    </input>
+    <span class="form_error" ng-show="GOINPUTNAME[FAA_PIPELINE_NAME].$error.server">{{ GOINPUTNAME[FAA_PIPELINE_NAME].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>Stage
+    </label>
+    <input type="text" ng-model="FAA_STAGE_NAME">
+    </input>
+    <span class="form_error" ng-show="GOINPUTNAME[FAA_STAGE_NAME].$error.server">{{ GOINPUTNAME[FAA_STAGE_NAME].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>Job
+    </label>
+    <input type="text" ng-model="FAA_JOB_NAME">
+    </input>
+    <span class="form_error" ng-show="GOINPUTNAME[FAA_JOB_NAME].$error.server">{{ GOINPUTNAME[FAA_JOB_NAME].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <label>Source<span class="asterisk">*</span>
+    </label>
+    <input type="text" ng-model="FAA_ARTIFACT_SOURCE" ng-required="true">
+    </input>
+    <span class="form_error" ng-show="GOINPUTNAME[FAA_ARTIFACT_SOURCE].$error.server">{{ GOINPUTNAME[FAA_ARTIFACT_SOURCE].$error.server }}</span>
+</div>
+<div class="form_item_block">
+    <div class="checkbox_row">
+        <input id="FAA_ARTIFACT_IS_FILE2" type="checkbox" ng-model="FAA_ARTIFACT_IS_FILE2"
+               ng-init="FAA_ARTIFACT_IS_FILE2 = FAA_ARTIFACT_IS_FILE"
+               ng-change="FAA_ARTIFACT_IS_FILE = FAA_ARTIFACT_IS_FILE2" ng-true-value="true" ng-false-value="false">
+        <input id="specifytargets" type="hidden" ng-model="FAA_ARTIFACT_IS_FILE" value="{{FAA_ARTIFACT_IS_FILE}}">
+        <label>Artifact is file
+        </label>
+    </div>
+</div>
+<div class="form_item_block">
+    <label>Destination
+    </label>
+    <input type="text" ng-model="FAA_ARTIFACT_DESTINATION">
+    </input>
+    <span class="form_error" ng-show="GOINPUTNAME[FAA_ARTIFACT_DESTINATION].$error.server">{{ GOINPUTNAME[FAA_ARTIFACT_DESTINATION].$error.server }}</span>
+</div>

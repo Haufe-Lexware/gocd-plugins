@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<go-plugin id="fetch-any-artifact.task.plugin" version="1">
+    <about>
+        <name>Fetch Any Artifact Task Plugin</name>
+        <version>0.1</version>
+        <target-go-version>16.4.0</target-go-version>
+        <description>
+           Fetches artifacts by using REST API
+        </description>
+        <vendor>
+            <name>Thomas Schuering</name>
+            <url>https://github.com/thomsch98/gocd-plugins</url>
+        </vendor>
+    </about>
+</go-plugin>

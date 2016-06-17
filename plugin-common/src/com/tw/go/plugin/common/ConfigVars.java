@@ -13,6 +13,10 @@ public class ConfigVars {
     }
 
     public String getValue(String key) {
+        return getValue(key, "");
+    }
+
+    public String getValue(String key, String defaultValue) {
         String value;
         Map m = config.get(key);
         if (m != null) {
@@ -20,7 +24,7 @@ public class ConfigVars {
         } else {
             value = envVars.get(key);
         }
-        return value != null ? value : "";
+        return value != null ? value : defaultValue;
     }
 
     public boolean isEmpty(String key) {
@@ -28,7 +32,7 @@ public class ConfigVars {
     }
 
     public boolean isChecked(String key) {
-        switch(getValue(key).toLowerCase()) {
+        switch (getValue(key).toLowerCase()) {
             case "true":
             case "on":
             case "yes":
@@ -43,7 +47,7 @@ public class ConfigVars {
 
     public void setConfigValue(String key, String value) {
         Map prop = config.get(key);
-        prop.put("value",value);
+        prop.put("value", value);
         // config.put(key,prop);
     }
 

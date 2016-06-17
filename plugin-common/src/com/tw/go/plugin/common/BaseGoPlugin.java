@@ -16,9 +16,12 @@ import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by thomassc on 21.04.16.
+ */
 public abstract class BaseGoPlugin extends AbstractGoPlugin {
 
-    Gson gson = new GsonBuilder().serializeNulls().create();
+    protected Gson gson = new GsonBuilder().serializeNulls().create();
 
     protected GoPluginApiResponse success(Object response) {
         return renderJSON(DefaultGoApiResponse.SUCCESS_RESPONSE_CODE, null, response);
@@ -84,7 +87,6 @@ public abstract class BaseGoPlugin extends AbstractGoPlugin {
             return DefaultGoPluginApiResponse.error(e.getMessage());
         }
     }
-
 
     protected GoPluginApiResponse renderJSON(final int responseCode, final Map<String, String> responseHeaders, Object response) {
         final String json = response == null ? null : gson.toJson(response);

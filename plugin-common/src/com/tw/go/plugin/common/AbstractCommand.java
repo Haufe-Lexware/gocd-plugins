@@ -2,6 +2,7 @@ package com.tw.go.plugin.common;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,24 +11,71 @@ import java.util.Map;
 public abstract class AbstractCommand implements ICommand {
     protected List<String> command = new ArrayList<>();
     protected Map<String, String> environment = new HashMap<>();
-    protected JobConsoleLogger logger;
+    protected JobConsoleLogger console;
     private ProcessRunner processRunner;
-    private boolean ignoreErrors = false;
-    private boolean showConsoleOutput = true;
+    protected boolean ignoreErrors = false;
+    protected boolean showConsoleOutput = true;
     private ProcessOutput processOutput = null;
 
-    public AbstractCommand(JobConsoleLogger logger) {
-        this(logger, new ProcessRunner(), false);
+    protected static String workingDir = null;
+
+    public static String getAbsoluteWorkingDir() {
+        return workingDir;
     }
 
-    public AbstractCommand(JobConsoleLogger logger, boolean ignoreErrors) {
-        this(logger, new ProcessRunner(), ignoreErrors);
+    public static void setWorkingDir(String workingDir) {
+        AbstractCommand.workingDir = Paths.get(workingDir).toAbsolutePath().normalize().toString();
     }
 
-    public AbstractCommand(JobConsoleLogger logger, ProcessRunner processRunner, boolean ignoreErrors) {
+    public AbstractCommand(JobConsoleLogger console) {
+        this(console, new ProcessRunner(), false);
+    }
+
+    public AbstractCommand(JobConsoleLogger console, boolean ignoreErrors) {
+        this(console, new ProcessRunner(), ignoreErrors);
+    }
+
+    public AbstractCommand(JobConsoleLogger console, ProcessRunner processRunner, boolean ignoreErrors) {
         this.processRunner = processRunner;
-        this.logger = logger;
+        this.console = console;
         this.ignoreErrors = ignoreErrors;
+    }
+
+    static public Map splitKeyValues(String s) {
+        Map m = new HashMap<>();
+        String k = "";
+        String t = "";
+        char c;
+        s += ';';
+        for (int i = 0; i < s.length(); ) {
+            c = s.charAt(i++);
+            switch (c) {
+                // unescaped , or ; is separator between key/value pairs
+                case ';':
+                case ',':
+                    if (!k.isEmpty()) {
+                        m.put(k, t);
+                        k = t = "";
+                    }
+                    break;
+                // first '=' is separator between key and value. subsequent '=' are treated as part of value
+                case '=':
+                    if (k.isEmpty()) {
+                        k = t.trim();
+                        t = "";
+                    } else {
+                        t += c;
+                    }
+                    break;
+                // Any character after a backslash ('\') is simply appended to t.
+                case '\\':
+                    c = s.charAt(i++);
+                default:
+                    t += c;
+                    break;
+            }
+        }
+        return m;
     }
 
     public AbstractCommand disableConsoleOutput() {
@@ -38,29 +86,16 @@ public abstract class AbstractCommand implements ICommand {
     @Override
     public void run() throws Exception {
         if (showConsoleOutput) {
-            logger.printLine("Run " + renderDisplay());
+            console.printLine("Run " + renderDisplay());
         }
 
         synchronized (AbstractCommand.class) {
-            processOutput = processRunner.execute(command, environment);
-        }
-
-        if (showConsoleOutput) {
-            for (String s : processOutput.getStdOut()) {
-                logger.printLine(s);
-            }
+            processOutput = processRunner.execute(console, showConsoleOutput, workingDir, command, environment);
         }
 
         if (!isSuccessful(processOutput)) {
-            if (ignoreErrors) {
-                if (showConsoleOutput) {
-                    for (String s : processOutput.getStdErr()) {
-                        logger.printLine(s);
-                    }
-                }
-            } else {
-                String message = processOutput.getStdErrorAsString();
-                throw new RuntimeException(message);
+            if (!ignoreErrors) {
+                throw new RuntimeException("External process failed. See Job console output for more information.");
             }
         }
     }
@@ -70,7 +105,7 @@ public abstract class AbstractCommand implements ICommand {
     }
 
     private boolean isSuccessful(ProcessOutput processOutput) {
-        return processOutput != null && processOutput.isZeroReturnCode() && processOutput.hasOutput() && !processOutput.hasErrors();
+        return processOutput != null && processOutput.isZeroReturnCode();
     }
 
     public AbstractCommand add(String setting) {
@@ -85,6 +120,11 @@ public abstract class AbstractCommand implements ICommand {
 
     public AbstractCommand addEnv(Map map) {
         environment.putAll(map);
+        return this;
+    }
+
+    protected AbstractCommand addEnvFromConfig(ConfigVars configVars, String key) {
+        addEnv(key, configVars.getValue(key));
         return this;
     }
 

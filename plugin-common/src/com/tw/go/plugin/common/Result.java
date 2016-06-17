@@ -12,13 +12,12 @@ public class Result {
     private Exception exception;
 
     public Result(boolean success, String message) {
-        this.success = success;
-        this.message = message;
+        this(success, message, null);
     }
 
-
     public Result(boolean success, String message, Exception exception) {
-        this(success, message);
+        this.success = success;
+        this.message = message;
         this.exception = exception;
     }
 

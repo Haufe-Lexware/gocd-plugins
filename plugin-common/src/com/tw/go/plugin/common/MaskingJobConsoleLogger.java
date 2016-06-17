@@ -4,14 +4,20 @@ import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+/**
+ * Created by thomassc on 16.05.16.
+ */
 public class MaskingJobConsoleLogger extends JobConsoleLogger {
     Set<String> maskValues = new HashSet<>();
     String mask = "********";
     String prefix = "";
+    MaskingInputStream misOutput;
+    MaskingInputStream misError;
 
     public static MaskingJobConsoleLogger getConsoleLogger() {
         if (context == null) throw new RuntimeException("context is null");
@@ -54,9 +60,13 @@ public class MaskingJobConsoleLogger extends JobConsoleLogger {
         return line;
     }
 
+    public String getMaskedLine(String line) {
+        return prefix + mask(line);
+    }
+
     @Override
     public void printLine(String line) {
-        super.printLine(prefix + mask(line));
+        super.printLine(getMaskedLine(line));
     }
 
     @Override

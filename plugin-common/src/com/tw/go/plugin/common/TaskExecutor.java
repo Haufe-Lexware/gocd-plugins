@@ -2,7 +2,7 @@ package com.tw.go.plugin.common;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 public abstract class TaskExecutor {
 
     public static final String REGEX_URL_CREDS = "(?<=://)[^:@]+(:[^@]+)?(?=@)";
+    public static final String GO_WORKING_DIRECTORY = "GO_WORKING_DIRECTORY";
 
     protected JobConsoleLogger console;
     protected Context context;
@@ -21,8 +22,11 @@ public abstract class TaskExecutor {
     public TaskExecutor(JobConsoleLogger console, Context context, Map config) {
 
         Map<String, String> envVars = context.getEnvironmentVariables();
-        envVars.put(GoApiConstants.ENVVAR_NAME_GO_WORKING_DIR, context.getWorkingDir());
 
+        // So external commands work "in" the pipeline directory and not in some parent directory
+        AbstractCommand.setWorkingDir(context.getWorkingDir());
+
+        envVars.put(GO_WORKING_DIRECTORY,AbstractCommand.getAbsoluteWorkingDir());
 
         HashSet<String> maskingList = new HashSet<>();
         maskingList.add(REGEX_URL_CREDS);

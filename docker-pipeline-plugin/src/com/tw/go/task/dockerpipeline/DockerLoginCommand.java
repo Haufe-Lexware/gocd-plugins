@@ -19,6 +19,6 @@ public class DockerLoginCommand extends AbstractCommand
         add("--password");
         add(configVars.getValue(DockerTask.REGISTRY_PASSWORD));
 
-        add(configVars.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN));
+        add(configVars.getValue(DockerTask.REGISTRY_URL));
     }
 }

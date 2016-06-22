@@ -12,16 +12,10 @@ public class DockerRemoveAllContainers extends AbstractCommand {
 
     @Override
     public void run() throws Exception {
+        add("/bin/sh");
+        add("-c");
+        add("test -n \"$(docker ps -a -q)\" && docker rm -f $(docker ps -a -q) || echo \"No containers to delete\"");
 
-        List<String> ids = DockerEngine.getIds(new String[]{"docker", "ps", "-a", "-q", "-f", "status=exited"});
-
-        if (ids.size() > 0) {
-            add("docker");
-            add("rm");
-            for (String s : ids) {
-                add(s);
-            }
-            super.run();
-        }
+        super.run();
     }
 }

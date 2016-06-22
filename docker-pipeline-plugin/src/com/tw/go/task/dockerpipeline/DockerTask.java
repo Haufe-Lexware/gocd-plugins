@@ -6,36 +6,51 @@ import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.tw.go.plugin.common.*;
 import com.tw.go.plugin.common.ConfigDef.Required;
 import com.tw.go.plugin.common.ConfigDef.Secure;
-import com.tw.go.plugin.common.*;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
+
 @Extension
 public class DockerTask extends BaseGoPlugin {
+    public static final String CLEAN_BEFORE_TASK = "CleanBeforeTask";
     public static final String IMAGE_NAME = "ImageName";
     public static final String DOCKER_FILE_NAME = "DockerFileName";
     public static final String BUILD_ARGS = "BuildArgs";
+    public static final String BUILD_NO_CACHE = "BUILD_NO_CACHE";
 
     public static final String USERNAME = "Username";
     public static final String IMAGE_TAG = "ImageTag";
+    public static final String IMAGE_TAG_POSTFIX = "IMAGE_TAG_POSTFIX";
 
     public static final String REGISTRY_USERNAME = "RegistryUsername";
     public static final String REGISTRY_PASSWORD = "RegistryPassword";
 
-    public static final String REGISTRY_URL_FOR_LOGIN = "RegistryURLForLogin";
+    public static final String REGISTRY_EMAIL = "RegistryEmail";
+    public static final String REGISTRY_URL = "RegistryURL";
 
-    public static final String CLEAN_BEFORE_TASK = "CleanBeforeTask";
+    public static final String RUN_IMAGE = "RUN_IMAGE";
+    //    public static final String RUN_VOLUMES_FROM = "RUN_VOLUMES_FROM";
+//    public static final String RUN_VOLUME = "RUN_VOLUME";
+//    public static final String RUN_WORKING_DIR = "RUN_WORKING_DIR";
+    public static final String RUN_ARGS = "RUN_ARGS";
+
     public static final String CLEAN_AFTER_TASK = "CleanAfterTask";
+    public static final String CLEAN_AFTER_COMPLETE = "CleanAfterComplete";
 
     private static final Logger LOGGER = Logger.getLoggerFor(DockerTask.class);
 
+    public DockerTask() {
+    }
+
     @Override
     protected GoPluginApiResponse handleTaskView(GoPluginApiRequest request) {
-        return getViewResponse("Docker plugin",
+        return getViewResponse("Docker",
                 getClass().getResourceAsStream("/views/task.template.html"));
     }
 
@@ -55,8 +70,6 @@ public class DockerTask extends BaseGoPlugin {
         DockerTaskExecutor executor = new DockerTaskExecutor(
                 MaskingJobConsoleLogger.getConsoleLogger(), context, config);
 
-        Result result = executor.execute();
-
         // The RESPONSE_CODE MUST be 200 (SUCCESS) to be processed by Go.CD
         // The outcome is defined by the property "success", and the cause can be stored in "message"
         // See
@@ -64,7 +77,14 @@ public class DockerTask extends BaseGoPlugin {
         // in
         //  .../gocd/plugin-infra/go-plugin-access/src/com/thoughtworks/go/plugin/access/PluginRequestHelper.java
 
-        return success(result.toMap());
+        try {
+            Result result = executor.execute();
+            return success(result.toMap());
+        } catch (Exception e) {
+            Result result = new Result(false,e.getMessage());
+            return success(result.toMap());
+        }
+
     }
 
     @Override
@@ -92,20 +112,30 @@ public class DockerTask extends BaseGoPlugin {
                 // cleaning ...
                 .add(CLEAN_BEFORE_TASK, "false", Required.No)
                 .add(CLEAN_AFTER_TASK, "false", Required.No)
+                .add(CLEAN_AFTER_COMPLETE, "false", Required.No)
 
                 // build
                 .add(DOCKER_FILE_NAME, "", Required.No)
                 .add(BUILD_ARGS, "", Required.No)
+                .add(BUILD_NO_CACHE, "false", Required.No)
                 .add(IMAGE_NAME, "", Required.No)
 
                 // tag
                 .add(IMAGE_TAG, "", Required.No)
+                .add(IMAGE_TAG_POSTFIX, "", Required.No)
                 .add(USERNAME, "", Required.No)
 
                 // login
-                .add(REGISTRY_URL_FOR_LOGIN, "", Required.No)
+                .add(REGISTRY_URL, "", Required.No)
                 .add(REGISTRY_USERNAME, "", Required.No)
                 .add(REGISTRY_PASSWORD, "", Required.No, Secure.Yes)
+
+                // run
+                .add(RUN_IMAGE, "", Required.No)
+//                .add(RUN_VOLUME, "", Required.No)
+//                .add(RUN_VOLUMES_FROM, "", Required.No)
+//                .add(RUN_WORKING_DIR, "", Required.No)
+                .add(RUN_ARGS, "", Required.No)
 
                 //
                 .toMap();

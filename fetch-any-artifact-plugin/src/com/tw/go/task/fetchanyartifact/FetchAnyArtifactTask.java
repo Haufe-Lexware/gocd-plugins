@@ -20,6 +20,7 @@ public class FetchAnyArtifactTask extends BaseGoPlugin {
     public final static String FAA_STAGE_NAME = "FAA_STAGE_NAME";
     public final static String FAA_JOB_NAME = "FAA_JOB_NAME";
     public final static String FAA_ARTIFACT_IS_FILE="FAA_ARTIFACT_IS_FILE";
+    public final static String FAA_FETCH_IF_FAILED="FAA_FETCH_IF_FAILED";
 
     @Override
     protected GoPluginApiResponse handleTaskView(GoPluginApiRequest request) {
@@ -60,6 +61,7 @@ public class FetchAnyArtifactTask extends BaseGoPlugin {
                 .add("FAA_ARTIFACT_DESTINATION", "", ConfigDef.Required.No)
                 .add("FAA_STAGE_NAME", "", ConfigDef.Required.No)
                 .add("FAA_JOB_NAME", "", ConfigDef.Required.No)
+                .add("FAA_FETCH_IF_FAILED", "", ConfigDef.Required.No)
                 .toMap());
     }
 

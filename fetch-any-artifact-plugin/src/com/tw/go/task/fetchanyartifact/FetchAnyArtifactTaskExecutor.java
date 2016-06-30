@@ -97,7 +97,8 @@ public class FetchAnyArtifactTaskExecutor extends TaskExecutor {
                     String stageName = Selector.select(stage, "name");
                     Integer stageCounter = Integer.parseInt(Selector.select(stage, "counter", "0"));
 
-                    if ("passed".equalsIgnoreCase(Selector.select(stage, "result", "failed"))) {
+                    if ("passed".equalsIgnoreCase(Selector.select(stage, "result", "failed")) &&
+                            configVars.isChecked(FAA_FETCH_IF_FAILED)) {
                         ArrayList jobs = Selector.select(stage, "jobs");
 
                         for (int jidx = 0; jidx < jobs.size(); jidx++) {

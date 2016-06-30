@@ -51,6 +51,16 @@
     </div>
 </div>
 <div class="form_item_block">
+    <div class="checkbox_row">
+        <input id="FAA_FETCH_IF_FAILED2" type="checkbox" ng-model="FAA_FETCH_IF_FAILED2"
+               ng-init="FAA_FETCH_IF_FAILED2 = FAA_FETCH_IF_FAILED"
+               ng-change="FAA_FETCH_IF_FAILED = FAA_FETCH_IF_FAILED2" ng-true-value="true" ng-false-value="false">
+        <input id="fetchiffailed" type="hidden" ng-model="FAA_FETCH_IF_FAILED" value="{{FAA_FETCH_IF_FAILED}}">
+        <label>Fetch even if failed
+        </label>
+    </div>
+</div>
+<div class="form_item_block">
     <label>Destination
     </label>
     <input type="text" ng-model="FAA_ARTIFACT_DESTINATION">

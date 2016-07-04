@@ -4,17 +4,16 @@ import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.AbstractCommand;
 import com.tw.go.plugin.common.ConfigVars;
+import com.tw.go.plugin.common.ListUtil;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class DockerRunCommand extends AbstractCommand {
+public class DockerRunCommand extends DockerCommand {
 
     private final Logger logger = Logger.getLoggerFor(DockerRunCommand.class);
 
     public DockerRunCommand(JobConsoleLogger console, ConfigVars configVars) throws Exception {
-        super(console);
+        super(console, configVars);
         add("docker");
         add("run");
         add("--rm");
@@ -36,9 +35,20 @@ public class DockerRunCommand extends AbstractCommand {
         add("--workdir");
         add(workingDir);
 
+        addRunEnvVars(configVars.getValue(DockerTask.RUN_ENV_VARS));
+
         add(configVars.getValue(DockerTask.RUN_IMAGE));
         for (String arg : splitArgs(configVars.getValue(DockerTask.RUN_ARGS))) {
             add(arg);
+        }
+    }
+
+    private void addRunEnvVars(String envVars) {
+        for (String envVar : ListUtil.splitByFirstOrDefault(envVars, ';')) {
+            if (!envVar.isEmpty()) {
+                command.add("-e");
+                command.add(envVar);
+            }
         }
     }
 

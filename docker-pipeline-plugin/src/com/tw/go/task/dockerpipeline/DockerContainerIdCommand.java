@@ -2,20 +2,18 @@ package com.tw.go.task.dockerpipeline;
 
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
-import com.tw.go.plugin.common.AbstractCommand;
 import com.tw.go.plugin.common.ConfigVars;
 import com.tw.go.plugin.common.ProcessOutput;
-import com.tw.go.plugin.common.Selector;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class DockerContainerIdCommand extends AbstractCommand {
+public class DockerContainerIdCommand extends DockerCommand {
 
     public DockerContainerIdCommand(JobConsoleLogger console, ConfigVars configVars) {
-        super(console);
+        super(console, configVars);
 
         disableConsoleOutput();
 

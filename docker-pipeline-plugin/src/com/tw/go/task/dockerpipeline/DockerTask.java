@@ -18,7 +18,6 @@ import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse
 
 @Extension
 public class DockerTask extends BaseGoPlugin {
-    public static final String CLEAN_BEFORE_TASK = "CleanBeforeTask";
     public static final String IMAGE_NAME = "ImageName";
     public static final String DOCKER_FILE_NAME = "DockerFileName";
     public static final String BUILD_ARGS = "BuildArgs";
@@ -32,16 +31,17 @@ public class DockerTask extends BaseGoPlugin {
     public static final String REGISTRY_PASSWORD = "RegistryPassword";
 
     public static final String REGISTRY_EMAIL = "RegistryEmail";
-    public static final String REGISTRY_URL = "RegistryURL";
+    public static final String REGISTRY_URL_FOR_LOGIN = "RegistryURL";
 
     public static final String RUN_IMAGE = "RUN_IMAGE";
+    public static final String RUN_ENV_VARS = "RUN_ENV_VARS";
     //    public static final String RUN_VOLUMES_FROM = "RUN_VOLUMES_FROM";
 //    public static final String RUN_VOLUME = "RUN_VOLUME";
 //    public static final String RUN_WORKING_DIR = "RUN_WORKING_DIR";
     public static final String RUN_ARGS = "RUN_ARGS";
 
-    public static final String CLEAN_AFTER_TASK = "CleanAfterTask";
-    public static final String CLEAN_AFTER_COMPLETE = "CleanAfterComplete";
+    public static final String CLEAN_BEFORE_TASK = "CleanBeforeTask";
+    public static final String CLEAN_AFTER_TASK = "CleanAfterComplete";
 
     private static final Logger LOGGER = Logger.getLoggerFor(DockerTask.class);
 
@@ -110,9 +110,7 @@ public class DockerTask extends BaseGoPlugin {
     private Map getConfigDef() {
         return new ConfigDef()
                 // cleaning ...
-                .add(CLEAN_BEFORE_TASK, "false", Required.No)
                 .add(CLEAN_AFTER_TASK, "false", Required.No)
-                .add(CLEAN_AFTER_COMPLETE, "false", Required.No)
 
                 // build
                 .add(DOCKER_FILE_NAME, "", Required.No)
@@ -126,12 +124,13 @@ public class DockerTask extends BaseGoPlugin {
                 .add(USERNAME, "", Required.No)
 
                 // login
-                .add(REGISTRY_URL, "", Required.No)
+                .add(REGISTRY_URL_FOR_LOGIN, "", Required.No)
                 .add(REGISTRY_USERNAME, "", Required.No)
                 .add(REGISTRY_PASSWORD, "", Required.No, Secure.Yes)
 
                 // run
                 .add(RUN_IMAGE, "", Required.No)
+                .add(RUN_ENV_VARS, "", Required.No)
 //                .add(RUN_VOLUME, "", Required.No)
 //                .add(RUN_VOLUMES_FROM, "", Required.No)
 //                .add(RUN_WORKING_DIR, "", Required.No)

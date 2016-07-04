@@ -7,10 +7,14 @@ import com.tw.go.plugin.common.MaskingJobConsoleLogger;
 import com.tw.go.plugin.common.Result;
 import com.tw.go.plugin.common.TaskExecutor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class DockerTaskExecutor extends TaskExecutor {
-    private static final Logger logger = Logger.getLoggerFor(DockerTaskExecutor.class);
+    private final Logger logger = Logger.getLoggerFor(DockerTaskExecutor.class);
+
     public DockerTaskExecutor(JobConsoleLogger console, Context context, Map config) {
         super(console, context, config);
     }
@@ -19,6 +23,7 @@ public class DockerTaskExecutor extends TaskExecutor {
         try {
             return runCommand();
         } catch (Exception e) {
+            logException(logger,e);
             return new Result(false, getPluginLogPrefix() + e.getMessage(), e);
         }
     }
@@ -36,7 +41,7 @@ public class DockerTaskExecutor extends TaskExecutor {
                         .run();
             }
             if (!configVars.isEmpty(DockerTask.REGISTRY_USERNAME) && !configVars.isEmpty(DockerTask.REGISTRY_PASSWORD)
-                    && !configVars.isEmpty(DockerTask.REGISTRY_URL)) {
+                    && !configVars.isEmpty(DockerTask.REGISTRY_URL_FOR_LOGIN)) {
                 new DockerLoginCommand(console, configVars)
                         .run();
             }
@@ -45,7 +50,7 @@ public class DockerTaskExecutor extends TaskExecutor {
                 DockerBuildCommand build = new DockerBuildCommand(console, configVars);
                 build.run();
 
-                if (!configVars.isEmpty(DockerTask.REGISTRY_URL)) {
+                if (!configVars.isEmpty(DockerTask.REGISTRY_URL_FOR_LOGIN)) {
                     for (String tag : build.imageAndTag) {
                         if (tag != null) {
                             new DockerPushCommand(console, configVars, tag)
@@ -60,7 +65,7 @@ public class DockerTaskExecutor extends TaskExecutor {
                         .run();
             }
         } finally {
-            if (configVars.isChecked(DockerTask.CLEAN_AFTER_COMPLETE)) {
+            if (configVars.isChecked(DockerTask.CLEAN_AFTER_TASK)) {
                 new DockerStopContainers(console, configVars)
                         .run();
                 new DockerRemoveAllContainers(console, configVars)

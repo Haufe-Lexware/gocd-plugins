@@ -30,7 +30,9 @@ public class MaskingJobConsoleLogger extends JobConsoleLogger {
     }
 
     public MaskingJobConsoleLogger withRegexFilter(String s) {
-        maskValues.add(s);
+        if (!s.isEmpty()) {
+            maskValues.add(s);
+        }
         return this;
     }
 
@@ -40,7 +42,9 @@ public class MaskingJobConsoleLogger extends JobConsoleLogger {
     }
 
     public MaskingJobConsoleLogger withTextFilter(String s) {
-        maskValues.add("\\b" + Pattern.quote(s) + "\\b");
+        if (!s.isEmpty()) {
+            maskValues.add("\\b" + Pattern.quote(s) + "\\b");
+        }
         return this;
     }
 
@@ -67,6 +71,18 @@ public class MaskingJobConsoleLogger extends JobConsoleLogger {
     @Override
     public void printLine(String line) {
         super.printLine(getMaskedLine(line));
+    }
+
+    @Override
+    public void readErrorOf(InputStream in) {
+        MaskingInputStream mis = new MaskingInputStream(in, this);
+        super.readErrorOf(mis);
+    }
+
+    @Override
+    public void readOutputOf(InputStream in) {
+        MaskingInputStream mis = new MaskingInputStream(in, this);
+        super.readOutputOf(mis);
     }
 
     @Override

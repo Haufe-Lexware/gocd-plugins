@@ -1,7 +1,12 @@
 package com.tw.go.plugin.common;
 
+import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -39,6 +44,12 @@ public abstract class TaskExecutor {
                 .withMapFilter(envVars)
                 .withRegexFilter(REGEX_URL_CREDS);
 
+        // tbd: integrate "better". the following loop is only here because
+        // it was forgotten to be done "otherwise" :-(
+        for (String s : maskingList) {
+            ((MaskingJobConsoleLogger)this.console).withRegexFilter(s);
+        }
+
         this.context = context;
         this.config = config;
 
@@ -67,5 +78,12 @@ public abstract class TaskExecutor {
 
     protected void log(String message) {
         this.console.printLine(message);
+    }
+
+    protected void logException(Logger logger, Throwable throwable) throws UnsupportedEncodingException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        throwable.printStackTrace(new PrintStream(baos));
+        String output = baos.toString(StandardCharsets.UTF_8.name());
+        logger.error(throwable + "\n" + output);
     }
 }

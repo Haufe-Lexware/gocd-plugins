@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<go-plugin id="docker-compose.plugin" version="1">
+    <about>
+        <name>Docker Compose Task Plugin</name>
+        <version>0.1</version>
+        <target-go-version>16.4.0</target-go-version>
+        <description>
+            Task plugin to execute Docker Compose commands.
+            Pre-Release. Use at your own risk.
+        </description>
+        <vendor>
+            <name>Thomas Schuering</name>
+            <url>https://github.com/thomsch98/gocd-plugins</url>
+        </vendor>
+    </about>
+</go-plugin>

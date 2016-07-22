@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.AbstractGoPlugin;
 import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
+import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
@@ -22,6 +23,7 @@ import java.util.Map;
 public abstract class BaseGoPlugin extends AbstractGoPlugin {
 
     protected Gson gson = new GsonBuilder().serializeNulls().create();
+    private static final Logger logger = Logger.getLoggerFor(BaseGoPlugin.class);
 
     protected GoPluginApiResponse success(Object response) {
         return renderJSON(DefaultGoApiResponse.SUCCESS_RESPONSE_CODE, null, response);
@@ -90,6 +92,7 @@ public abstract class BaseGoPlugin extends AbstractGoPlugin {
 
     protected GoPluginApiResponse renderJSON(final int responseCode, final Map<String, String> responseHeaders, Object response) {
         final String json = response == null ? null : gson.toJson(response);
+        logger.debug(json);
         return new GoPluginApiResponse() {
             @Override
             public int responseCode() {

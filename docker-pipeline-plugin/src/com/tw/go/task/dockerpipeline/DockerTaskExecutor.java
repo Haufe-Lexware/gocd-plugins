@@ -61,7 +61,7 @@ public class DockerTaskExecutor extends TaskExecutor {
             }
 
             if (!configVars.isEmpty(DockerTask.RUN_IMAGE)) {
-                new DockerRunCommand(console, configVars)
+                new DockerRun2Command(console, configVars)
                         .run();
             }
         } finally {

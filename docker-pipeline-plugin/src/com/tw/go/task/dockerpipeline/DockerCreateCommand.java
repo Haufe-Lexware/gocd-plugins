@@ -6,20 +6,18 @@ import com.tw.go.plugin.common.AbstractCommand;
 import com.tw.go.plugin.common.ConfigVars;
 import com.tw.go.plugin.common.ListUtil;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class DockerRunCommand extends DockerCommand {
+public class DockerCreateCommand extends DockerCommand {
 
-    private final Logger logger = Logger.getLoggerFor(DockerRunCommand.class);
+    private final Logger logger = Logger.getLoggerFor(DockerCreateCommand.class);
 
-    public DockerRunCommand(JobConsoleLogger console, ConfigVars configVars) throws Exception {
+    public DockerCreateCommand(JobConsoleLogger console, ConfigVars configVars) throws Exception {
         super(console, configVars);
         add("docker");
-        add("run");
-        add("--rm");
+        add("create");
 
+        /*
         String id = getContainerID(console, configVars);
         String workingDir = getAbsoluteWorkingDir();
         if (id != null) {
@@ -36,6 +34,7 @@ public class DockerRunCommand extends DockerCommand {
 
         add("--workdir");
         add(workingDir);
+        */
 
         addRunEnvVars(configVars.getValue(DockerTask.RUN_ENV_VARS));
 
@@ -60,5 +59,4 @@ public class DockerRunCommand extends DockerCommand {
         cmd.run();
         return DockerContainerIdCommand.extractId(cmd.getProcessOutput());
     }
-
 }

@@ -93,7 +93,7 @@ public abstract class AbstractCommand implements ICommand {
             processOutput = processRunner.execute(console, showConsoleOutput, workingDir, command, environment);
         }
 
-        if (!isSuccessful(processOutput)) {
+        if (!isSuccessful()) {
             if (!ignoreErrors) {
                 throw new RuntimeException("External process failed. See Job console output for more information.");
             }
@@ -104,7 +104,7 @@ public abstract class AbstractCommand implements ICommand {
         return processOutput;
     }
 
-    private boolean isSuccessful(ProcessOutput processOutput) {
+    public boolean isSuccessful() {
         return processOutput != null && processOutput.isZeroReturnCode();
     }
 

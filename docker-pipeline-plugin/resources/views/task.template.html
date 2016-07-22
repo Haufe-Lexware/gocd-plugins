@@ -31,13 +31,12 @@
 <div class="form_item_block">
   <h2>Build</h2>
 
-  <div class="form_item_block">
-    <div class="checkbox_row">
-      <input id="BUILD_NO_CACHE2" type="checkbox" ng-model="BUILD_NO_CACHE2" ng-init="BUILD_NO_CACHE2 = BUILD_NO_CACHE"
-             ng-change="BUILD_NO_CACHE = BUILD_NO_CACHE2" ng-true-value="true" ng-false-value="false">
-      <input id="buildNoCache" type="hidden" ng-model="BUILD_NO_CACHE" value="{{BUILD_NO_CACHE}}">
-      <label>Disable cache while building the image (might take MUCH longer)</label>
-    </div>
+  <div class="checkbox_row">
+    <input id="BUILD_NO_CACHE2" type="checkbox" ng-model="BUILD_NO_CACHE2"
+           ng-init="BUILD_NO_CACHE2 = BUILD_NO_CACHE"
+           ng-change="BUILD_NO_CACHE = BUILD_NO_CACHE2" ng-true-value="true" ng-false-value="false">
+    <input id="buildNoCache" type="hidden" ng-model="BUILD_NO_CACHE" value="{{BUILD_NO_CACHE}}">
+    <label>Disable cache while building the image (might take MUCH longer)</label>
   </div>
 
   <div class="form_item_block">
@@ -112,6 +111,38 @@
     <input type="text" ng-model="RUN_ARGS" ng-required="false">
         <span class="form_error"
               ng-show="GOINPUTNAME[RUN_ARGS].$error.server">{{ GOINPUTNAME[RUN_ARGS].$error.server }}</span>
+  </div>
+
+  <div class="form_item_block">
+    <div class="form_item_block">
+      <label>BEFORE run, copy FROM </label>
+      <input type="text" ng-model="RUN_PRE_COPY_FROM" ng-required="false">
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[RUN_PRE_COPY_FROM].$error.server">{{ GOINPUTNAME[RUN_PRE_COPY_FROM].$error.server }}</span>
+    </div>
+
+
+    <div class="form_item_block">
+      <label>BEFORE run, copy TO </label>
+      <input type="text" ng-model="RUN_PRE_COPY_TO" ng-required="false">
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[RUN_PRE_COPY_TO].$error.server">{{ GOINPUTNAME[RUN_PRE_COPY_TO].$error.server }}</span>
+    </div>
+
+    <div class="form_item_block">
+      <label>AFTER run, copy FROM </label>
+      <input type="text" ng-model="RUN_POST_COPY_FROM" ng-required="false">
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[RUN_POST_COPY_FROM].$error.server">{{ GOINPUTNAME[RUN_POST_COPY_FROM].$error.server }}</span>
+    </div>
+
+
+    <div class="form_item_block">
+      <label>AFTER run, copy TO </label>
+      <input type="text" ng-model="RUN_POST_COPY_TO" ng-required="false">
+            <span class="form_error"
+                  ng-show="GOINPUTNAME[RUN_POST_COPY_TO].$error.server">{{ GOINPUTNAME[RUN_POST_COPY_TO].$error.server }}</span>
+    </div>
   </div>
 
 </div>

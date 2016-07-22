@@ -14,8 +14,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
-
 @Extension
 public class DockerTask extends BaseGoPlugin {
     public static final String IMAGE_NAME = "ImageName";
@@ -35,6 +33,11 @@ public class DockerTask extends BaseGoPlugin {
 
     public static final String RUN_IMAGE = "RUN_IMAGE";
     public static final String RUN_ENV_VARS = "RUN_ENV_VARS";
+    public static final String RUN_CONTAINER_IDS = "RUN_CONTAINER_IDS";
+    public static final String RUN_PRE_COPY_FROM = "RUN_PRE_COPY_FROM";
+    public static final String RUN_PRE_COPY_TO = "RUN_PRE_COPY_TO";
+    public static final String RUN_POST_COPY_FROM = "RUN_POST_COPY_FROM";
+    public static final String RUN_POST_COPY_TO = "RUN_POST_COPY_TO";
     //    public static final String RUN_VOLUMES_FROM = "RUN_VOLUMES_FROM";
 //    public static final String RUN_VOLUME = "RUN_VOLUME";
 //    public static final String RUN_WORKING_DIR = "RUN_WORKING_DIR";
@@ -131,6 +134,10 @@ public class DockerTask extends BaseGoPlugin {
                 // run
                 .add(RUN_IMAGE, "", Required.No)
                 .add(RUN_ENV_VARS, "", Required.No)
+                .add(RUN_PRE_COPY_FROM, "", Required.No)
+                .add(RUN_PRE_COPY_TO, "", Required.No)
+                .add(RUN_POST_COPY_FROM, "", Required.No)
+                .add(RUN_POST_COPY_TO, "", Required.No)
 //                .add(RUN_VOLUME, "", Required.No)
 //                .add(RUN_VOLUMES_FROM, "", Required.No)
 //                .add(RUN_WORKING_DIR, "", Required.No)

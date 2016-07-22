@@ -107,6 +107,16 @@
   </div>
 
   <div class="form_item_block">
+    <label>Environment variables</label>
+    <input type="text" ng-model="RUN_ENV_VARS" ng-required="false">
+    <div class="inline_instruction">Provide one or multiple vars separated by ';'. Define a different separator as
+      the
+      VERY FIRST character (example "|arg1=xyz|arg2=123")
+    </div>
+    <span class="form_error" ng-show="GOINPUTNAME[RUN_ENV_VARS].$error.server">{{ GOINPUTNAME[RUN_ENV_VARS].$error.server }}</span>
+  </div>
+
+  <div class="form_item_block">
     <label>Command and args</label>
     <input type="text" ng-model="RUN_ARGS" ng-required="false">
         <span class="form_error"

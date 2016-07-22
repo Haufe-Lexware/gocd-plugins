@@ -10,35 +10,69 @@
         <input type="text" ng-model="COMPOSE_BUILD" ng-required="false">
         </input>
     </div>
+
+    <!--
+        <div class="form_item_block checkbox_row">
+            <div class="checkbox_label_wrapper">
+                <input name="pipeline[lock]" type="hidden" value="0"/>
+                <input id="pipeline_lock" name="pipeline[lock]"
+                       type="checkbox" value="1"/>
+                <label for="pipeline_lock">Automatic pipeline locking
+                </label>
+            </div>
+            <div class="contextual_help has_go_tip_right"
+                 title="If checked, only a single instance of the pipeline can be run at a time and the lock will release only if the entire pipeline completes successfully. This is particularly useful in deployment scenarios.">
+            </div>
+
+        </div>
+    -->
+
     <div class="form_item_block">
-        <input id="FORCE_BUILD_ONLY2" type="checkbox" ng-model="FORCE_BUILD_ONLY2" ng-init="FORCE_BUILD_ONLY2 = FORCE_BUILD_ONLY"
-               ng-change="FORCE_BUILD_ONLY = FORCE_BUILD_ONLY2" ng-true-value="true" ng-false-value="false">
-        <input id="FORCE_BUILD_ONLY" type="hidden" ng-model="FORCE_BUILD_ONLY" value="{{FORCE_BUILD_ONLY}}">
-        <label>Do NOT start any services.</label>
+        <div class="checkbox_row">
+            <div class="checkbox_label_wrapper">
+                <input id="FORCE_BUILD_ONLY2" type="checkbox" ng-model="FORCE_BUILD_ONLY2"
+                       ng-init="FORCE_BUILD_ONLY2 = FORCE_BUILD_ONLY"
+                       ng-change="FORCE_BUILD_ONLY = FORCE_BUILD_ONLY2" ng-true-value="true" ng-false-value="false"/>
+                <input id="FORCE_BUILD_ONLY" type="hidden" ng-model="FORCE_BUILD_ONLY" value="{{FORCE_BUILD_ONLY}}"/>
+                <label>Do NOT start any services.</label>
+            </div>
+        </div>
     </div>
     <div class="form_item_block">
-        <input id="FORCE_BUILD2" type="checkbox" ng-model="FORCE_BUILD2" ng-init="FORCE_BUILD2 = FORCE_BUILD"
-               ng-change="FORCE_BUILD = FORCE_BUILD2" ng-true-value="true" ng-false-value="false">
-        <input id="FORCE_BUILD" type="hidden" ng-model="FORCE_BUILD" value="{{FORCE_BUILD}}">
-        <label>Force a 'build', even if *local* resources/files are NOT modified.</label>
+        <div class="checkbox_row">
+            <input id="FORCE_BUILD2" type="checkbox" ng-model="FORCE_BUILD2" ng-init="FORCE_BUILD2 = FORCE_BUILD"
+                   ng-change="FORCE_BUILD = FORCE_BUILD2" ng-true-value="true" ng-false-value="false">
+            <input id="FORCE_BUILD" type="hidden" ng-model="FORCE_BUILD" value="{{FORCE_BUILD}}">
+            <label>Force a 'build', even if *local* resources/files are NOT modified.</label>
+        </div>
     </div>
     <div class="form_item_block">
-        <input id="COMPOSE_NO_CACHE2" type="checkbox" ng-model="COMPOSE_NO_CACHE2" ng-init="COMPOSE_NO_CACHE2 = COMPOSE_NO_CACHE"
-               ng-change="COMPOSE_NO_CACHE = COMPOSE_NO_CACHE2" ng-true-value="true" ng-false-value="false">
-        <input id="COMPOSE_NO_CACHE" type="hidden" ng-model="COMPOSE_NO_CACHE" value="{{COMPOSE_NO_CACHE}}">
-        <label>Force a 'build' WITHOUT using already cached layers.</label>
+        <div class="checkbox_row">
+            <input id="COMPOSE_NO_CACHE2" type="checkbox" ng-model="COMPOSE_NO_CACHE2"
+                   ng-init="COMPOSE_NO_CACHE2 = COMPOSE_NO_CACHE"
+                   ng-change="COMPOSE_NO_CACHE = COMPOSE_NO_CACHE2" ng-true-value="true" ng-false-value="false">
+            <input id="COMPOSE_NO_CACHE" type="hidden" ng-model="COMPOSE_NO_CACHE" value="{{COMPOSE_NO_CACHE}}">
+            <label>Force a 'build' WITHOUT using already cached layers.</label>
+        </div>
     </div>
     <div class="form_item_block">
-        <input id="COMPOSE_REMOVE_VOLUMES2" type="checkbox" ng-model="COMPOSE_REMOVE_VOLUMES2" ng-init="COMPOSE_REMOVE_VOLUMES2 = COMPOSE_REMOVE_VOLUMES"
-               ng-change="COMPOSE_REMOVE_VOLUMES = COMPOSE_REMOVE_VOLUMES2" ng-true-value="true" ng-false-value="false">
-        <input id="COMPOSE_REMOVE_VOLUMES" type="hidden" ng-model="COMPOSE_REMOVE_VOLUMES" value="{{COMPOSE_REMOVE_VOLUMES}}">
-        <label>Remove volumes associated with containers.</label>
+        <div class="checkbox_row">
+            <input id="COMPOSE_REMOVE_VOLUMES2" type="checkbox" ng-model="COMPOSE_REMOVE_VOLUMES2"
+                   ng-init="COMPOSE_REMOVE_VOLUMES2 = COMPOSE_REMOVE_VOLUMES"
+                   ng-change="COMPOSE_REMOVE_VOLUMES = COMPOSE_REMOVE_VOLUMES2" ng-true-value="true"
+                   ng-false-value="false">
+            <input id="COMPOSE_REMOVE_VOLUMES" type="hidden" ng-model="COMPOSE_REMOVE_VOLUMES"
+                   value="{{COMPOSE_REMOVE_VOLUMES}}">
+            <label>Remove volumes associated with containers.</label>
+        </div>
     </div>
     <div class="form_item_block">
-        <input id="FORCE_PULL2" type="checkbox" ng-model="FORCE_PULL2" ng-init="FORCE_PULL2 = FORCE_PULL"
-               ng-change="FORCE_PULL = FORCE_PULL2" ng-true-value="true" ng-false-value="false">
-        <input id="FORCE_PULL" type="hidden" ng-model="FORCE_PULL" value="{{FORCE_PULL}}">
-        <label>Update images used in the docker-compose file.</label>
+        <div class="checkbox_row">
+            <input id="FORCE_PULL2" type="checkbox" ng-model="FORCE_PULL2" ng-init="FORCE_PULL2 = FORCE_PULL"
+                   ng-change="FORCE_PULL = FORCE_PULL2" ng-true-value="true" ng-false-value="false">
+            <input id="FORCE_PULL" type="hidden" ng-model="FORCE_PULL" value="{{FORCE_PULL}}">
+            <label>Update images used in the docker-compose file.</label>
+        </div>
     </div>
     <div class="form_item_block">
         <label>Service(s) to start</label>
@@ -56,9 +90,12 @@
         </input>
     </div>
     <div class="form_item_block">
-        <input id="FORCE_RECREATE2" type="checkbox" ng-model="FORCE_RECREATE2" ng-init="FORCE_RECREATE2 = FORCE_RECREATE"
-               ng-change="FORCE_RECREATE = FORCE_RECREATE2" ng-true-value="true" ng-false-value="false">
-        <input id="FORCE_RECREATE" type="hidden" ng-model="FORCE_RECREATE" value="{{FORCE_RECREATE}}">
-        <label>Force recreation of containers (e.g. For restarting init)</label>
+        <div class="checkbox_row">
+            <input id="FORCE_RECREATE2" type="checkbox" ng-model="FORCE_RECREATE2"
+                   ng-init="FORCE_RECREATE2 = FORCE_RECREATE"
+                   ng-change="FORCE_RECREATE = FORCE_RECREATE2" ng-true-value="true" ng-false-value="false">
+            <input id="FORCE_RECREATE" type="hidden" ng-model="FORCE_RECREATE" value="{{FORCE_RECREATE}}">
+            <label>Force recreation of containers (e.g. For restarting init)</label>
+        </div>
     </div>
 </div>

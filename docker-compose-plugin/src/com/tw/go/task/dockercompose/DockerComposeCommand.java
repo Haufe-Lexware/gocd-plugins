@@ -58,18 +58,20 @@ public class DockerComposeCommand extends AbstractCommand {
         }
 
         String configPath = ".docker/machine/machines/" + vmname;
-        int port = machines.select(vmname + ".Driver.EnginePort", DOCKER_PORT);
+        String unifiedVmName = unifyMachineName(vmname);
+
+        int port = machines.select(unifiedVmName + ".Driver.EnginePort", DOCKER_PORT);
 
         Map dme = new HashMap<>();
 
         dme.put("DOCKER_TLS_VERIFY", "1");
-        dme.put("DOCKER_HOST", "tcp://" + machines.select(vmname + ".Driver.IPAddress") + ":" + port);
+        dme.put("DOCKER_HOST", "tcp://" + machines.select(unifiedVmName + ".Driver.IPAddress") + ":" + port);
         dme.put("DOCKER_CERT_PATH", configPath);
-        dme.put("DOCKER_MACHINE_NAME", "" + machines.select(vmname + ".Driver.MachineName"));
-        dme.put("DM_HOST_IP", machines.select("" + vmname + ".Driver.IPAddress"));
+        dme.put("DOCKER_MACHINE_NAME", "" + machines.select(unifiedVmName + ".Driver.MachineName"));
+        dme.put("DM_HOST_IP", machines.select(unifiedVmName + ".Driver.IPAddress"));
 
         for (String name : ((Map<String, Object>) machines.getMap()).keySet()) {
-            dme.put("DM_" + name.toUpperCase() + "_IP", machines.select("" + name + ".Driver.IPAddress"));
+            dme.put("DM_" + name.toUpperCase() + "_IP", machines.select(name + ".Driver.IPAddress"));
         }
 
         for (String key : ((Map<String, Object>) dme).keySet()) {
@@ -90,12 +92,16 @@ public class DockerComposeCommand extends AbstractCommand {
         if (dirs != null) {
             for (File dir : dirs) {
                 Map config = (Map) gson.fromJson(new FileReader(dir.getAbsolutePath() + "/config.json"), Object.class);
-                map.put(dir.getName(), config);
+                map.put(unifyMachineName(dir.getName()), config);
             }
         } else {
             logger.info("No (machine) directories found under '" + storagePath + "/machines'");
         }
         return map;
+    }
+
+    static String unifyMachineName(String name) {
+        return name.replaceAll("[.-]", "_");
     }
 
 }

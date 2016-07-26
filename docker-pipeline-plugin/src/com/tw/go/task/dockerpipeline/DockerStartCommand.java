@@ -11,6 +11,7 @@ public class DockerStartCommand extends DockerCommand
         super(console, configVars);
         add("docker");
         add("start");
+        add("-a");
         add(id);
     }
 }

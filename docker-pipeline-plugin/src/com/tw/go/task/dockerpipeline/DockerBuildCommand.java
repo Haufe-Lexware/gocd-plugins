@@ -68,7 +68,10 @@ public class DockerBuildCommand extends DockerCommand {
     }
 
     private String makeBaseName(String registry, String username, String imageName) {
-        return registry + "/" + username + "/" + imageName;
+        if (null != registry && !registry.isEmpty())
+            return registry + "/" + username + "/" + imageName;
+        // Assume local name
+        return imageName;
     }
 
     private String getDockerfileAbsolutePath(ConfigVars configVars) {

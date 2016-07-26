@@ -21,10 +21,12 @@ public class DockerRun2Command extends DockerCommand {
 
     @Override
     public void run() throws Exception {
-        AbstractCommand cmd = new DockerCreateCommand(console, configVars);
+        DockerCreateCommand cmd = new DockerCreateCommand(console, configVars);
         cmd.run();
         if (cmd.isSuccessful()) {
-            String id = cmd.getProcessOutput().getStdOut().get(0);
+            //String id = cmd.getProcessOutput().getStdOut().get(0);
+            String id = cmd.getContainerName(); // tmp<.....>
+            logger.info(String.format("We think the container's name is %s", id));
 
             if (!configVars.isEmpty(DockerTask.RUN_PRE_COPY_TO)) {
                 String hostDir = makeHostDir(getAbsoluteWorkingDir(), configVars.getValue(DockerTask.RUN_PRE_COPY_FROM));

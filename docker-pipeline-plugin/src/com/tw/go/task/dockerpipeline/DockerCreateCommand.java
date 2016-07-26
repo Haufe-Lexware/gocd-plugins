@@ -11,15 +11,15 @@ import java.util.ArrayList;
 public class DockerCreateCommand extends DockerCommand {
 
     private final Logger logger = Logger.getLoggerFor(DockerCreateCommand.class);
-    protected String _containerId = null;
+    protected String _containerName = null;
 
     public DockerCreateCommand(JobConsoleLogger console, ConfigVars configVars) throws Exception {
         super(console, configVars);
         add("docker");
         add("create");
         add("--name");
-        _containerName = createRandomContainerName();
-        add(_containerName);
+        this._containerName = createRandomContainerName();
+        add(this._containerName);
 
         /*
         String id = getContainerID(console, configVars);
@@ -54,7 +54,7 @@ public class DockerCreateCommand extends DockerCommand {
     }
 
     protected String getContainerName() {
-        return this._continerName;
+        return this._containerName;
     }
 
     protected void addRunEnvVars(String envVars) {

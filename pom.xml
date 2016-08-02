@@ -66,6 +66,7 @@
         <module>sonar-qualitygates-plugin</module>
         <module>check_mk-plugin</module>
 		<module>docker-pipeline-plugin</module>
+        <module>fortify-plugin</module>
         <module>fetch-any-artifact-plugin</module>
         <module>docker-compose-plugin</module>
         <module>docker-machine-plugin</module>

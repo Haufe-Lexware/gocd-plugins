@@ -68,8 +68,15 @@ public class DockerBuildCommand extends DockerCommand {
     }
 
     private String makeBaseName(String registry, String username, String imageName) {
-        if (null != registry && !registry.isEmpty())
-            return registry + "/" + username + "/" + imageName;
+        if (null != registry && !registry.isEmpty()) {
+            if ((registry.indexOf("docker.io") < 0) &&
+                (registry.indexOf("hub.docker.com") < 0)) {
+                return registry + "/" + username + "/" + imageName;
+            } else {
+                // Official docker hub; leave out registry, please
+                return username + "/" + imageName;
+            }
+        }
         // Assume local name
         return imageName;
     }

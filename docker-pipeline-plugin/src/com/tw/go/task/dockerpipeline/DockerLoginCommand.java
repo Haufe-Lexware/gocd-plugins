@@ -16,6 +16,13 @@ public class DockerLoginCommand extends DockerCommand
         add(configVars.getValue(DockerTask.REGISTRY_USERNAME));
         add("--password");
         add(configVars.getValue(DockerTask.REGISTRY_PASSWORD));
-        add(configVars.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN));
+        String registryUrl = configVars.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN);
+        // Tweak registry URL when using official docker hub 
+        if (!registryUrl.equals("hub.docker.com") &&
+            !registryUrl.equals("docker.io")) {
+            add(registryUrl);
+        } else {
+            add("https://index.docker.io/v1/");
+        }
     }
 }

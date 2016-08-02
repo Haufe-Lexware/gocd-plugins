@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<go-plugin id="fortify.plugin" version="1">
+<about>
+<name>Fortify plugin</name>
+<version>1.0</version>
+<target-go-version>16.4.0</target-go-version>
+<description>
+    Fortify plugin
+</description>
+<vendor>
+    <name>Camil Bradea</name>
+    <url></url>
+</vendor>
+</about>
+</go-plugin>

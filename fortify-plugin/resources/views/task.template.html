@@ -1,0 +1,34 @@
+<div class="form_item_block">
+  <label>Username: <span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="username" ng-required="true">
+  <span class="form_error" ng-show="GOINPUTNAME[username].$error.server">{{ GOINPUTNAME[username].$error.server }}</span>
+</div>
+
+<div class="form_item_block">
+  <label>Password: <span class="asterisk">*</span>
+  </label>
+  <input type="password" ng-model="password" ng-required="true">
+  <span class="form_error" ng-show="GOINPUTNAME[password].$error.server">{{ GOINPUTNAME[password].$error.server }}</span>
+</div>
+
+<div class="form_item_block">
+  <label>Fortify URL: <span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="fortifyurl" ng-required="false">
+  <span class="form_error" ng-show="GOINPUTNAME[fortifyurl].$error.server">{{ GOINPUTNAME[fortifyurl].$error.server }}</span>
+</div>
+
+<div class="form_item_block">
+  <label>Project: <span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="sscproject" ng-required="true">
+  <span class="form_error" ng-show="GOINPUTNAME[sscproject].$error.server">{{ GOINPUTNAME[sscproject].$error.server }}</span>
+</div>
+
+<div class="form_item_block">
+  <label>Version: <span class="asterisk">*</span>
+  </label>
+  <input type="text" ng-model="sscversion" ng-required="true">
+  <span class="form_error" ng-show="GOINPUTNAME[sscversion].$error.server">{{ GOINPUTNAME[sscversion].$error.server }}</span>
+</div>

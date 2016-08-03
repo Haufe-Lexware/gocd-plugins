@@ -46,9 +46,7 @@ public class FortifyTaskExecutor extends TaskExecutor
         getToken(request);
 
         int projectId = getProjectId(request);
-        log("\n");
-        log("Project ID: " + projectId);
-        log("\n");
+        log("Project ID: " + projectId + "\n");
 
         JSONArray pointArrayData = getPointsArrayIssuePriority(request, projectId);
 
@@ -70,8 +68,7 @@ public class FortifyTaskExecutor extends TaskExecutor
         log("Critical priority issues: " + Ycritical);
         log("High priority issues: " + Yhigh);
         log("Medium priority issues: " + Ymedium);
-        log("Low priority issues: " + Ylow);
-        log("\n");
+        log("Low priority issues: " + Ylow + "\n");
 
         if (Ycritical > 0 || Yhigh > 0)
         {
@@ -86,14 +83,13 @@ public class FortifyTaskExecutor extends TaskExecutor
         }
 
         log("Link to the scan: " + "https://v-fortifyapp/ssc/html/ssc/index.jsp#!/version/"
-                + projectId + "/scan");
-        log("\n");
+                + projectId + "/scan" + "\n");
 
         if(passed)
             return new Result(true, "Finished");
         else
-            return new Result(false, "Error ! There are critical or high priority " +
-                    "issues or scans which require approval !\n");
+            return new Result(false, "[Fortify] Error ! There are critical or high priority " +
+                    "issues or scans which require approval !" + "\n");
     }
 
     public boolean isUnsuccessfulScan(JSONArray array)
@@ -111,8 +107,7 @@ public class FortifyTaskExecutor extends TaskExecutor
                 log("Scan " + i + 1 + ":");
                 log("ID: " + obj.getInt("id"));
                 log("Filename: " + obj.getString("fileName"));
-                log("Original filename: " + obj.getString("originalFileName"));
-                log("\n");
+                log("Original filename: " + obj.getString("originalFileName") + "\n");
 
                 unsuccessfulScan = true;
             }

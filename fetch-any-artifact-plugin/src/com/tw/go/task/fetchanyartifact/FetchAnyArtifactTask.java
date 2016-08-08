@@ -56,12 +56,12 @@ public class FetchAnyArtifactTask extends BaseGoPlugin {
     @Override
     protected GoPluginApiResponse handleGetConfigRequest(GoPluginApiRequest request) {
         return success(new ConfigDef()
-                .add("FAA_PIPELINE_NAME", "", ConfigDef.Required.No)
-                .add("FAA_ARTIFACT_SOURCE", "", ConfigDef.Required.Yes)
-                .add("FAA_ARTIFACT_DESTINATION", "", ConfigDef.Required.No)
-                .add("FAA_STAGE_NAME", "", ConfigDef.Required.No)
-                .add("FAA_JOB_NAME", "", ConfigDef.Required.No)
-                .add("FAA_FETCH_IF_FAILED", "", ConfigDef.Required.No)
+                .add("FAA_PIPELINE_NAME", "", Required.NO)
+                .add("FAA_ARTIFACT_SOURCE", "", Required.YES)
+                .add("FAA_ARTIFACT_DESTINATION", "", Required.NO)
+                .add("FAA_STAGE_NAME", "", Required.NO)
+                .add("FAA_JOB_NAME", "", Required.NO)
+                .add("FAA_FETCH_IF_FAILED", "", Required.NO)
                 .toMap());
     }
 

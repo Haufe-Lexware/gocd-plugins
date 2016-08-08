@@ -5,8 +5,6 @@ import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import com.tw.go.plugin.common.*;
-import com.tw.go.plugin.common.ConfigDef.Required;
-import com.tw.go.plugin.common.ConfigDef.Secure;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -58,40 +56,40 @@ public class DockerMachineTask extends BaseGoPlugin {
     protected GoPluginApiResponse handleGetConfigRequest(GoPluginApiRequest request) {
         return success(new ConfigDef()
                 .add(VMNAME, "")
-                .add(REMOVE, "", Required.No)
+                .add(REMOVE, "", Required.NO)
 
-                .add(ENGINE_ENV, "", Required.No)
-                .add(ENGINE_OPT, "", Required.No)
+                .add(ENGINE_ENV, "", Required.NO)
+                .add(ENGINE_OPT, "", Required.NO)
 
-                .add(DRIVER, "undefined", Required.No)
+                .add(DRIVER, "undefined", Required.NO)
 
-                .add(GENERIC_IP_ADDRESS, "", Required.No)
-                .add(GENERIC_SSH_KEY, "", Required.No)
-                .add(GENERIC_SSH_USER, "root", Required.No)
-                .add(GENERIC_SSH_PORT, "22", Required.No)
-                .add(GENERIC_ENGINE_PORT, "2376", Required.No)
+                .add(GENERIC_IP_ADDRESS, "", Required.NO)
+                .add(GENERIC_SSH_KEY, "", Required.NO)
+                .add(GENERIC_SSH_USER, "root", Required.NO)
+                .add(GENERIC_SSH_PORT, "22", Required.NO)
+                .add(GENERIC_ENGINE_PORT, "2376", Required.NO)
 
-                .add(VSPHERE_USERNAME, "", Required.No)
-                .add(VSPHERE_PASSWORD, "", Required.No, Secure.Yes)
-                .add(VSPHERE_CPU_COUNT, "1", Required.No)
-                .add(VSPHERE_MEMORY_SIZE, "2048", Required.No)
-                .add(VSPHERE_DISK_SIZE, "20000", Required.No)
-                .add(VSPHERE_VCENTER, "", Required.No)
-                .add(VSPHERE_DATACENTER, "", Required.No)
-                .add(VSPHERE_BOOT2DOCKER_URL, "", Required.No)
+                .add(VSPHERE_USERNAME, "", Required.NO)
+                .add(VSPHERE_PASSWORD, "", Required.NO, Secure.YES)
+                .add(VSPHERE_CPU_COUNT, "1", Required.NO)
+                .add(VSPHERE_MEMORY_SIZE, "2048", Required.NO)
+                .add(VSPHERE_DISK_SIZE, "20000", Required.NO)
+                .add(VSPHERE_VCENTER, "", Required.NO)
+                .add(VSPHERE_DATACENTER, "", Required.NO)
+                .add(VSPHERE_BOOT2DOCKER_URL, "", Required.NO)
 
-                .add(AZURE_SUBSCRIPTION_ID, "", Required.No)
-                .add(AZURE_ENVIRONMENT, "AzurePublicCloud", Required.No)
-                .add(AZURE_IMAGE, "canonical:UbuntuServer:15.10:latest", Required.No)
-                .add(AZURE_LOCATION, "westeurope", Required.No)
-                .add(AZURE_RESOURCE_GROUP, "docker-machine", Required.No)
-                .add(AZURE_SIZE, "Standard_A2", Required.No)
-                .add(AZURE_SSH_USER, "docker-user", Required.No)
-                .add(AZURE_VNET, "docker-machine", Required.No)
-                .add(AZURE_SUBNET, "docker-machine", Required.No)
-                .add(AZURE_SUBNET_PREFIX, "192.168.0.0/16", Required.No)
-                .add(AZURE_AVAILABILITY_SET, "docker-machine", Required.No)
-                .add(AZURE_DOCKER_PORT, "2376", Required.No)
+                .add(AZURE_SUBSCRIPTION_ID, "", Required.NO)
+                .add(AZURE_ENVIRONMENT, "AzurePublicCloud", Required.NO)
+                .add(AZURE_IMAGE, "canonical:UbuntuServer:15.10:latest", Required.NO)
+                .add(AZURE_LOCATION, "westeurope", Required.NO)
+                .add(AZURE_RESOURCE_GROUP, "docker-machine", Required.NO)
+                .add(AZURE_SIZE, "Standard_A2", Required.NO)
+                .add(AZURE_SSH_USER, "docker-user", Required.NO)
+                .add(AZURE_VNET, "docker-machine", Required.NO)
+                .add(AZURE_SUBNET, "docker-machine", Required.NO)
+                .add(AZURE_SUBNET_PREFIX, "192.168.0.0/16", Required.NO)
+                .add(AZURE_AVAILABILITY_SET, "docker-machine", Required.NO)
+                .add(AZURE_DOCKER_PORT, "2376", Required.NO)
 
                 .toMap());
     }

@@ -6,9 +6,7 @@ import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.tw.go.plugin.common.*;
-import com.tw.go.plugin.common.ConfigDef.Required;
-import com.tw.go.plugin.common.ConfigDef.Secure;
+import com.tw.go.plugin.common.*;;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,35 +111,35 @@ public class DockerTask extends BaseGoPlugin {
     private Map getConfigDef() {
         return new ConfigDef()
                 // cleaning ...
-                .add(CLEAN_AFTER_TASK, "false", Required.No)
+                .add(CLEAN_AFTER_TASK, "false", Required.NO)
 
                 // build
-                .add(DOCKER_FILE_NAME, "", Required.No)
-                .add(BUILD_ARGS, "", Required.No)
-                .add(BUILD_NO_CACHE, "false", Required.No)
-                .add(IMAGE_NAME, "", Required.No)
+                .add(DOCKER_FILE_NAME, "", Required.NO)
+                .add(BUILD_ARGS, "", Required.NO)
+                .add(BUILD_NO_CACHE, "false", Required.NO)
+                .add(IMAGE_NAME, "", Required.NO)
 
                 // tag
-                .add(IMAGE_TAG, "", Required.No)
-                .add(IMAGE_TAG_POSTFIX, "", Required.No)
-                .add(USERNAME, "", Required.No)
+                .add(IMAGE_TAG, "", Required.NO)
+                .add(IMAGE_TAG_POSTFIX, "", Required.NO)
+                .add(USERNAME, "", Required.NO)
 
                 // login
-                .add(REGISTRY_URL_FOR_LOGIN, "", Required.No)
-                .add(REGISTRY_USERNAME, "", Required.No)
-                .add(REGISTRY_PASSWORD, "", Required.No, Secure.Yes)
+                .add(REGISTRY_URL_FOR_LOGIN, "", Required.NO)
+                .add(REGISTRY_USERNAME, "", Required.NO)
+                .add(REGISTRY_PASSWORD, "", Required.NO, Secure.YES)
 
                 // run
-                .add(RUN_IMAGE, "", Required.No)
-                .add(RUN_ENV_VARS, "", Required.No)
-                .add(RUN_PRE_COPY_FROM, "", Required.No)
-                .add(RUN_PRE_COPY_TO, "", Required.No)
-                .add(RUN_POST_COPY_FROM, "", Required.No)
-                .add(RUN_POST_COPY_TO, "", Required.No)
+                .add(RUN_IMAGE, "", Required.NO)
+                .add(RUN_ENV_VARS, "", Required.NO)
+                .add(RUN_PRE_COPY_FROM, "", Required.NO)
+                .add(RUN_PRE_COPY_TO, "", Required.NO)
+                .add(RUN_POST_COPY_FROM, "", Required.NO)
+                .add(RUN_POST_COPY_TO, "", Required.NO)
 //                .add(RUN_VOLUME, "", Required.No)
 //                .add(RUN_VOLUMES_FROM, "", Required.No)
 //                .add(RUN_WORKING_DIR, "", Required.No)
-                .add(RUN_ARGS, "", Required.No)
+                .add(RUN_ARGS, "", Required.NO)
 
                 //
                 .toMap();

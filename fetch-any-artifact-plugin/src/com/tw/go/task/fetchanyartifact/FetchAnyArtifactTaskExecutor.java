@@ -1,6 +1,7 @@
 package com.tw.go.task.fetchanyartifact;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.tw.go.plugin.common.*;
 
 import java.io.IOException;
@@ -18,6 +19,8 @@ import static com.tw.go.task.fetchanyartifact.FetchAnyArtifactTask.*;
  */
 public class FetchAnyArtifactTaskExecutor extends TaskExecutor {
 
+    private final Logger logger = Logger.getLoggerFor(FetchAnyArtifactTaskExecutor.class);
+
     public FetchAnyArtifactTaskExecutor(JobConsoleLogger console, Context context, Map config) {
         super(console, context, config);
     }
@@ -27,6 +30,7 @@ public class FetchAnyArtifactTaskExecutor extends TaskExecutor {
         try {
             return runCommand();
         } catch (Exception e) {
+            logException(logger,e);
             return new Result(false, getPluginLogPrefix() + e.getMessage(), e);
         }
     }
@@ -61,9 +65,10 @@ public class FetchAnyArtifactTaskExecutor extends TaskExecutor {
 
         if (!extractArtifactFromPreviousRun(apiClient, artifact, targetDir.toString())) {
             console.printLine("No successful pipeline run found (with a valid artifact to retrieve)");
+        } else {
+            console.printLine("Successful pipeline run found (with a valid artifact to retrieve)");
         }
-
-        return new Result(true, "Finished");
+            return new Result(true, "Finished");
     }
 
     public boolean extractArtifactFromPreviousRun(GoApiClient apiClient, String artifact, String targetDirectory) throws IOException {
@@ -79,6 +84,8 @@ public class FetchAnyArtifactTaskExecutor extends TaskExecutor {
         if (pipelineJob.isEmpty()) {
             pipelineJob = configVars.getValue(ENVVAR_NAME_GO_JOB_NAME);
         }
+
+        console.printLine(String.format("Searching for pipeline run '%s/%s/%s/%s'",pipelineName,pipelineStage,pipelineJob,artifact));
 
         for (int offset = 0; ; ) {
             Map history = apiClient.getPipelineHistory(pipelineName, offset);

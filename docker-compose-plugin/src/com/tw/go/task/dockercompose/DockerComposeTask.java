@@ -29,17 +29,17 @@ public class DockerComposeTask extends BaseGoPlugin {
     @Override
     protected GoPluginApiResponse handleGetConfigRequest(GoPluginApiRequest request) {
         return success(new ConfigDef()
-                .add(VMNAME, "", ConfigDef.Required.Yes)
-                .add(SERVICE, "", ConfigDef.Required.No)
-                .add(ENV_VARS, "", ConfigDef.Required.No)
-                .add(COMPOSE_BUILD, "", ConfigDef.Required.No)
-                .add(COMPOSE_FILE, "", ConfigDef.Required.No)
-                .add(FORCE_RECREATE, "false", ConfigDef.Required.No)
-                .add(FORCE_BUILD, "false", ConfigDef.Required.No)
-                .add(COMPOSE_NO_CACHE, "false", ConfigDef.Required.No)
-                .add(COMPOSE_REMOVE_VOLUMES, "false", ConfigDef.Required.No)
-                .add(FORCE_PULL, "false", ConfigDef.Required.No)
-                .add(FORCE_BUILD_ONLY, "false", ConfigDef.Required.No)
+                .add(VMNAME, "", Required.YES)
+                .add(SERVICE, "", Required.NO)
+                .add(ENV_VARS, "", Required.NO)
+                .add(COMPOSE_BUILD, "", Required.NO)
+                .add(COMPOSE_FILE, "", Required.NO)
+                .add(FORCE_RECREATE, "false", Required.NO)
+                .add(FORCE_BUILD, "false", Required.NO)
+                .add(COMPOSE_NO_CACHE, "false", Required.NO)
+                .add(COMPOSE_REMOVE_VOLUMES, "false", Required.NO)
+                .add(FORCE_PULL, "false", Required.NO)
+                .add(FORCE_BUILD_ONLY, "false", Required.NO)
                 .toMap());
     }
 

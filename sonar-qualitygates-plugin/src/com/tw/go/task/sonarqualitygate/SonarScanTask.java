@@ -1,6 +1,7 @@
 
 package com.tw.go.task.sonarqualitygate;
 
+import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
@@ -11,16 +12,17 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.thoughtworks.go.plugin.api.task.*;
 import com.tw.go.plugin.common.Context;
 import com.tw.go.plugin.common.GoApiConstants;
+import com.tw.go.plugin.common.MaskingJobConsoleLogger;
 import com.tw.go.plugin.common.Result;
 import org.apache.commons.io.IOUtils;
-import com.google.gson.GsonBuilder;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
 
 @Extension
 public class SonarScanTask implements GoPlugin {
@@ -43,12 +45,15 @@ public class SonarScanTask implements GoPlugin {
     public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
         switch (request.requestName()) {
             case "configuration":
+            case "go.plugin-settings.get-configuration":
                 return handleGetConfigRequest();
             case "validate":
+            case "go.plugin-settings.validate-configuration":
                 return handleValidation();
             case "execute":
                 return handleTaskExecution(request);
             case "view":
+            case "go.plugin-settings.get-view":
                 return handleTaskView();
             default:
                 throw new UnhandledRequestTypeException(request.requestName());
@@ -75,16 +80,20 @@ public class SonarScanTask implements GoPlugin {
         Map config = (Map) executionRequest.get("config");
         Map context = (Map) executionRequest.get("context");
 
-        SonarTaskExecutor executor = new SonarTaskExecutor(JobConsoleLogger.getConsoleLogger(), new Context(context), config );
+        SonarTaskExecutor executor = new SonarTaskExecutor(MaskingJobConsoleLogger.getConsoleLogger(), new Context(context), config);
 
-        Result result = executor.execute();
-        return createResponse(result.responseCode(), result.toMap());
+        try {
+            Result result = executor.execute();
+            return createResponse(result.responseCode(), result.toMap());
+        } catch (Exception e) {
+            Result result = new Result(false,e.getMessage());
+            return createResponse(SUCCESS_RESPONSE_CODE, result.toMap());
+        }
     }
 
     private GoPluginApiResponse handleValidation() {
         HashMap validationResult = new HashMap();
-        int responseCode = DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
-
+        int responseCode = SUCCESS_RESPONSE_CODE;
         return createResponse(responseCode, validationResult);
     }
 
@@ -132,7 +141,7 @@ public class SonarScanTask implements GoPlugin {
         sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
         config.put(SONAR_API_URL, sonarApiUrl);
 
-        return createResponse(DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE, config);
+        return createResponse(SUCCESS_RESPONSE_CODE, config);
     }
 
     private GoPluginApiResponse createResponse(int responseCode, Map body) {

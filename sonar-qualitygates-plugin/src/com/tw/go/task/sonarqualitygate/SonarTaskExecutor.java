@@ -2,9 +2,8 @@
 package com.tw.go.task.sonarqualitygate;
 
 
-import com.thoughtworks.go.plugin.api.task.*;
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.*;
-import com.tw.go.plugin.common.TaskExecutor;
 import org.json.JSONObject;
 
 import java.security.GeneralSecurityException;
@@ -16,7 +15,7 @@ public class SonarTaskExecutor extends TaskExecutor {
         super(console, context, config);
     }
 
-    public Result execute() {
+    public Result execute() throws Exception {
 
         String sonarProjectKey = (String) ((Map) this.config.get(SonarScanTask.SONAR_PROJECT_KEY)).get(GoApiConstants.PROPERTY_NAME_VALUE);
         log("checking quality gate result for: " + sonarProjectKey);
@@ -159,4 +158,4 @@ public class SonarTaskExecutor extends TaskExecutor {
         return "[SonarQube Quality Gate Plugin] ";
     }
 
- }
+}

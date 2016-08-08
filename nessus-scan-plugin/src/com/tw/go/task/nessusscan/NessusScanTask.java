@@ -11,16 +11,15 @@ import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
 import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.thoughtworks.go.plugin.api.task.*;
-import com.tw.go.plugin.common.Context;
-import com.tw.go.plugin.common.GoApiConstants;
-import com.tw.go.plugin.common.Result;
+import com.tw.go.plugin.common.*;
 import org.apache.commons.io.IOUtils;
 import com.google.gson.GsonBuilder;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
 
 @Extension
 public class NessusScanTask implements GoPlugin {
@@ -41,16 +40,21 @@ public class NessusScanTask implements GoPlugin {
 
     @Override
     public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
-        if ("configuration".equals(request.requestName())) {
-            return handleGetConfigRequest();
-        } else if ("validate".equals(request.requestName())) {
-            return handleValidation();
-        } else if ("execute".equals(request.requestName())) {
-            return handleTaskExecution(request);
-        } else if ("view".equals(request.requestName())) {
-            return handleTaskView();
+        switch (request.requestName()) {
+            case "configuration":
+            case "go.plugin-settings.get-configuration":
+                return handleGetConfigRequest();
+            case "validate":
+            case "go.plugin-settings.validate-configuration":
+                return handleValidation();
+            case "execute":
+                return handleTaskExecution(request);
+            case "view":
+            case "go.plugin-settings.get-view":
+                return handleTaskView();
+            default:
+                throw new UnhandledRequestTypeException(request.requestName());
         }
-        throw new UnhandledRequestTypeException(request.requestName());
     }
 
     private GoPluginApiResponse handleTaskView() {
@@ -73,10 +77,16 @@ public class NessusScanTask implements GoPlugin {
         Map config = (Map) executionRequest.get("config");
         Map context = (Map) executionRequest.get("context");
 
-        NessusScanTaskExecutor executor = new NessusScanTaskExecutor(JobConsoleLogger.getConsoleLogger(), new Context(context), config );
+        NessusScanTaskExecutor executor = new NessusScanTaskExecutor(MaskingJobConsoleLogger.getConsoleLogger(), new Context(context), config );
 
-        Result result = executor.execute();
-        return createResponse(result.responseCode(), result.toMap());
+        try {
+            Result result = executor.execute();
+            return createResponse(result.responseCode(), result.toMap());
+        } catch (Exception e) {
+            Result result = new Result(false,e.getMessage());
+            return createResponse(SUCCESS_RESPONSE_CODE, result.toMap());
+        }
+
     }
 
     private GoPluginApiResponse handleValidation() {

@@ -92,11 +92,11 @@ public class FortifyTask extends BaseGoPlugin
     private Map getConfigDef()
     {
         return new ConfigDef()
-                .add(USERNAME, "", ConfigDef.Required.No)
-                .add(PASSWORD, "", ConfigDef.Required.No, ConfigDef.Secure.Yes)
-                .add(FORTIFY_URL, "", ConfigDef.Required.Yes)
-                .add(SSC_PROJECT, "", ConfigDef.Required.Yes)
-                .add(SSC_VERSION, "", ConfigDef.Required.Yes)
+                .add(USERNAME, "", Required.NO)
+                .add(PASSWORD, "", Required.NO, Secure.YES)
+                .add(FORTIFY_URL, "", Required.YES)
+                .add(SSC_PROJECT, "", Required.YES)
+                .add(SSC_VERSION, "", Required.YES)
                 .toMap();
     }
 

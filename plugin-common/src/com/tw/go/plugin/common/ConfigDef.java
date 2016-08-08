@@ -27,21 +27,21 @@ public class ConfigDef {
 
     public ConfigDef add(String id, String defaultValue)
     {
-        return add(id, defaultValue, Required.Yes, Secure.No);
+        return add(id, defaultValue, Required.YES, Secure.NO);
     }
 
-    public ConfigDef add(String id, String defaultValue, boolean required)
+    public ConfigDef add(String id, String defaultValue, Required required)
     {
-        return add(id, defaultValue, required, Secure.No);
+        return add(id, defaultValue, required, Secure.NO);
     }
 
-    public ConfigDef add(String id, String defaultValue, boolean required, boolean secure)
+    public ConfigDef add(String id, String defaultValue, Required required, Secure secure)
     {
         HashMap<String, Object> entry = new HashMap<>();
 
         entry.put("default-value", defaultValue);
-        entry.put("secure", new Boolean(secure));
-        entry.put("required", new Boolean(required));
+        entry.put("secure", Secure.YES == secure);
+        entry.put("required", Required.YES == required);
         map.put(id, entry);
 
         return this;
@@ -51,16 +51,6 @@ public class ConfigDef {
     {
         return map;
     }
-
-    public static class Required
-    {
-        public static boolean Yes = true;
-        public static boolean No = false;
-    }
-
-    public static class Secure
-    {
-        public static boolean Yes = true;
-        public static boolean No = false;
-    }
 }
+
+

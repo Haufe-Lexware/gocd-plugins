@@ -52,13 +52,13 @@ public class DockerComposeCommand extends AbstractCommand {
     }
 
     public Map getDockerMachineEnv(String vmname) throws FileNotFoundException {
+        String unifiedVmName = unifyMachineName(vmname);
         Selector machines = new Selector(getDockerMachines(gson, getAbsoluteWorkingDir() + "/.docker/machine"));
-        if (!machines.getMap().containsKey(vmname)) {
+        if (!machines.getMap().containsKey(unifiedVmName)) {
             throw new IllegalArgumentException("trying to use docker-compose with unknown machine");
         }
 
         String configPath = ".docker/machine/machines/" + vmname;
-        String unifiedVmName = unifyMachineName(vmname);
 
         int port = machines.select(unifiedVmName + ".Driver.EnginePort", DOCKER_PORT);
 

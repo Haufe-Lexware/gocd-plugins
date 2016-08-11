@@ -187,8 +187,8 @@ public class FortifyTaskExecutor extends TaskExecutor
 
     private int getProjectId(FortifyRequest request) {
         String result = request.request("GET", "https://v-fortifyapp/ssc" +
-                "/api/v1/projectVersions?q=project.name:" + request.sscProject +
-                "%2BAND%2Bname:" + request.sscVersion + "&fields=id",
+                "/api/v1/projectVersions?q=project.name:" + request.getSscProject() +
+                "%2BAND%2Bname:" + request.getSscVersion() + "&fields=id",
                 "application/json");
 
         JSONObject objResult = new JSONObject(result);
@@ -200,7 +200,7 @@ public class FortifyTaskExecutor extends TaskExecutor
     }
 
     private void getToken(FortifyRequest request) {
-        String result = request.request("POST", "https://v-fortifyapp/ssc" +
+        String result = request.request("POST", configVars.getValue(FortifyTask.FORTIFY_URL) +
                 "/api/v1/auth/obtain_token", "application/json");
     }
 

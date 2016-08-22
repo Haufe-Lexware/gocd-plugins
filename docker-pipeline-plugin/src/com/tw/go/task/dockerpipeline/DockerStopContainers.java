@@ -5,14 +5,23 @@ import com.tw.go.plugin.common.AbstractCommand;
 import com.tw.go.plugin.common.ConfigVars;
 import com.tw.go.plugin.common.Context;
 
-public class DockerStopContainers extends AbstractCommand
-{
-    public DockerStopContainers(JobConsoleLogger console, ConfigVars configVars)
-    {
-        super(console);
+import java.util.List;
 
-        add("/bin/sh");
-        add("-c");
-        add("test -n \"$(docker ps -a -q)\" && docker stop $(docker ps -a -q) || echo \"No containers to stop\"");
-    }
+public class DockerStopContainers extends AbstractCommand {
+
+    public DockerStopContainers(JobConsoleLogger console, ConfigVars configVars) { super(console); }
+        @Override
+        public void run ()throws Exception {
+            List<String> ids = DockerEngine.getIds(new String[]{"docker", "ps", "-a", "-q"});
+
+            if (ids.size() > 0) {
+                add("docker");
+                add("stop");
+                for (String s : ids) {
+                    add(s);
+                }
+
+                super.run();
+            }
+        }
 }

@@ -12,10 +12,15 @@ public class DockerRemoveAllImages extends AbstractCommand {
 
     @Override
     public void run() throws Exception {
-        add("/bin/sh");
-        add("-c");
-        add("test -n \"$(docker images -q)\" && docker rmi -f $(docker images -q) || echo \"No images to delete\"");
+        List<String> ids = DockerEngine.getIds(new String[]{"docker", "images", "-q"});
 
-        super.run();
+        if (ids.size() > 0) {
+            add("docker");
+            add("rmi");
+            for (String s : ids) {
+                add(s);
+            }
+            super.run();
+        }
     }
 }

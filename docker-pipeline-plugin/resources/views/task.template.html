@@ -26,6 +26,14 @@
     <input type="text" ng-model="RegistryURL" ng-required="false">
     <span class="form_error" ng-show="GOINPUTNAME[RegistryURL].$error.server">{{ GOINPUTNAME[RegistryURL].$error.server }}</span>
   </div>
+
+  <div class="checkbox_row">
+    <input id="isPush" type="checkbox" ng-model="isPush2"
+           ng-init="isPush2 = isPush"
+           ng-change="isPush = isPush2" ng-true-value="true" ng-false-value="false">
+    <input id="pushCheckBox" type="hidden" ng-model="isPush" value="{{isPush}}">
+    <label>Push the resulting image(s)</label>
+  </div>
 </div>
 
 <div class="form_item_block">

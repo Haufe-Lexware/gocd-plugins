@@ -44,7 +44,7 @@ public class DockerBuildCommand extends DockerCommand {
         add(context);
     }
 
-    private void addBuildArgs(String buildArgs) {
+    public void addBuildArgs(String buildArgs) {
         for (String buildArg : ListUtil.splitByFirstOrDefault(buildArgs, ';')) {
             if (!buildArg.isEmpty()) {
                 command.add("--build-arg");
@@ -53,7 +53,7 @@ public class DockerBuildCommand extends DockerCommand {
         }
     }
 
-    private void addImageTag(String baseName, String tags, String tagPostfix) {
+    public void addImageTag(String baseName, String tags, String tagPostfix) {
         for (String tag : ListUtil.splitByFirstOrDefault(tags, ';')) {
             if (!tag.isEmpty()) {
                 if (!tagPostfix.isEmpty()) {
@@ -67,21 +67,19 @@ public class DockerBuildCommand extends DockerCommand {
         }
     }
 
-    private String makeBaseName(String registry, String username, String imageName) {
-        if (null != registry && !registry.isEmpty()) {
-            if ((registry.indexOf("docker.io") < 0) &&
-                (registry.indexOf("hub.docker.com") < 0)) {
-                return registry + "/" + username + "/" + imageName;
-            } else {
-                // Official docker hub; leave out registry, please
-                return username + "/" + imageName;
-            }
+    public String makeBaseName(String registry, String username, String imageName) {
+        if (!("".equals(registry))) {
+            return registry + "/" + username + "/" + imageName;
+        }
+        // Official docker hub; leave out registry, please
+        else if (!("".equals(username))) {
+            return username + "/" + imageName;
         }
         // Assume local name
         return imageName;
     }
 
-    private String getDockerfileAbsolutePath(ConfigVars configVars) {
+    public String getDockerfileAbsolutePath(ConfigVars configVars) {
         String dockerfile = configVars.isEmpty(DockerTask.DOCKER_FILE_NAME) ? "Dockerfile" : configVars.getValue(DockerTask.DOCKER_FILE_NAME);
 
         return Paths.get(getAbsoluteWorkingDir() + "/" + dockerfile)
@@ -90,7 +88,7 @@ public class DockerBuildCommand extends DockerCommand {
                 .toString();
     }
 
-    private String getUsername(ConfigVars configVars) {
+    public String getUsername(ConfigVars configVars) {
         if (!configVars.isEmpty(DockerTask.USERNAME)) {
             return configVars.getValue(DockerTask.USERNAME);
         }
@@ -98,11 +96,11 @@ public class DockerBuildCommand extends DockerCommand {
         return configVars.getValue(DockerTask.REGISTRY_USERNAME);
     }
 
-    private String getDirectory(String dockerFile) {
+    public String getDirectory(String dockerFile) {
         return Paths.get(dockerFile).getParent().toString();
     }
 
-    private String getRegistryName(String registryAddress) {
+    public String getRegistryName(String registryAddress) {
         try {
             if (-1 == registryAddress.indexOf("://")) {
                 registryAddress = "http://" + registryAddress;
@@ -116,4 +114,7 @@ public class DockerBuildCommand extends DockerCommand {
         return "";
     }
 
+    public List<String> getCommand() {
+        return command;
+    }
 }

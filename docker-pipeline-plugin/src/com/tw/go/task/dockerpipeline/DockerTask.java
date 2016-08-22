@@ -18,6 +18,7 @@ public class DockerTask extends BaseGoPlugin {
     public static final String DOCKER_FILE_NAME = "DockerFileName";
     public static final String BUILD_ARGS = "BuildArgs";
     public static final String BUILD_NO_CACHE = "BUILD_NO_CACHE";
+    public static final String PUSH_IMAGES = "isPush";
 
     public static final String USERNAME = "Username";
     public static final String IMAGE_TAG = "ImageTag";
@@ -128,6 +129,7 @@ public class DockerTask extends BaseGoPlugin {
                 .add(REGISTRY_URL_FOR_LOGIN, "", Required.NO)
                 .add(REGISTRY_USERNAME, "", Required.NO)
                 .add(REGISTRY_PASSWORD, "", Required.NO, Secure.YES)
+                .add(PUSH_IMAGES, "", Required.NO, Secure.NO)
 
                 // run
                 .add(RUN_IMAGE, "", Required.NO)

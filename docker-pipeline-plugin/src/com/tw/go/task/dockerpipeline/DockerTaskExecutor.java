@@ -40,8 +40,7 @@ public class DockerTaskExecutor extends TaskExecutor {
                 new DockerRemoveAllImages(console, configVars)
                         .run();
             }
-            if (!configVars.isEmpty(DockerTask.REGISTRY_USERNAME) && !configVars.isEmpty(DockerTask.REGISTRY_PASSWORD)
-                    && !configVars.isEmpty(DockerTask.REGISTRY_URL_FOR_LOGIN)) {
+            if (!configVars.isEmpty(DockerTask.REGISTRY_USERNAME) && !configVars.isEmpty(DockerTask.REGISTRY_PASSWORD)) {
                 new DockerLoginCommand(console, configVars)
                         .run();
             }
@@ -50,7 +49,7 @@ public class DockerTaskExecutor extends TaskExecutor {
                 DockerBuildCommand build = new DockerBuildCommand(console, configVars);
                 build.run();
 
-                if (!configVars.isEmpty(DockerTask.REGISTRY_URL_FOR_LOGIN)) {
+                if (configVars.isChecked(DockerTask.PUSH_IMAGES)) {
                     for (String tag : build.imageAndTag) {
                         if (tag != null) {
                             new DockerPushCommand(console, configVars, tag)

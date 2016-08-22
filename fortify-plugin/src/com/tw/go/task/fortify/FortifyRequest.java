@@ -7,10 +7,10 @@ import com.tw.go.plugin.common.ApiRequestBase;
 
 public class FortifyRequest extends ApiRequestBase
 {
-    String sscProject = null;
-    String sscVersion = null;
-    String username = null;
-    String password = null;
+    private String sscProject = null;
+    private String sscVersion = null;
+    private String username = null;
+    private String password = null;
 
     public FortifyRequest(String apiUrl, String accessKey, String secretKey, boolean disableSslVerification) throws GeneralSecurityException {
         super(apiUrl, accessKey, secretKey, disableSslVerification);
@@ -56,5 +56,25 @@ public class FortifyRequest extends ApiRequestBase
     public void setSscVersion(String ssv)
     {
         sscVersion = ssv;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public String getSscProject()
+    {
+        return sscProject;
+    }
+
+    public String getSscVersion()
+    {
+        return sscVersion;
     }
 }

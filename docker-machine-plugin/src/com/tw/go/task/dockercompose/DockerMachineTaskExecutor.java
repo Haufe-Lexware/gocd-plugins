@@ -30,40 +30,49 @@ public class DockerMachineTaskExecutor extends TaskExecutor {
     @Override
     public Result execute() throws Exception {
         try {
-            ArrayList<NameParams> nameParams = getNameParams(configVars.getValue(VMNAME));
-
             HashMap<String, String> states = getMachineStates();
 
             new DockerMachineListCommand(console, configVars)
                     .run();
 
-            for (NameParams params : nameParams) {
-                for (int i = params.start; i <= params.stop; i += params.step) {
-                    String name = String.format(params.format, i);
-                    configVars.setConfigValue(VMNAME, name);
+            ArrayList<NameParams> nameParams = getNameParams(configVars.getValue(VMNAME));
+            ArrayList<String> names = getExpandedValueArray(nameParams);
 
-                    if (states.keySet().contains(name)) {
-                        if (configVars.isChecked(DockerMachineTask.REMOVE)
-                                || "Error".equalsIgnoreCase(states.get(name))) {
-                            new DockerMachineRemoveCommand(console, configVars)
-                                    .run();
-                            new DockerMachineListCommand(console, configVars)
-                                    .run();
-                            states.remove(name);
-                        }
-                    }
+            ArrayList<NameParams> ipParams = getNameParams(configVars.getValue(GENERIC_IP_ADDRESS));
+            ArrayList<String> addrs = getExpandedValueArray(ipParams);
 
-                    if (!"undefined".equals(configVars.getValue(DockerMachineTask.DRIVER))) {
-                        if ("Stopped".equalsIgnoreCase(states.get(name))) {
-                            new DockerMachineStartCommand(console, configVars)
-                                    .run();
-                        } else if (!"Running".equalsIgnoreCase(states.get(name))) {
-                            new DockerMachineCreateCommand(console, configVars)
-                                    .run();
-                        }
+            if ((addrs.size() > 0) && (names.size() != addrs.size())) {
+                throw new Exception("Number of (expanded) names and ip-addresses do not match!");
+            }
+
+            for (int idx = 0; idx < names.size(); idx++) {
+                String name = names.get(idx);
+                configVars.setConfigValue(VMNAME, name);
+
+                String addr = addrs.get(idx);
+                configVars.setConfigValue(GENERIC_IP_ADDRESS, addr);
+
+                if (states.keySet().contains(name)) {
+                    if (configVars.isChecked(DockerMachineTask.REMOVE)
+                            || "Error".equalsIgnoreCase(states.get(name))) {
+                        new DockerMachineRemoveCommand(console, configVars)
+                                .run();
                         new DockerMachineListCommand(console, configVars)
                                 .run();
+                        states.remove(name);
                     }
+                }
+
+                if (!"undefined".equals(configVars.getValue(DockerMachineTask.DRIVER))) {
+                    if ("Stopped".equalsIgnoreCase(states.get(name))) {
+                        new DockerMachineStartCommand(console, configVars)
+                                .run();
+                    } else if (!"Running".equalsIgnoreCase(states.get(name))) {
+                        new DockerMachineCreateCommand(console, configVars)
+                                .run();
+                    }
+                    new DockerMachineListCommand(console, configVars)
+                            .run();
                 }
             }
         } catch (Exception e) {
@@ -72,6 +81,15 @@ public class DockerMachineTaskExecutor extends TaskExecutor {
         }
 
         return new Result(true, "Finished");
+    }
+
+    public ArrayList<String> getExpandedValueArray(ArrayList<NameParams> nameParams) {
+        ArrayList<String> names = new ArrayList<>();
+        for (NameParams params : nameParams) {
+            for (int i = params.start; i <= params.stop; i += params.step) {
+                names.add(String.format(params.format, i));
+            }
+        } return names;
     }
 
     public HashMap<String, String> getMachineStates() throws Exception {
@@ -96,8 +114,12 @@ public class DockerMachineTaskExecutor extends TaskExecutor {
     // "front[%d,1,5]back;front[%d,1,5,2]back"
     private ArrayList<NameParams> getNameParams(String value) {
         ArrayList<NameParams> nameParams = new ArrayList<>();
-        for (String s : value.split(";")) {
-            nameParams.add(splitNameParams(s));
+        if (!value.isEmpty()) {
+            for (String s : value.split(";")) {
+                if (!s.isEmpty()) {
+                    nameParams.add(splitNameParams(s));
+                }
+            }
         }
         return nameParams;
     }

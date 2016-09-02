@@ -28,7 +28,13 @@ public class DockerComposeTaskExecutor extends TaskExecutor {
     @Override
     public Result execute() throws Exception {
         try {
+            if (configVars.isChecked(DockerComposeTask.COMPOSE_DOWN)) {
+                new DockerComposeDownCommand(console, configVars)
+                        .run();
+            }
             if (configVars.isChecked(DockerComposeTask.COMPOSE_REMOVE_VOLUMES)) {
+                new DockerComposePsCommand(console, configVars)
+                        .run();
                 new DockerComposeStopCommand(console, configVars)
                         .run();
                 new DockerComposeRmCommand(console, configVars)
@@ -42,8 +48,14 @@ public class DockerComposeTaskExecutor extends TaskExecutor {
                 new DockerComposeBuildCommand(console, configVars)
                         .run();
             }
+            if (!configVars.isEmpty(DockerComposeTask.BUNDLE_OUTPUT_PATH)) {
+                new DockerComposeBundleCommand(console, configVars)
+                        .run();
+            }
             if (!configVars.isChecked(DockerComposeTask.FORCE_BUILD_ONLY)) {
                 new DockerComposeUpCommand(console, configVars)
+                        .run();
+                new DockerComposePsCommand(console, configVars)
                         .run();
             }
         } catch (Exception e) {

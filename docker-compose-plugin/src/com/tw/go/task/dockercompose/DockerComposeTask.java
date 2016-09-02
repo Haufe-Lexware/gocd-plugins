@@ -23,8 +23,10 @@ public class DockerComposeTask extends BaseGoPlugin {
     public static final String FORCE_BUILD = "FORCE_BUILD";
     public static final String COMPOSE_NO_CACHE = "COMPOSE_NO_CACHE";
     public static final String COMPOSE_REMOVE_VOLUMES = "COMPOSE_REMOVE_VOLUMES";
+    public static final String COMPOSE_DOWN = "COMPOSE_DOWN";
     public static final String FORCE_PULL = "FORCE_PULL";
     public static final String FORCE_BUILD_ONLY = "FORCE_BUILD_ONLY";
+    public static final String BUNDLE_OUTPUT_PATH = "BUNDLE_OUTPUT_PATH";
 
     @Override
     protected GoPluginApiResponse handleGetConfigRequest(GoPluginApiRequest request) {
@@ -38,8 +40,10 @@ public class DockerComposeTask extends BaseGoPlugin {
                 .add(FORCE_BUILD, "false", Required.NO)
                 .add(COMPOSE_NO_CACHE, "false", Required.NO)
                 .add(COMPOSE_REMOVE_VOLUMES, "false", Required.NO)
+                .add(COMPOSE_DOWN, "false", Required.NO)
                 .add(FORCE_PULL, "false", Required.NO)
                 .add(FORCE_BUILD_ONLY, "false", Required.NO)
+                .add(BUNDLE_OUTPUT_PATH, "", Required.NO)
                 .toMap());
     }
 

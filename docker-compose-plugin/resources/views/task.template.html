@@ -68,6 +68,17 @@
     </div>
     <div class="form_item_block">
         <div class="checkbox_row">
+            <input id="COMPOSE_DOWN2" type="checkbox" ng-model="COMPOSE_DOWN2"
+                   ng-init="COMPOSE_DOWN2 = COMPOSE_DOWN"
+                   ng-change="COMPOSE_DOWN = COMPOSE_DOWN2" ng-true-value="true"
+                   ng-false-value="false">
+            <input id="COMPOSE_DOWN" type="hidden" ng-model="COMPOSE_DOWN"
+                   value="{{COMPOSE_DOWN}}">
+            <label>Issue a "compose down" command</label>
+        </div>
+    </div>
+    <div class="form_item_block">
+        <div class="checkbox_row">
             <input id="FORCE_PULL2" type="checkbox" ng-model="FORCE_PULL2" ng-init="FORCE_PULL2 = FORCE_PULL"
                    ng-change="FORCE_PULL = FORCE_PULL2" ng-true-value="true" ng-false-value="false">
             <input id="FORCE_PULL" type="hidden" ng-model="FORCE_PULL" value="{{FORCE_PULL}}">
@@ -98,4 +109,11 @@
             <label>Force recreation of containers (e.g. For restarting init)</label>
         </div>
     </div>
+<!--
+    <div class="form_item_block">
+        <label>Create an deployment bundle (*.dab)</label>
+        <input type="text" ng-model="BUNDLE_OUTPUT_PATH" ng-required="false">
+        </input>
+    </div>
+-->
 </div>

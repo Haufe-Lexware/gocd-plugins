@@ -44,8 +44,10 @@ public class FetchAnyArtifactTaskExecutor extends TaskExecutor {
                     + ENVVAR_NAME_GO_BUILD_USER_PASSWORD + "'");
         }
 
-        GoApiClient apiClient = new GoApiClient(
-                configVars.getValue(ENVVAR_NAME_GO_SERVER_URL));
+        //FIXME: refactor to use Urlbuilder instead of string concat (version 16 broke implementation because the base url removed trailing /)
+        String url = configVars.getValue(ENVVAR_NAME_GO_SERVER_URL) + "/";
+
+        GoApiClient apiClient = new GoApiClient(url);
 
         apiClient.setBasicAuthentication(
                 configVars.getValue(ENVVAR_NAME_GO_BUILD_USER),

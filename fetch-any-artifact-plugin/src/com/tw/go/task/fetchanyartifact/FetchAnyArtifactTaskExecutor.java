@@ -36,9 +36,6 @@ public class FetchAnyArtifactTaskExecutor extends TaskExecutor {
     }
 
     public Result runCommand() throws Exception {
-
-        log(configVars.getValue(ENVVAR_NAME_GO_SERVER_URL));
-
         if (configVars.isEmpty(ENVVAR_NAME_GO_BUILD_USER) ||
                 configVars.isEmpty(ENVVAR_NAME_GO_BUILD_USER_PASSWORD)) {
             throw new Exception("You must set environment variables '"

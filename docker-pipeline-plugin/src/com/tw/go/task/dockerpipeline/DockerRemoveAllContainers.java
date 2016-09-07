@@ -18,7 +18,7 @@ public class DockerRemoveAllContainers extends AbstractCommand {
     @Override
     public void run() throws Exception {
 
-        List<String> ids = DockerEngine.getIds(new String[]{"docker", "ps", "-a", "-q", "-f", "status=exited"});
+        List<String> ids = DockerEngine.getIds(new String[]{"docker", "ps", "-a", "-q", "-f"});
 
         if (ids.size() > 0) {
             add("docker");

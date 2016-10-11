@@ -66,8 +66,7 @@ public abstract class ApiRequestBase {
     }
 
     public String getApiUrl() {
-        //FIXME: refactor to use Urlbuilder instead of string concat (version 16 broke implementation because the base url removed trailing /)
-        return apiUrl + "/";
+        return apiUrl;
     }
 
     protected String requestGet(String requestUrlString) throws IOException {

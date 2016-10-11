@@ -26,6 +26,9 @@ public abstract class TaskExecutor {
 
     public TaskExecutor(JobConsoleLogger console, Context context, Map config) {
 
+        // replace parameters and environment variables
+        replaceEnvVarsAndPropertiesInConfig(context, config);
+
         Map<String, String> envVars = context.getEnvironmentVariables();
 
         // So external commands work "in" the pipeline directory and not in some parent directory
@@ -85,5 +88,24 @@ public abstract class TaskExecutor {
         throwable.printStackTrace(new PrintStream(baos));
         String output = baos.toString(StandardCharsets.UTF_8.name());
         logger.error(throwable + "\n" + output);
+    }
+
+    protected Map replaceEnvVarsAndPropertiesInConfig(Context context,Map config){
+        Iterator it = config.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            EnvVarParamParser parser = new EnvVarParamParser(context.getEnvironmentVariables(), console);
+            JobPropParamParser propParser = new JobPropParamParser(context.getEnvironmentVariables(), console);
+
+            Map valueMap = (Map) entry.getValue();
+            if (valueMap.containsKey("value")) {
+                String value = propParser.parse(parser.parse((String) valueMap.get("value")));
+                valueMap.put(GoApiConstants.PROPERTY_NAME_VALUE, value);
+                entry.setValue(valueMap);
+            }
+        }
+
+        return config;
+
     }
 }

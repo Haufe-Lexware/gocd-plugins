@@ -65,23 +65,23 @@ public class GoApiClient extends ApiRequestBase {
     }
 
     private String getPipelineHistoryRequestUri(String pipelineName, int offset) {
-        return getApiUrl() + "api/pipelines/" + pipelineName + "/history/" + offset;
+        return getApiUrl() + "/api/pipelines/" + pipelineName + "/history/" + offset;
     }
 
     private String getPipelineConfigRequestUri(String pipelineName) {
-        return getApiUrl() + "api/admin/pipelines/" + pipelineName;
+        return getApiUrl() + "/api/admin/pipelines/" + pipelineName;
     }
 
     private String getJobPropertyRequestUri(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName) {
-        return getApiUrl() + "properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName + "/" + propertyName;
+        return getApiUrl() + "/properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName + "/" + propertyName;
     }
 
     private String getJobPropertyRequestUri(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName) {
-        return getApiUrl() + "properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName;
+        return getApiUrl() + "/properties/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName;
     }
 
     private String getArtifactRequestUri(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String artifact) {
-        return getApiUrl() + "files/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName + "/" + artifact;
+        return getApiUrl() + "/files/" + pipelineName + "/" + pipelineCounter + "/" + stageName + "/" + stageCounter + "/" + jobName + "/" + artifact;
     }
 
 
@@ -95,19 +95,9 @@ public class GoApiClient extends ApiRequestBase {
         HashMap data = new HashMap();
         StringBuilder sb = new StringBuilder();
         ArrayList<String> header = new ArrayList<>();
-        boolean escaped = false;
         boolean readHeaders = true;
         int col = 0;
         for (char c : csv.toCharArray()) {
-            if (escaped) {
-                sb.append(c);
-                escaped = false;
-                continue;
-            }
-            if (c == '\\') {
-                escaped = true;
-                continue;
-            }
             if (c == ',') {
                 if (readHeaders) {
                     header.add(sb.toString());
@@ -117,12 +107,20 @@ public class GoApiClient extends ApiRequestBase {
                 sb.setLength(0);
                 col++;
             }
-            if (c == '\n') {
+            else if (c == '\n') {
                 if (!readHeaders) {
+                    data.put(header.get(col), sb.toString());
+                    sb.setLength(0);
+                    col = 0;
                     break;
                 }
+                header.add(sb.toString());
+                sb.setLength(0);
                 col = 0;
                 readHeaders = false;
+            }
+            else {
+                sb.append(c);
             }
         }
         return data;

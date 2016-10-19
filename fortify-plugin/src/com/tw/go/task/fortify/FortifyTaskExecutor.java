@@ -2,6 +2,7 @@ package com.tw.go.task.fortify;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.Context;
+import com.tw.go.plugin.common.GoApiConstants;
 import com.tw.go.plugin.common.Result;
 import com.tw.go.plugin.common.TaskExecutor;
 import org.json.JSONArray;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import static com.tw.go.plugin.common.GoApiConstants.ENVVAR_NAME_GO_PIPELINE_COUNTER;
 
 public class FortifyTaskExecutor extends TaskExecutor
 {
@@ -88,19 +90,27 @@ public class FortifyTaskExecutor extends TaskExecutor
         if(passed)
             return new Result(true, "Finished");
         else
-            return new Result(false, "[Fortify] Error ! There are critical or high priority " +
-                    "issues or scans which require approval !" + "\n");
+            return new Result(false, "[Fortify] Error ! There may be: \n- critical or high priority " +
+                    "issues\n- the name of the filescan doesn't match the pipeline counter\n" +
+                    "- there are scans which require approval" + "\n");
     }
 
     public boolean isUnsuccessfulScan(JSONArray array)
     {
         boolean unsuccessfulScan = false;
 
-        log("Scans which need approval:");
-
         for (int i = 0; i < array.length(); i++)
         {
             JSONObject obj = array.getJSONObject(i);
+
+            String pipelineNumber = obj.getString("originalFileName").substring(
+                    obj.getString("originalFileName").lastIndexOf('_') + 1,
+                    obj.getString("originalFileName").lastIndexOf('.'));
+
+            if(!pipelineNumber.equals(configVars.getValue(ENVVAR_NAME_GO_PIPELINE_COUNTER)))
+            {
+                unsuccessfulScan = true;
+            }
 
             if(obj.getString("status").equals("REQUIRE_AUTH"))
             {

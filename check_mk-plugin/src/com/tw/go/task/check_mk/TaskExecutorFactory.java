@@ -11,6 +11,8 @@ public class TaskExecutorFactory {
         switch (action) {
             case "add":
                 return new AddHostTaskExecutor(console, context, config);
+            case "edit":
+                return new EditHostTaskExecutor(console, context, config);
             case "remove":
                 return new RemoveHostTaskExecutor(console, context, config);
         }

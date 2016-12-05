@@ -37,7 +37,7 @@ public class TaskExecutorFactoryTest
     }
 
     @Test
-    public void Create_RemoveAction_ReturnsAddHostObject() throws Exception, JobNotSupportedException {
+    public void Create_RemoveAction_ReturnsRemoveHostObject() throws Exception, JobNotSupportedException {
         Map actionMock = Mockito.mock(Map.class);
         Mockito.when(actionMock.get("value")).thenReturn("remove");
         Mockito.when(config.get(CheckMkTask.ACTION)).thenReturn(actionMock);
@@ -45,6 +45,17 @@ public class TaskExecutorFactoryTest
         CheckMkTaskExecutor taskExecutor= TaskExecutorFactory.Create(consoleLogger,context,config);
 
         assertEquals(taskExecutor.getClass(),RemoveHostTaskExecutor.class);
+    }
+
+    @Test
+    public void Create_EditAction_ReturnsEditHostObject() throws Exception, JobNotSupportedException {
+        Map actionMock = Mockito.mock(Map.class);
+        Mockito.when(actionMock.get("value")).thenReturn("edit");
+        Mockito.when(config.get(CheckMkTask.ACTION)).thenReturn(actionMock);
+
+        CheckMkTaskExecutor taskExecutor= TaskExecutorFactory.Create(consoleLogger,context,config);
+
+        assertEquals(taskExecutor.getClass(),EditHostTaskExecutor.class);
     }
 
     @Test(expected = JobNotSupportedException.class)

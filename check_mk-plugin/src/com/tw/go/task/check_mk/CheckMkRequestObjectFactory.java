@@ -14,6 +14,17 @@ public class CheckMkRequestObjectFactory {
         return objAddHost;
     }
 
+    public static JSONObject CreateEditHostObject(String folderName, String hostname, String serverIp)throws Exception
+    {
+        JSONObject objCreateAttributes = new JSONObject();
+        objCreateAttributes.put("ipaddress", serverIp);
+        JSONObject objAddHost= new JSONObject();
+        objAddHost.put("folder", folderName);
+        objAddHost.put("hostname", hostname);
+        objAddHost.put("attributes", objCreateAttributes);
+        return objAddHost;
+    }
+
     public static JSONObject CreateRemoveHostObject(String hostname)throws Exception
     {
         JSONObject objRemoveHost= new JSONObject();

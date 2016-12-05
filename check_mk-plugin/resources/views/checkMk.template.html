@@ -25,6 +25,7 @@
 <select ng-init="SelectedAction='default'" ng-model="SelectedAction" >
     <option selected disabled value="default">Select action</option>
     <option value="add">Add Host</option>
+    <option value="edit">Edit Host</option>
     <option value="remove">Remove Host</option>
 </select>
 </br>
@@ -51,6 +52,35 @@
         </div>
         <div class="form_item_block">
             <label>Folder path:<span class="asterisk">*</span>
+            </label>
+            <input type="text" ng-model="FolderPath" ng-required="true">
+            </input>
+            <div role="alert">
+                <span class="error" color="red" ng-show="GOINPUTNAME[FolderPath].$error.required" >Required!</span>
+            </div>
+        </div>
+    </div>
+    <div ng-switch-when="edit">
+        <div class="form_item_block">
+            <label>Hostname:<span class="asterisk">*</span>
+            </label>
+            <input type="text" ng-model="Hostname" ng-required="true">
+            </input>
+            <div role="alert">
+                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required" >Required!</span>
+            </div>
+        </div>
+        <div class="form_item_block">
+            <label>New Host ip:<span class="asterisk">*</span>
+            </label>
+            <input type="text" ng-model="HostIp" ng-required="true">
+            </input>
+            <div role="alert">
+                <span class="error" color="red" ng-show="GOINPUTNAME[HostIp].$error.required" >Required!</span>
+            </div>
+        </div>
+        <div class="form_item_block">
+            <label>New Folder path:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="FolderPath" ng-required="true">
             </input>

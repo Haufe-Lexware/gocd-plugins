@@ -32,9 +32,10 @@ public class JobPropParamParser extends  ParamParser{
             // get go build user authorization
             if (envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER) != null &&
                     envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD) != null) {
-                log("Authorization set");
-                log("User: " + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString());
-                log("Password: " + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
+                // remove Authorization information
+                // log("Authorization set");
+                // log("User: " + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString());
+                // log("Password: " + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
 
                 client.setBasicAuthentication(envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString(), envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
             }

@@ -61,6 +61,7 @@ public class FetchAnyArtifactTask extends BaseGoPlugin {
                 .add("FAA_ARTIFACT_DESTINATION", "", Required.NO)
                 .add("FAA_STAGE_NAME", "", Required.NO)
                 .add("FAA_JOB_NAME", "", Required.NO)
+                .add("FAA_ARTIFACT_IS_FILE", "", Required.NO)
                 .add("FAA_FETCH_IF_FAILED", "", Required.NO)
                 .toMap());
     }

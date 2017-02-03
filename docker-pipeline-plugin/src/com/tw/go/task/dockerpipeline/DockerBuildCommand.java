@@ -6,8 +6,13 @@ import com.tw.go.plugin.common.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static com.tw.go.plugin.common.GoApiConstants.ENVVAR_GO_REVISION;
+import static com.tw.go.plugin.common.GoApiConstants.ENVVAR_NAME_GO_PIPELINE_COUNTER;
 
 
 public class DockerBuildCommand extends DockerCommand {
@@ -37,20 +42,56 @@ public class DockerBuildCommand extends DockerCommand {
             add("--no-cache");
         }
 
-        addBuildArgs(configVars.getValue(DockerTask.BUILD_ARGS));
+        addBuildArgs(configVars);
 
         addImageTag(baseImageName, configVars.getValue(DockerTask.IMAGE_TAG), configVars.getValue(DockerTask.IMAGE_TAG_POSTFIX));
 
         add(context);
     }
 
-    public void addBuildArgs(String buildArgs) {
+    public void addBuildArgs(ConfigVars configVars) {
+
+        String buildArgs = configVars.getValue(DockerTask.BUILD_ARGS);
+
+        if (configVars.isChecked(DockerTask.BUILD_MICROLABELING)) {
+            for (String microlabel : ListUtil.splitByFirstOrDefault(buildMicroLabeling(configVars), ';')) {
+                if (!microlabel.isEmpty()) {
+                    command.add("--build-arg");
+                    command.add(microlabel);
+                }
+            }
+        }
+
         for (String buildArg : ListUtil.splitByFirstOrDefault(buildArgs, ';')) {
             if (!buildArg.isEmpty()) {
                 command.add("--build-arg");
                 command.add(buildArg);
             }
         }
+    }
+
+    private String buildMicroLabeling(ConfigVars configVars) {
+        String BUILD_VENDOR = "BUILD_VENDOR=";
+        String BUILD_NAME = "BUILD_NAME=";
+        String BUILD_VERSION = "BUILD_VERSION=";
+        String BUILD_DATE = "BUILD_DATE=";
+        String REPOSITORY_URL = "REPOSITORY_URL=";
+        String REPOSITORY_REF = "REPOSITORY_REF=";
+
+        Date dt = new Date();
+        SimpleDateFormat date_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String timestamp = date_format.format(dt);
+
+        BUILD_VENDOR += "Haufe-Lexware" + ";";
+        BUILD_NAME += configVars.getValue(DockerTask.IMAGE_NAME) + ";";
+        BUILD_VERSION += configVars.getValue(ENVVAR_NAME_GO_PIPELINE_COUNTER) + ";";
+        BUILD_DATE += timestamp + ";";
+        REPOSITORY_URL += configVars.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN) + ";";
+        REPOSITORY_REF += configVars.getValue(ENVVAR_GO_REVISION) + ";";
+
+        return BUILD_VENDOR + BUILD_NAME +
+                BUILD_VERSION + BUILD_DATE +
+                REPOSITORY_URL + REPOSITORY_REF;
     }
 
     public void addImageTag(String baseName, String tags, String tagPostfix) {

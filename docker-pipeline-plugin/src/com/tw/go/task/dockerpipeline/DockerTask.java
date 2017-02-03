@@ -16,6 +16,7 @@ import java.util.Map;
 public class DockerTask extends BaseGoPlugin {
     public static final String IMAGE_NAME = "ImageName";
     public static final String DOCKER_FILE_NAME = "DockerFileName";
+    public static final String BUILD_MICROLABELING = "BUILD_MICROLABELING";
     public static final String BUILD_ARGS = "BuildArgs";
     public static final String BUILD_NO_CACHE = "BUILD_NO_CACHE";
     public static final String PUSH_IMAGES = "isPush";
@@ -116,6 +117,7 @@ public class DockerTask extends BaseGoPlugin {
 
                 // build
                 .add(DOCKER_FILE_NAME, "", Required.NO)
+                .add(BUILD_MICROLABELING, "false", Required.NO)
                 .add(BUILD_ARGS, "", Required.NO)
                 .add(BUILD_NO_CACHE, "false", Required.NO)
                 .add(IMAGE_NAME, "", Required.NO)

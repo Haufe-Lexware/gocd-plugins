@@ -16,6 +16,7 @@ public class GoApiConstants {
     public static final String ENVVAR_NAME_GO_BUILD_USER = "GO_BUILD_USER";
     public static final String ENVVAR_NAME_GO_BUILD_USER_PASSWORD = "GO_BUILD_USER_PASSWORD";
     public static final String ENVVAR_NAME_GO_WORKING_DIR = "GO_WORKING_DIR";
+    public static final String ENVVAR_GO_REVISION = "GO_REVISION";
 
     // property names
     public static final String PROPERTY_NAME_VALUE = "value";

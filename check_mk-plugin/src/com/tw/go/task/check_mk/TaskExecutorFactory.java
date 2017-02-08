@@ -14,6 +14,8 @@ public class TaskExecutorFactory {
             case "edit":
                 return new EditHostTaskExecutor(console, context, config);
             case "remove":
+                ((Map) config.get(CheckMkTask.FOLDER_PATH)).put("value", "");
+                ((Map) config.get(CheckMkTask.HOST_IP)).put("value", "");
                 return new RemoveHostTaskExecutor(console, context, config);
         }
         throw new JobNotSupportedException("Action " + action + " not supported!");

@@ -47,6 +47,14 @@
     <label>Disable cache while building the image (might take MUCH longer)</label>
   </div>
 
+  <div class="checkbox_row">
+    <input id="BUILD_MICROLABELING2" type="checkbox" ng-model="BUILD_MICROLABELING2"
+           ng-init="BUILD_MICROLABELING2 = BUILD_MICROLABELING"
+           ng-change="BUILD_MICROLABELING = BUILD_MICROLABELING2" ng-true-value="true" ng-false-value="false">
+    <input id="buildMicrolabeling" type="hidden" ng-model="BUILD_MICROLABELING" value="{{BUILD_MICROLABELING}}">
+    <label>Enable microlabeling</label>
+  </div>
+
   <div class="form_item_block">
     <label>Build args</label>
     <input type="text" ng-model="BuildArgs" ng-required="false">

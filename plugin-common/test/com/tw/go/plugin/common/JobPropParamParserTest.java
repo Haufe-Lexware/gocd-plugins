@@ -43,22 +43,22 @@ public class JobPropParamParserTest {
             testPropertyValue3 = setJobProperty("test_property_TestPluginStage", "Test Value 3");
         }
         catch (IOException e){
-
+            System.out.println("Error: " + e);
         }
 
     }
 
 
 
-    @Test
-    public void testOnePropVarInParameter() throws Exception {
-        JobPropParamParser parser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
-
-        Assert.assertEquals("Test Value 1", parser.parse("%{test_property_1}"));
-        Assert.assertEquals("abcTest Value 1", parser.parse("abc%{test_property_1}"));
-        Assert.assertEquals("Test Value 1abc", parser.parse("%{test_property_1}abc"));
-        Assert.assertEquals("abcTest Value 1abc", parser.parse("abc%{test_property_1}abc"));
-    }
+//    @Test
+//    public void testOnePropVarInParameter() throws Exception {
+//        JobPropParamParser parser = new JobPropParamParser(context.getEnvironmentVariables(), mockConsole);
+//
+//        Assert.assertEquals("Test Value 1", parser.parse("%{test_property_1}"));
+//        Assert.assertEquals("abcTest Value 1", parser.parse("abc%{test_property_1}"));
+//        Assert.assertEquals("Test Value 1abc", parser.parse("%{test_property_1}abc"));
+//        Assert.assertEquals("abcTest Value 1abc", parser.parse("abc%{test_property_1}abc"));
+//    }
 
     @Test
     public void testTwoPropVarsInParameter() throws Exception {

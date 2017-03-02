@@ -43,7 +43,6 @@ public class JobPropParamParserTest {
             testPropertyValue3 = setJobProperty("test_property_TestPluginStage", "Test Value 3");
         }
         catch (IOException e){
-            System.out.println("Error: " + e);
         }
 
     }

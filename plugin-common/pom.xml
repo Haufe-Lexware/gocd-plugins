@@ -12,6 +12,7 @@
         <go.target.version>16.4.0</go.target.version>
         <go.version>16.4.0</go.version>
         <plugin.version>${project.version}</plugin.version>
+        <maven.test.skip>true</maven.test.skip>
 
         <sonar.java.coveragePlugin>cobertura</sonar.java.coveragePlugin>
         <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>

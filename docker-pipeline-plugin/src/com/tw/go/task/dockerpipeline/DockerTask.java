@@ -22,6 +22,9 @@ public class DockerTask extends BaseGoPlugin {
     public static final String PUSH_IMAGES = "isPush";
 
     public static final String USERNAME = "Username";
+    public static final String IMAGE_TAG1 = "ImageTag1";
+    public static final String IMAGE_TAG2 = "ImageTag2";
+    public static final String IMAGE_TAG3 = "ImageTag3";
     public static final String IMAGE_TAG = "ImageTag";
     public static final String IMAGE_TAG_POSTFIX = "IMAGE_TAG_POSTFIX";
 
@@ -29,7 +32,7 @@ public class DockerTask extends BaseGoPlugin {
     public static final String REGISTRY_PASSWORD = "RegistryPassword";
 
     public static final String REGISTRY_EMAIL = "RegistryEmail";
-    public static final String REGISTRY_URL_FOR_LOGIN = "RegistryURL";
+    public static final String REGISTRY_URL_FOR_LOGIN = "RegistryURLForLogin";
 
     public static final String RUN_IMAGE = "RUN_IMAGE";
     public static final String RUN_ENV_VARS = "RUN_ENV_VARS";
@@ -110,6 +113,23 @@ public class DockerTask extends BaseGoPlugin {
         }
     }
 
+    private String getConcatenatedImageTags() {
+        String finalTag = "";
+
+        if (!"".equals((IMAGE_TAG))) {
+            if (!"".equals(IMAGE_TAG1))
+                finalTag = finalTag + IMAGE_TAG1;
+            if (!"".equals(IMAGE_TAG2))
+                finalTag = finalTag + ";" + IMAGE_TAG2;
+            if (!"".equals(IMAGE_TAG3))
+                finalTag = finalTag + ";" + IMAGE_TAG3;
+
+            return finalTag;
+        }
+
+        return IMAGE_TAG;
+    }
+
     private Map getConfigDef() {
         return new ConfigDef()
                 // cleaning ...
@@ -123,6 +143,9 @@ public class DockerTask extends BaseGoPlugin {
                 .add(IMAGE_NAME, "", Required.NO)
 
                 // tag
+                .add(IMAGE_TAG1, "", Required.NO)
+                .add(IMAGE_TAG2, "", Required.NO)
+                .add(IMAGE_TAG3, "", Required.NO)
                 .add(IMAGE_TAG, "", Required.NO)
                 .add(IMAGE_TAG_POSTFIX, "", Required.NO)
                 .add(USERNAME, "", Required.NO)
@@ -131,7 +154,7 @@ public class DockerTask extends BaseGoPlugin {
                 .add(REGISTRY_URL_FOR_LOGIN, "", Required.NO)
                 .add(REGISTRY_USERNAME, "", Required.NO)
                 .add(REGISTRY_PASSWORD, "", Required.NO, Secure.YES)
-                .add(PUSH_IMAGES, "", Required.NO, Secure.NO)
+                .add(PUSH_IMAGES, "true", Required.NO)
 
                 // run
                 .add(RUN_IMAGE, "", Required.NO)

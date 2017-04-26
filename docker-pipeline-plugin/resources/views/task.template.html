@@ -23,12 +23,12 @@
 
   <div class="form_item_block">
     <label>Registry URL </label>
-    <input type="text" ng-model="RegistryURL" ng-required="false">
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryURL].$error.server">{{ GOINPUTNAME[RegistryURL].$error.server }}</span>
+    <input type="text" ng-model="RegistryURLForLogin" ng-required="false">
+    <span class="form_error" ng-show="GOINPUTNAME[RegistryURLForLogin].$error.server">{{ GOINPUTNAME[RegistryURLForLogin].$error.server }}</span>
   </div>
 
   <div class="checkbox_row">
-    <input id="isPush" type="checkbox" ng-model="isPush2"
+    <input id="isPush2" type="checkbox" ng-model="isPush2"
            ng-init="isPush2 = isPush"
            ng-change="isPush = isPush2" ng-true-value="true" ng-false-value="false">
     <input id="pushCheckBox" type="hidden" ng-model="isPush" value="{{isPush}}">

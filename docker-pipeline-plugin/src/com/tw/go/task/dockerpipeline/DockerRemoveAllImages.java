@@ -17,6 +17,7 @@ public class DockerRemoveAllImages extends AbstractCommand {
         if (ids.size() > 0) {
             add("docker");
             add("rmi");
+            add("-f");
             for (String s : ids) {
                 add(s);
             }

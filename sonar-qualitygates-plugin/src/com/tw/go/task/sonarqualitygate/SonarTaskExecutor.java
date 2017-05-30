@@ -36,7 +36,7 @@ public class SonarTaskExecutor extends TaskExecutor {
             // get quality gate details
             JSONObject result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
 
-            if (!(stageName == null) && !(jobName == null) && !(jobCounter == null)) {
+            if (!("".equals(stageName)) && !("".equals(jobName)) && !("".equals(jobCounter))) {
 
                 String scheduledTime = getScheduledTime();
                 String resultDate = result.getString("date");
@@ -48,7 +48,7 @@ public class SonarTaskExecutor extends TaskExecutor {
 
                 while(compareDates(resultDate, scheduledTime) <= 0) {
 
-                    log("Nessus scan result is older than the start of the pipeline. Waiting for a newer scan ...");
+                    log("Scan result is older than the start of the pipeline. Waiting for a newer scan ...");
 
                     result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
                     timeout = timeout + timeoutTime;

@@ -3,29 +3,18 @@ package com.tw.go.task.sonarqualitygate;
 
 import com.google.gson.GsonBuilder;
 import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
-import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
-import com.thoughtworks.go.plugin.api.exceptions.UnhandledRequestTypeException;
-import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
-import com.thoughtworks.go.plugin.api.response.DefaultGoApiResponse;
-import com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
-import com.tw.go.plugin.common.Context;
-import com.tw.go.plugin.common.GoApiConstants;
-import com.tw.go.plugin.common.MaskingJobConsoleLogger;
-import com.tw.go.plugin.common.Result;
-import org.apache.commons.io.IOUtils;
+import com.tw.go.plugin.common.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
-
-import static com.thoughtworks.go.plugin.api.response.DefaultGoPluginApiResponse.SUCCESS_RESPONSE_CODE;
+import java.util.Map;;
 
 @Extension
-public class SonarScanTask implements GoPlugin {
+public class SonarScanTask extends BaseGoPlugin {
 
     public static final String ISSUE_TYPE_FAIL = "IssueTypeFail";
     public static final String SONAR_API_URL = "SonarApiUrl";
@@ -34,120 +23,77 @@ public class SonarScanTask implements GoPlugin {
     public static final String JOB_NAME = "JobName";
     public static final String JOB_COUNTER = "JobCounter";
 
-    private static final Logger LOGGER = Logger.getLoggerFor(SonarScanTask.class);
-
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
         // not required in most plugins
     }
 
     @Override
-    public GoPluginApiResponse handle(GoPluginApiRequest request) throws UnhandledRequestTypeException {
-        switch (request.requestName()) {
-            case "configuration":
-            case "go.plugin-settings.get-configuration":
-                return handleGetConfigRequest();
-            case "validate":
-            case "go.plugin-settings.validate-configuration":
-                return handleValidation();
-            case "execute":
-                return handleTaskExecution(request);
-            case "view":
-            case "go.plugin-settings.get-view":
-                return handleTaskView();
-            default:
-                throw new UnhandledRequestTypeException(request.requestName());
-        }
+    protected GoPluginApiResponse handleTaskView(GoPluginApiRequest request) {
+        return getViewResponse("SonarQube - Quality Gate",
+                getClass().getResourceAsStream("/views/task.template.html"));
     }
 
-    private GoPluginApiResponse handleTaskView() {
-        int responseCode = DefaultGoApiResponse.SUCCESS_RESPONSE_CODE;
-        HashMap view = new HashMap();
-        view.put("displayValue", "SonarQube - Quality Gate");
-        try {
-            view.put("template", IOUtils.toString(getClass().getResourceAsStream("/views/task.template.html"), "UTF-8"));
-        } catch (Exception e) {
-            responseCode = DefaultGoApiResponse.INTERNAL_ERROR;
-            String errorMessage = "Failed to find template: " + e.getMessage();
-            view.put("exception", errorMessage);
-            LOGGER.error(errorMessage, e);
-        }
-        return createResponse(responseCode, view);
+    @Override
+    protected GoPluginApiResponse handleGetConfigRequest(GoPluginApiRequest request) {
+        return success(getConfigDef());
     }
 
-    private GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) {
+    @Override
+    protected GoPluginApiResponse handleValidation(GoPluginApiRequest request) {
+        HashMap result = new HashMap();
+        return success(result);
+    }
+
+    protected GoPluginApiResponse handleTaskExecution(GoPluginApiRequest request) {
         Map executionRequest = (Map) new GsonBuilder().create().fromJson(request.requestBody(), Object.class);
-        Map config = (Map) executionRequest.get("config");
-        Map context = (Map) executionRequest.get("context");
 
-        SonarTaskExecutor executor = new SonarTaskExecutor(MaskingJobConsoleLogger.getConsoleLogger(), new Context(context), config);
+        Map<String, Map> config = (Map) executionRequest.get("config");
+
+        fixConfigAttrs(config,getConfigDef());
+
+        Context context = new Context((Map) executionRequest.get("context"));
+
+        Map<String, String> envVars = context.getEnvironmentVariables();
+
+        SonarTaskExecutor executor = new SonarTaskExecutor(
+                MaskingJobConsoleLogger.getConsoleLogger(), context, config);
+
+        // The RESPONSE_CODE MUST be 200 (SUCCESS) to be processed by Go.CD
+        // The outcome is defined by the property "success", and the cause can be stored in "message"
+        // See
+        //  public <T> T submitRequest(String pluginId, String requestName, PluginInteractionCallback<T> pluginInteractionCallback) {
+        // in
+        //  .../gocd/plugin-infra/go-plugin-access/src/com/thoughtworks/go/plugin/access/PluginRequestHelper.java
 
         try {
             Result result = executor.execute();
-            return createResponse(result.responseCode(), result.toMap());
+            return success(result.toMap());
         } catch (Exception e) {
             Result result = new Result(false,e.getMessage());
-            return createResponse(SUCCESS_RESPONSE_CODE, result.toMap());
+            return success(result.toMap());
+        }
+
+    }
+
+    private void fixConfigAttrs(Map<String, Map> configAct, Map<String, Map> configDef) {
+        for (Map.Entry<String,Map> e : configAct.entrySet()) {
+            Map def = configDef.get(e.getKey());
+            Map act = e.getValue();
+            act.put("required",def.get("required"));
+            act.put("secure",def.get("secure"));
         }
     }
 
-    private GoPluginApiResponse handleValidation() {
-        HashMap validationResult = new HashMap();
-        int responseCode = SUCCESS_RESPONSE_CODE;
-        return createResponse(responseCode, validationResult);
-    }
-
-    // return json description to tell go.cd which config properties need to be stored
-    // sample and schema can be found at http://www.go.cd/documentation/developer/writing_go_plugins/task/version_1_0/configuration.html
-    private GoPluginApiResponse handleGetConfigRequest() {
-
-        HashMap config = new HashMap();
-
-        HashMap stageName = new HashMap();
-        stageName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "1");
-        stageName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Stage name");
-        stageName.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
-        config.put(STAGE_NAME, stageName);
-
-        HashMap jobName = new HashMap();
-        jobName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "2");
-        jobName.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Job name");
-        jobName.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
-        config.put(JOB_NAME, jobName);
-
-        HashMap stageCounter = new HashMap();
-        stageCounter.put(GoApiConstants.PROPERTY_NAME_DEFAULT_VALUE, "1");
-        stageCounter.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "3");
-        stageCounter.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Stage counter");
-        stageCounter.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
-        config.put(JOB_COUNTER, stageCounter);
-
-        HashMap sonarProjectKey = new HashMap();
-        sonarProjectKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "4");
-        sonarProjectKey.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Key of the SonarQube project");
-        sonarProjectKey.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
-        config.put(SONAR_PROJECT_KEY, sonarProjectKey);
-
-        HashMap issueTypeFail = new HashMap();
-        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DEFAULT_VALUE, "error");
-        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "5");
-        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Fail Quality Gate result");
-        issueTypeFail.put(GoApiConstants.PROPERTY_NAME_REQUIRED, false);
-        config.put(ISSUE_TYPE_FAIL, issueTypeFail);
-
-        HashMap sonarApiUrl = new HashMap();
-        sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_DISPLAY_ORDER, "6");
-        sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_DISPLAY_NAME, "Sonar Api Url");
-        sonarApiUrl.put(GoApiConstants.PROPERTY_NAME_REQUIRED, true);
-        config.put(SONAR_API_URL, sonarApiUrl);
-
-        return createResponse(SUCCESS_RESPONSE_CODE, config);
-    }
-
-    private GoPluginApiResponse createResponse(int responseCode, Map body) {
-        final DefaultGoPluginApiResponse response = new DefaultGoPluginApiResponse(responseCode);
-        response.setResponseBody(new GsonBuilder().serializeNulls().create().toJson(body));
-        return response;
+    private Map getConfigDef() {
+        return new ConfigDef()
+                .add(STAGE_NAME, "", Required.NO)
+                .add(JOB_NAME, "", Required.NO)
+                .add(JOB_COUNTER, "", Required.NO)
+                .add(SONAR_PROJECT_KEY, "", Required.YES)
+                .add(ISSUE_TYPE_FAIL, "error", Required.YES)
+                .add(SONAR_API_URL, "", Required.YES)
+                .toMap();
     }
 
     @Override

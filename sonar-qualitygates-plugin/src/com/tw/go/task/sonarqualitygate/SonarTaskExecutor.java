@@ -33,6 +33,17 @@ public class SonarTaskExecutor extends TaskExecutor {
 
             SonarClient sonarClient = new SonarClient(sonarApiUrl);
 
+            // This might need some auth!
+            Map envVars = context.getEnvironmentVariables();
+            if (envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER) != null &&
+                    envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD) != null) {
+
+                sonarClient.setBasicAuthentication(envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString(), envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
+                log("Logged in as '" + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString() + "' to get the project's quality gate");
+            } else {
+                log(" Requesting project's quality gate anonymously.");
+            }
+
             // get quality gate details
             JSONObject result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
 
@@ -120,7 +131,6 @@ public class SonarTaskExecutor extends TaskExecutor {
     protected String getScheduledTime() throws GeneralSecurityException {
         Map envVars = context.getEnvironmentVariables();
         GoApiClient client = new GoApiClient(envVars.get(GoApiConstants.ENVVAR_NAME_GO_SERVER_URL).toString());
-
         try {
             // get go build user authorization
             if (envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER) != null &&
@@ -128,7 +138,9 @@ public class SonarTaskExecutor extends TaskExecutor {
 
                 client.setBasicAuthentication(envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString(), envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
 
-                log("Authorization set");
+                log("Logged in as '" + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString() + "'");
+            } else {
+                log("No login set. Going anonymous.");
             }
 
             String scheduledTime = client.getJobProperty(

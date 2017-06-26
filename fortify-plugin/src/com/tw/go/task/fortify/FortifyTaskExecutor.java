@@ -52,19 +52,21 @@ public class FortifyTaskExecutor extends TaskExecutor
 
         JSONArray pointArrayData = getPointsArrayIssuePriority(request, projectId);
 
-        for (int i = 0; i < pointArrayData.length(); i++)
-        {
-            JSONObject points = pointArrayData.getJSONObject(i);
-            String filterX = points.getString("filterX");
+        if (pointArrayData.length() > 0) {
 
-            if(filterX.equals("Critical"))
-                Ycritical = points.getInt("y");
-            if(filterX.equals("High"))
-                Yhigh = points.getInt("y");
-            if(filterX.equals("Medium"))
-                Ymedium = points.getInt("y");
-            if(filterX.equals("Low"))
-                Ylow = points.getInt("y");
+            for (int i = 0; i < pointArrayData.length(); i++) {
+                JSONObject points = pointArrayData.getJSONObject(i);
+                String filterX = points.getString("filterX");
+
+                if (filterX.equals("Critical"))
+                    Ycritical = points.getInt("y");
+                if (filterX.equals("High"))
+                    Yhigh = points.getInt("y");
+                if (filterX.equals("Medium"))
+                    Ymedium = points.getInt("y");
+                if (filterX.equals("Low"))
+                    Ylow = points.getInt("y");
+            }
         }
 
         log("Critical priority issues: " + Ycritical);
@@ -190,9 +192,14 @@ public class FortifyTaskExecutor extends TaskExecutor
         JSONArray arrayData = objResult.getJSONArray("data");
         JSONObject first = arrayData.getJSONObject(0);
         JSONArray seriesArrayData = first.getJSONArray("series");
-        JSONObject series = seriesArrayData.getJSONObject(0);
 
-        return series.getJSONArray("points");
+        if (seriesArrayData.length() > 0 ){
+            JSONObject series = seriesArrayData.getJSONObject(0);
+            return series.getJSONArray("points");
+        }
+        else {
+            return seriesArrayData;
+        }
     }
 
     private int getProjectId(FortifyRequest request) {

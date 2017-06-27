@@ -9,8 +9,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <go.target.version>16.4.0</go.target.version>
-        <go.version>16.4.0</go.version>
+        <go.target.version>17.3.0</go.target.version>
+        <go.version>17.3.0</go.version>
         <plugin.version>${project.version}</plugin.version>
 
         <sonar.java.coveragePlugin>cobertura</sonar.java.coveragePlugin>

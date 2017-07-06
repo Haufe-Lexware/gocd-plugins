@@ -101,28 +101,25 @@ public class FortifyTaskExecutor extends TaskExecutor
     {
         boolean unsuccessfulScan = false;
 
-        for (int i = 0; i < array.length(); i++)
+        JSONObject obj = array.getJSONObject(0);
+
+        String pipelineNumber = obj.getString("originalFileName").substring(
+                obj.getString("originalFileName").lastIndexOf('_') + 1,
+                obj.getString("originalFileName").lastIndexOf('.'));
+
+        if(!pipelineNumber.equals(configVars.getValue(ENVVAR_NAME_GO_PIPELINE_COUNTER)))
         {
-            JSONObject obj = array.getJSONObject(i);
+            unsuccessfulScan = true;
+        }
 
-            String pipelineNumber = obj.getString("originalFileName").substring(
-                    obj.getString("originalFileName").lastIndexOf('_') + 1,
-                    obj.getString("originalFileName").lastIndexOf('.'));
+        if(obj.getString("status").equals("REQUIRE_AUTH"))
+        {
+            log("Scan: ");
+            log("ID: " + obj.getInt("id"));
+            log("Filename: " + obj.getString("fileName"));
+            log("Original filename: " + obj.getString("originalFileName") + "\n");
 
-            if(!pipelineNumber.equals(configVars.getValue(ENVVAR_NAME_GO_PIPELINE_COUNTER)))
-            {
-                unsuccessfulScan = true;
-            }
-
-            if(obj.getString("status").equals("REQUIRE_AUTH"))
-            {
-                log("Scan " + i + 1 + ":");
-                log("ID: " + obj.getInt("id"));
-                log("Filename: " + obj.getString("fileName"));
-                log("Original filename: " + obj.getString("originalFileName") + "\n");
-
-                unsuccessfulScan = true;
-            }
+            unsuccessfulScan = true;
         }
 
         if(unsuccessfulScan)

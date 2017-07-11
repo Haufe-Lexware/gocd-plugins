@@ -13,12 +13,14 @@ import java.util.List;
 
 import static com.tw.go.plugin.common.GoApiConstants.ENVVAR_GO_REVISION;
 import static com.tw.go.plugin.common.GoApiConstants.ENVVAR_NAME_GO_PIPELINE_COUNTER;
+import static com.tw.go.plugin.common.GoApiConstants.ENVVAR_NAME_GO_PIPELINE_NAME;
 
 
 public class DockerBuildCommand extends DockerCommand {
     protected List<String> imageAndTag = new ArrayList<>();
+    protected String repositoryUrl = "";
 
-    public DockerBuildCommand(JobConsoleLogger console, ConfigVars configVars) {
+    public DockerBuildCommand(JobConsoleLogger console, ConfigVars configVars, String repoUrl) {
         super(console, configVars);
         String dockerfileAbsolutePath = getDockerfileAbsolutePath(configVars); // the path including the Dockerfile. Used for pointing to the Dockerfile
         String context = getDirectory(dockerfileAbsolutePath); // the path without the Dockerfile. Used for obtaining the build context
@@ -41,6 +43,10 @@ public class DockerBuildCommand extends DockerCommand {
         if (configVars.isChecked(DockerTask.BUILD_NO_CACHE)) {
             add("--no-cache");
         }
+
+        repositoryUrl = repoUrl;
+
+        //console.printLine("repoUrl" + repositoryUrl);
 
         addBuildArgs(configVars);
 
@@ -86,7 +92,7 @@ public class DockerBuildCommand extends DockerCommand {
         BUILD_NAME += configVars.getValue(DockerTask.IMAGE_NAME) + ";";
         BUILD_VERSION += configVars.getValue(ENVVAR_NAME_GO_PIPELINE_COUNTER) + ";";
         BUILD_DATE += timestamp + ";";
-        REPOSITORY_URL += configVars.getValue(DockerTask.REGISTRY_URL_FOR_LOGIN) + ";";
+        REPOSITORY_URL += repositoryUrl + ";";
         REPOSITORY_REF += configVars.getValue(ENVVAR_GO_REVISION) + ";";
 
         return BUILD_VENDOR + BUILD_NAME +

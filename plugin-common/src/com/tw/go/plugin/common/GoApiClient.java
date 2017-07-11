@@ -45,8 +45,8 @@ public class GoApiClient extends ApiRequestBase {
         return map;
     }
 
-    public Map getPipelineConfig(String pipelineName) throws IOException {
-        String uri = getPipelineConfigRequestUri(pipelineName);
+    public Map getPipelineConfig(String pipelineName, String pipelineCounter) throws IOException {
+        String uri = getPipelineConfigRequestUri(pipelineName, pipelineCounter);
         String data = requestGet(uri);
         return (Map) gson.fromJson(data, Object.class);
     }
@@ -68,8 +68,8 @@ public class GoApiClient extends ApiRequestBase {
         return getApiUrl() + "/api/pipelines/" + pipelineName + "/history/" + offset;
     }
 
-    private String getPipelineConfigRequestUri(String pipelineName) {
-        return getApiUrl() + "/api/admin/pipelines/" + pipelineName;
+    private String getPipelineConfigRequestUri(String pipelineName, String pipelineCounter) {
+        return getApiUrl() + "/api/pipelines/" + pipelineName + "/instance/" + pipelineCounter;
     }
 
     private String getJobPropertyRequestUri(String pipelineName, String pipelineCounter, String stageName, String stageCounter, String jobName, String propertyName) {

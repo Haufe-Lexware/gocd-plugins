@@ -61,6 +61,7 @@ public class SonarTaskExecutor extends TaskExecutor {
                     log("Scan result is older than the start of the pipeline. Waiting for a newer scan ...");
 
                     result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
+
                     timeout = timeout + timeoutTime;
 
                     resultDate = result.getString("date");
@@ -70,6 +71,9 @@ public class SonarTaskExecutor extends TaskExecutor {
 
                         log("No new scan has been found !");
 
+                        log("Date of Sonar scan: " + result.getString("date"));
+                        log("Version of Sonar scan: " + result.getString("version"));
+
                         return new Result(false, "Failed to get a newer quality gate for " + sonarProjectKey
                                 + ". The present quality gate is older than the start of the Sonar scan task.");
                     }
@@ -77,6 +81,9 @@ public class SonarTaskExecutor extends TaskExecutor {
                     Thread.sleep(timeoutTime);
 
                 }
+
+                log("Date of Sonar scan: " + result.getString("date"));
+                log("Version of Sonar scan: " + result.getString("version"));
 
                 SonarParser parser = new SonarParser(result);
 
@@ -90,6 +97,9 @@ public class SonarTaskExecutor extends TaskExecutor {
 
             }
             else {
+
+                log("Date of Sonar scan: " + result.getString("date"));
+                log("Version of Sonar scan: " + result.getString("version"));
 
                 SonarParser parser = new SonarParser(result);
 

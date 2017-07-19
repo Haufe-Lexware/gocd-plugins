@@ -48,7 +48,6 @@ public class SonarTaskExecutor extends TaskExecutor {
             JSONObject result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
 
             if (!("".equals(stageName)) && !("".equals(jobName)) && !("".equals(jobCounter))) {
-
                 String scheduledTime = getScheduledTime();
                 String resultDate = result.getString("date");
                 resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
@@ -104,8 +103,8 @@ public class SonarTaskExecutor extends TaskExecutor {
             }
 
         } catch (Exception e) {
-            log("Error during get or parse of quality gate result. Please check if a quality gate is defined" + e.getMessage());
-            return new Result(false, "Failed to get quality gate for " + sonarProjectKey + ". Please check if a quality gate is defined", e);
+            log("Error during get or parse of quality gate result. Please check if a quality gate is defined\n" + e.getMessage());
+            return new Result(false, "Failed to get quality gate for " + sonarProjectKey + ". Please check if a quality gate is defined\n", e);
         }
     }
 
@@ -157,7 +156,7 @@ public class SonarTaskExecutor extends TaskExecutor {
         catch(Exception e)
         {
             log(e.toString());
-            return "0";
+            return null;
         }
     }
 

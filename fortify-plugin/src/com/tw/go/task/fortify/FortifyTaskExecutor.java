@@ -38,6 +38,9 @@ public class FortifyTaskExecutor extends TaskExecutor
     {
         boolean passed = true;
         int Ycritical = 0, Yhigh = 0, Ymedium = 0, Ylow = 0;
+        int timeout = 0;
+        int timeoutTime = 60000;
+        int timeLimit = 900000;
 
         FortifyRequest request = new FortifyRequest("", "", "", true);
         request.setUsername(configVars.getValue(FortifyTask.USERNAME));
@@ -49,6 +52,24 @@ public class FortifyTaskExecutor extends TaskExecutor
 
         int projectId = getProjectId(request);
         log("Project ID: " + projectId + "\n");
+
+        JSONArray array = getDataArrayArtifacts(request, projectId);
+
+        while(isUnsuccessfulScan(array)) {
+            array = getDataArrayArtifacts(request, projectId);
+
+            timeout = timeout + timeoutTime;
+
+            log("Couldn't find latest scan. Waiting for 1 minute and trying again ...");
+
+            if (timeout > timeLimit) {
+                return new Result(false, "[Fortify] Error ! " +
+                        "Couldn't find a Fortify scan created in this pipeline run !" + "\n");
+            }
+
+            Thread.sleep(timeoutTime);
+        }
+        passed = true;
 
         JSONArray pointArrayData = getPointsArrayIssuePriority(request, projectId);
 
@@ -79,13 +100,6 @@ public class FortifyTaskExecutor extends TaskExecutor
             passed = false;
         }
 
-        JSONArray array = getDataArrayArtifacts(request, projectId);
-
-        if(isUnsuccessfulScan(array))
-        {
-            passed = false;
-        }
-
         log("Link to the scan: " + "https://v-fortifyapp/ssc/html/ssc/index.jsp#!/version/"
                 + projectId + "/scan" + "\n");
 
@@ -93,8 +107,7 @@ public class FortifyTaskExecutor extends TaskExecutor
             return new Result(true, "Finished");
         else
             return new Result(false, "[Fortify] Error ! There may be: \n- critical or high priority " +
-                    "issues\n- the name of the filescan doesn't match the pipeline counter\n" +
-                    "- there are scans which require approval" + "\n");
+                    "issues\n" + "- there are scans which require approval" + "\n");
     }
 
     public boolean isUnsuccessfulScan(JSONArray array)

@@ -16,9 +16,13 @@ import java.util.Map;;
 @Extension
 public class SonarScanTask extends BaseGoPlugin {
 
-    public static final String ISSUE_TYPE_FAIL = "IssueTypeFail";
     public static final String SONAR_API_URL = "SonarApiUrl";
     public static final String SONAR_PROJECT_KEY = "SonarProjectKey";
+
+    public static final String SONAR_USERNAME = "SonarUsername";
+    public static final String SONAR_PASSWORD = "SonarPassword";
+
+    public static final String ISSUE_TYPE_FAIL = "IssueTypeFail";
     public static final String STAGE_NAME = "StageName";
     public static final String JOB_NAME = "JobName";
     public static final String JOB_COUNTER = "JobCounter";
@@ -67,7 +71,7 @@ public class SonarScanTask extends BaseGoPlugin {
         //  .../gocd/plugin-infra/go-plugin-access/src/com/thoughtworks/go/plugin/access/PluginRequestHelper.java
 
         try {
-            Result result = executor.execute();
+            Result result = executor.executeSonar();
             return success(result.toMap());
         } catch (Exception e) {
             Result result = new Result(false,e.getMessage());
@@ -87,12 +91,14 @@ public class SonarScanTask extends BaseGoPlugin {
 
     private Map getConfigDef() {
         return new ConfigDef()
+                .add(SONAR_PROJECT_KEY, "", Required.YES)
+                .add(SONAR_API_URL, "", Required.YES)
+                .add(SONAR_USERNAME, "", Required.NO)
+                .add(SONAR_PASSWORD, "", Required.NO, Secure.YES)
                 .add(STAGE_NAME, "", Required.NO)
                 .add(JOB_NAME, "", Required.NO)
                 .add(JOB_COUNTER, "", Required.NO)
-                .add(SONAR_PROJECT_KEY, "", Required.YES)
                 .add(ISSUE_TYPE_FAIL, "error", Required.YES)
-                .add(SONAR_API_URL, "", Required.YES)
                 .toMap();
     }
 

@@ -41,6 +41,11 @@
             <version>2.3.1</version>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.18</version>
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20140107</version>
@@ -67,7 +72,7 @@
         <testSourceDirectory>test</testSourceDirectory>
         <resources>
             <resource>
-                <directory>resources</directory>
+                <directory>src/main/resources</directory>
             </resource>
         </resources>
         <finalName>${project.artifactId}-${project.version}</finalName>

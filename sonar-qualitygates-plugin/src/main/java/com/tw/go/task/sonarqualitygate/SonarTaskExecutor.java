@@ -4,10 +4,14 @@ package com.tw.go.task.sonarqualitygate;
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.*;
+import com.tw.go.task.sonarqualitygate.model.Sonar;
+import com.tw.go.task.sonarqualitygate.model.SonarStatus;
 import org.json.JSONObject;
 
 import java.security.GeneralSecurityException;
 import java.util.Map;
+
+import static com.tw.go.task.sonarqualitygate.SonarScanTask.JOB_COUNTER;
 
 public class SonarTaskExecutor extends TaskExecutor {
 
@@ -15,6 +19,7 @@ public class SonarTaskExecutor extends TaskExecutor {
         super(console, context, config);
     }
 
+    @Deprecated
     public Result execute() throws Exception {
 
         String sonarProjectKey = (String) ((Map) this.config.get(SonarScanTask.SONAR_PROJECT_KEY)).get(GoApiConstants.PROPERTY_NAME_VALUE);
@@ -22,11 +27,11 @@ public class SonarTaskExecutor extends TaskExecutor {
 
         try {
             // get input parameter
-            String stageName = (String) ((Map)this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            String jobName = (String) ((Map)this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            String jobCounter = (String) ((Map)this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String stageName = (String) ((Map) this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String jobName = (String) ((Map) this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String jobCounter = (String) ((Map) this.config.get(JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE);
 
-            String sonarApiUrl = (String) ((Map)this.config.get(SonarScanTask.SONAR_API_URL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String sonarApiUrl = (String) ((Map) this.config.get(SonarScanTask.SONAR_API_URL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("API Url: " + sonarApiUrl);
             String issueTypeFail = (String) ((Map) this.config.get(SonarScanTask.ISSUE_TYPE_FAIL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("Fail if: " + issueTypeFail);
@@ -50,13 +55,13 @@ public class SonarTaskExecutor extends TaskExecutor {
             if (!("".equals(stageName)) && !("".equals(jobName)) && !("".equals(jobCounter))) {
                 String scheduledTime = getScheduledTime();
                 String resultDate = result.getString("date");
-                resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
+                resultDate = new StringBuilder(resultDate).insert(resultDate.length() - 2, ":").toString();
 
                 int timeout = 0;
                 int timeoutTime = 60000;
                 int timeLimit = 300000;
 
-                while(compareDates(resultDate, scheduledTime) <= 0) {
+                while (compareDates(resultDate, scheduledTime) <= 0) {
 
                     log("Scan result is older than the start of the pipeline. Waiting for a newer scan ...");
 
@@ -65,7 +70,7 @@ public class SonarTaskExecutor extends TaskExecutor {
                     timeout = timeout + timeoutTime;
 
                     resultDate = result.getString("date");
-                    resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
+                    resultDate = new StringBuilder(resultDate).insert(resultDate.length() - 2, ":").toString();
 
                     if (timeout > timeLimit) {
 
@@ -95,8 +100,7 @@ public class SonarTaskExecutor extends TaskExecutor {
                 // get result issues
                 return parseResult(qgResult, issueTypeFail);
 
-            }
-            else {
+            } else {
 
                 log("Date of Sonar scan: " + result.getString("date"));
                 log("Version of Sonar scan: " + result.getString("version"));
@@ -118,18 +122,72 @@ public class SonarTaskExecutor extends TaskExecutor {
         }
     }
 
+    /**
+     * get property from config map
+     *
+     * @param property - name of property
+     * @return string with the value of property
+     */
+    final String getConfig(final String property) {
+        if (this.config.containsKey(property)) {
+            final Map param = (Map) this.config.get(property);
+            return (String) param.get(GoApiConstants.PROPERTY_NAME_VALUE);
+        }
+        return null;
+    }
+
+    /**
+     * execute sonar integration to get the Quality Status of one project
+     *
+     * @return result with the value of Quality from Sonar
+     * @throws Exception - in case any exception occurs
+     */
+    public Result executeSonar() throws Exception {
+        final String projectKey = this.getConfig(SonarScanTask.SONAR_PROJECT_KEY);
+        final String apiUrl = this.getConfig(SonarScanTask.SONAR_API_URL);
+        final String username = this.getConfig(SonarScanTask.SONAR_USERNAME);
+        final String password = this.getConfig(SonarScanTask.SONAR_PASSWORD);
+
+        final String stageName = this.getConfig(SonarScanTask.STAGE_NAME);
+        final String jobName = this.getConfig(SonarScanTask.JOB_NAME);
+        final String jobCounter = this.getConfig(SonarScanTask.JOB_COUNTER);
+
+        final String issueTypeFail = this.getConfig(SonarScanTask.ISSUE_TYPE_FAIL);
+
+        final SonarClient sonarClient = new SonarClient(apiUrl);
+
+        if (username != null && password != null) {
+            sonarClient.setBasicAuthentication(username, password);
+        }
+
+        try {
+            final Sonar response = sonarClient.getSonarQualityStatus(projectKey);
+
+            log("Finish to check quality. response[ " + response + "]");
+
+            if (response != null) {
+                final SonarStatus projectStatus = response.getProjectStatus();
+
+                return this.parseResult(projectStatus.getStatus().getValue(), issueTypeFail);
+            }
+        } catch (final Exception ex) {
+            log("Integration fail with message: " + ex.getMessage());
+            throw ex;
+        }
+
+        return null;
+    }
+
     private Result parseResult(String qgResult, String issueTypeFail) {
 
         switch (issueTypeFail) {
-            case "error" :
-                if("ERROR".equals(qgResult))
-                {
+            case "error":
+                if ("ERROR".equalsIgnoreCase(qgResult)) {
                     return new Result(false, "At least one Error in Quality Gate");
                 }
                 break;
-            case "warning" :
-                if("ERROR".equals(qgResult) || "WARN".equals(qgResult))
-                {
+            case "warning":
+                if ("ERROR".equalsIgnoreCase(qgResult) || "WARN".equalsIgnoreCase(qgResult)) {
                     return new Result(false, "At least one Error or Warning in Quality Gate");
                 }
                 break;
@@ -155,27 +213,24 @@ public class SonarTaskExecutor extends TaskExecutor {
             String scheduledTime = client.getJobProperty(
                     envVars.get("GO_PIPELINE_NAME").toString(),
                     envVars.get("GO_PIPELINE_COUNTER").toString(),
-                    (String) ((Map)this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
-                    (String) ((Map)this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE),
-                    (String) ((Map)this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
+                    (String) ((Map) this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
+                    (String) ((Map) this.config.get(JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE),
+                    (String) ((Map) this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
                     "cruise_timestamp_01_scheduled");
 
             return scheduledTime;
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             log(e.toString());
             return null;
         }
     }
 
-    protected int compareDates(String date1, String date2)
-    {
+    protected int compareDates(String date1, String date2) {
         return (date1.compareTo(date2));
     }
 
-    protected String getPluginLogPrefix(){
+    protected String getPluginLogPrefix() {
         return "[SonarQube Quality Gate Plugin] ";
     }
 

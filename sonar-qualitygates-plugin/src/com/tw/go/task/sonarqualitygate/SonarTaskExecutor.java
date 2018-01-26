@@ -88,9 +88,7 @@ public class SonarTaskExecutor extends TaskExecutor {
                 SonarParser parser = new SonarParser(result);
 
                 // check that a quality gate is returned
-                JSONObject qgDetails = parser.GetQualityGateDetails();
-
-                String qgResult = qgDetails.getString("level");
+                String qgResult = parser.getProjectQualityGateStatus();
 
                 // get result issues
                 return parseResult(qgResult, issueTypeFail);
@@ -104,9 +102,7 @@ public class SonarTaskExecutor extends TaskExecutor {
                 SonarParser parser = new SonarParser(result);
 
                 // check that a quality gate is returned
-                JSONObject qgDetails = parser.GetQualityGateDetails();
-
-                String qgResult = qgDetails.getString("level");
+                String qgResult = parser.getProjectQualityGateStatus();
 
                 // get result issues
                 return parseResult(qgResult, issueTypeFail);

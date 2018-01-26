@@ -1,6 +1,5 @@
 package com.tw.go.task.sonarqualitygate;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -14,27 +13,13 @@ public class SonarParser
         this.project = projectResult;
     }
 
-    public JSONObject GetQualityGateDetails()
+    public String getProjectQualityGateStatus()
     {
-        if (project.has("msr")) {
-            JSONArray msrList = project.getJSONArray("msr");
-
-            for (int i = 0; i < msrList.length(); i++)
-            {
-                JSONObject msr = (JSONObject) msrList.get(i);
-                String key = msr.getString("key");
-
-                if("quality_gate_details".equals(key))
-                {
-                    String data = msr.getString("data");
-                    //data = data.replace("\\", "");
-                    JSONObject resultObj = new JSONObject(data);
-                    return resultObj;
-                }
-
+        if (project.has("projectStatus")) {
+            JSONObject projectStatus = project.getJSONObject("projectStatus");
+            if (projectStatus.has("status")) {
+                return projectStatus.getString("status");
             }
-
-
         }
         return null;
     }

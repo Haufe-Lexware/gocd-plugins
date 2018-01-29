@@ -8,6 +8,8 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.util.Properties;
 
+import static junit.framework.TestCase.assertEquals;
+
 /**
  * Created by MarkusW on 26.10.2015.
  */
@@ -31,6 +33,7 @@ public class SonarClientTest {
         SonarClientTest.sonarProjectKey = props.getProperty("sonarProjectKey");
     }
 
+    @Test
     public void testQualityGateResult() throws Exception {
 
         // create a sonar client
@@ -42,10 +45,10 @@ public class SonarClientTest {
         SonarParser parser = new SonarParser(result);
 
         // check that a quality gate is returned
-        JSONObject qgDetails = parser.GetQualityGateDetails();
+        String qgResult = parser.getProjectQualityGateStatus();
+        assertEquals("OK", qgResult);
 
-        String qgResult = qgDetails.getString("level");
-        Assert.assertEquals("ERROR", qgResult);
+        assertEquals("2018-01-26T12:32:07+0000", parser.getDate());
     }
 
 }

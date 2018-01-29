@@ -6,38 +6,34 @@ import org.json.JSONObject;
 /**
  * Created by MarkusW on 22.10.2015.
  */
-public class SonarParser
-{
+public class SonarParser {
     private JSONObject project;
 
-    public SonarParser(JSONObject projectResult){
+    public SonarParser(JSONObject projectResult) {
         this.project = projectResult;
     }
 
-    public JSONObject GetQualityGateDetails()
-    {
-        if (project.has("msr")) {
-            JSONArray msrList = project.getJSONArray("msr");
-
-            for (int i = 0; i < msrList.length(); i++)
-            {
-                JSONObject msr = (JSONObject) msrList.get(i);
-                String key = msr.getString("key");
-
-                if("quality_gate_details".equals(key))
-                {
-                    String data = msr.getString("data");
-                    //data = data.replace("\\", "");
-                    JSONObject resultObj = new JSONObject(data);
-                    return resultObj;
-                }
-
+    public String getProjectQualityGateStatus() {
+        if (project.has("projectStatus")) {
+            JSONObject projectStatus = project.getJSONObject("projectStatus");
+            if (projectStatus.has("status")) {
+                return projectStatus.getString("status");
             }
-
-
         }
         return null;
     }
 
 
+    public String getDate() {
+        if (project.has("projectStatus")) {
+            JSONObject projectStatus = project.getJSONObject("projectStatus");
+            if (projectStatus.has("periods")) {
+                JSONArray periods = projectStatus.getJSONArray("periods");
+                if (periods.length() > 0 && periods.getJSONObject(0).has("date")) {
+                    return periods.getJSONObject(0).getString("date");
+                }
+            }
+        }
+        return null;
+    }
 }

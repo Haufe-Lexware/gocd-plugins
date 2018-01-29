@@ -3,8 +3,11 @@ package com.tw.go.task.sonarqualitygate;
 
 
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
-import com.tw.go.plugin.common.*;
-import org.json.JSONObject;
+import com.tw.go.plugin.common.Context;
+import com.tw.go.plugin.common.GoApiClient;
+import com.tw.go.plugin.common.GoApiConstants;
+import com.tw.go.plugin.common.Result;
+import com.tw.go.plugin.common.TaskExecutor;
 
 import java.security.GeneralSecurityException;
 import java.util.Map;
@@ -22,11 +25,11 @@ public class SonarTaskExecutor extends TaskExecutor {
 
         try {
             // get input parameter
-            String stageName = (String) ((Map)this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            String jobName = (String) ((Map)this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            String jobCounter = (String) ((Map)this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String stageName = (String) ((Map) this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String jobName = (String) ((Map) this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String jobCounter = (String) ((Map) this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE);
 
-            String sonarApiUrl = (String) ((Map)this.config.get(SonarScanTask.SONAR_API_URL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+            String sonarApiUrl = (String) ((Map) this.config.get(SonarScanTask.SONAR_API_URL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("API Url: " + sonarApiUrl);
             String issueTypeFail = (String) ((Map) this.config.get(SonarScanTask.ISSUE_TYPE_FAIL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
             log("Fail if: " + issueTypeFail);
@@ -45,34 +48,27 @@ public class SonarTaskExecutor extends TaskExecutor {
 //            }
 
             // get quality gate details
-            JSONObject result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
 
+            SonarParser parser = new SonarParser(sonarClient.getProjectWithQualityGateDetails(sonarProjectKey));
             if (!("".equals(stageName)) && !("".equals(jobName)) && !("".equals(jobCounter))) {
                 String scheduledTime = getScheduledTime();
-                String resultDate = result.getString("date");
-                resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
+                String resultDate = parser.getDate();
+                resultDate = new StringBuilder(resultDate).insert(resultDate.length() - 2, ":").toString();
 
                 int timeout = 0;
                 int timeoutTime = 60000;
                 int timeLimit = 300000;
 
-                while(compareDates(resultDate, scheduledTime) <= 0) {
+                while (compareDates(resultDate, scheduledTime) <= 0) {
 
                     log("Scan result is older than the start of the pipeline. Waiting for a newer scan ...");
 
-                    result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
-
-                    timeout = timeout + timeoutTime;
-
-                    resultDate = result.getString("date");
-                    resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
 
                     if (timeout > timeLimit) {
 
                         log("No new scan has been found !");
 
-                        log("Date of Sonar scan: " + result.getString("date"));
-                        log("Version of Sonar scan: " + result.getString("version"));
+                        log("Date of Sonar scan: " + parser.getDate());
 
                         return new Result(false, "Failed to get a newer quality gate for " + sonarProjectKey
                                 + ". The present quality gate is older than the start of the Sonar scan task.");
@@ -80,33 +76,29 @@ public class SonarTaskExecutor extends TaskExecutor {
 
                     Thread.sleep(timeoutTime);
 
+                    parser = new SonarParser(sonarClient.getProjectWithQualityGateDetails(sonarProjectKey));
+
+                    timeout = timeout + timeoutTime;
+
+                    resultDate = parser.getDate();
+                    resultDate = new StringBuilder(resultDate).insert(resultDate.length() - 2, ":").toString();
                 }
 
-                log("Date of Sonar scan: " + result.getString("date"));
-                log("Version of Sonar scan: " + result.getString("version"));
+                log("Date of Sonar scan: " + parser.getDate());
 
-                SonarParser parser = new SonarParser(result);
 
                 // check that a quality gate is returned
-                JSONObject qgDetails = parser.GetQualityGateDetails();
-
-                String qgResult = qgDetails.getString("level");
+                String qgResult = parser.getProjectQualityGateStatus();
 
                 // get result issues
                 return parseResult(qgResult, issueTypeFail);
 
-            }
-            else {
+            } else {
 
-                log("Date of Sonar scan: " + result.getString("date"));
-                log("Version of Sonar scan: " + result.getString("version"));
-
-                SonarParser parser = new SonarParser(result);
+                log("Date of Sonar scan: " + parser.getDate());
 
                 // check that a quality gate is returned
-                JSONObject qgDetails = parser.GetQualityGateDetails();
-
-                String qgResult = qgDetails.getString("level");
+                String qgResult = parser.getProjectQualityGateStatus();
 
                 // get result issues
                 return parseResult(qgResult, issueTypeFail);
@@ -121,15 +113,13 @@ public class SonarTaskExecutor extends TaskExecutor {
     private Result parseResult(String qgResult, String issueTypeFail) {
 
         switch (issueTypeFail) {
-            case "error" :
-                if("ERROR".equals(qgResult))
-                {
+            case "error":
+                if ("ERROR".equals(qgResult)) {
                     return new Result(false, "At least one Error in Quality Gate");
                 }
                 break;
-            case "warning" :
-                if("ERROR".equals(qgResult) || "WARN".equals(qgResult))
-                {
+            case "warning":
+                if ("ERROR".equals(qgResult) || "WARN".equals(qgResult)) {
                     return new Result(false, "At least one Error or Warning in Quality Gate");
                 }
                 break;
@@ -155,27 +145,24 @@ public class SonarTaskExecutor extends TaskExecutor {
             String scheduledTime = client.getJobProperty(
                     envVars.get("GO_PIPELINE_NAME").toString(),
                     envVars.get("GO_PIPELINE_COUNTER").toString(),
-                    (String) ((Map)this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
-                    (String) ((Map)this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE),
-                    (String) ((Map)this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
+                    (String) ((Map) this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
+                    (String) ((Map) this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE),
+                    (String) ((Map) this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
                     "cruise_timestamp_01_scheduled");
 
             return scheduledTime;
 
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             log(e.toString());
             return null;
         }
     }
 
-    protected int compareDates(String date1, String date2)
-    {
+    protected int compareDates(String date1, String date2) {
         return (date1.compareTo(date2));
     }
 
-    protected String getPluginLogPrefix(){
+    protected String getPluginLogPrefix() {
         return "[SonarQube Quality Gate Plugin] ";
     }
 

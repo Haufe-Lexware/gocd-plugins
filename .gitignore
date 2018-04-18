@@ -17,3 +17,7 @@ hs_err_pid*
 */target/*
 out/*.jar
 target/lib/*.jar
+
+.settings/
+.project
+.classpath

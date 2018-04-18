@@ -5,6 +5,8 @@ package com.tw.go.task.sonarqualitygate;
 import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
 import com.tw.go.plugin.common.*;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.security.GeneralSecurityException;
 import java.util.Map;
@@ -46,10 +48,19 @@ public class SonarTaskExecutor extends TaskExecutor {
 
             // get quality gate details
             JSONObject result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
+            JSONObject project = (JSONObject) result.get("projectStatus");
+            JSONArray periods = (JSONArray) project.get("periods");
+            JSONObject lastPeriod = (JSONObject) periods.get(periods.length() - 1);
+
+            String lastDate = (String) lastPeriod.get("date");
+            String lastVersion = (String) lastPeriod.get("parameter");
 
             if (!("".equals(stageName)) && !("".equals(jobName)) && !("".equals(jobCounter))) {
                 String scheduledTime = getScheduledTime();
-                String resultDate = result.getString("date");
+
+                
+
+                String resultDate = lastDate;
                 resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
 
                 int timeout = 0;
@@ -64,15 +75,15 @@ public class SonarTaskExecutor extends TaskExecutor {
 
                     timeout = timeout + timeoutTime;
 
-                    resultDate = result.getString("date");
+                    resultDate = lastDate;
                     resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
 
                     if (timeout > timeLimit) {
 
                         log("No new scan has been found !");
 
-                        log("Date of Sonar scan: " + result.getString("date"));
-                        log("Version of Sonar scan: " + result.getString("version"));
+                        log("Date of Sonar scan: " + lastDate);
+                        log("Version of Sonar scan: " + lastVersion);
 
                         return new Result(false, "Failed to get a newer quality gate for " + sonarProjectKey
                                 + ". The present quality gate is older than the start of the Sonar scan task.");
@@ -82,15 +93,13 @@ public class SonarTaskExecutor extends TaskExecutor {
 
                 }
 
-                log("Date of Sonar scan: " + result.getString("date"));
-                log("Version of Sonar scan: " + result.getString("version"));
+                log("Date of Sonar scan: " + lastDate);
+                log("Version of Sonar scan: " + lastVersion);
 
                 SonarParser parser = new SonarParser(result);
 
                 // check that a quality gate is returned
-                JSONObject qgDetails = parser.GetQualityGateDetails();
-
-                String qgResult = qgDetails.getString("level");
+                String qgResult = parser.getProjectQualityGateStatus();
 
                 // get result issues
                 return parseResult(qgResult, issueTypeFail);
@@ -98,15 +107,13 @@ public class SonarTaskExecutor extends TaskExecutor {
             }
             else {
 
-                log("Date of Sonar scan: " + result.getString("date"));
-                log("Version of Sonar scan: " + result.getString("version"));
+                log("Date of Sonar scan: " + lastDate);
+                log("Version of Sonar scan: " + lastVersion);
 
                 SonarParser parser = new SonarParser(result);
 
                 // check that a quality gate is returned
-                JSONObject qgDetails = parser.GetQualityGateDetails();
-
-                String qgResult = qgDetails.getString("level");
+                String qgResult = parser.getProjectQualityGateStatus();
 
                 // get result issues
                 return parseResult(qgResult, issueTypeFail);
@@ -178,5 +185,4 @@ public class SonarTaskExecutor extends TaskExecutor {
     protected String getPluginLogPrefix(){
         return "[SonarQube Quality Gate Plugin] ";
     }
-
 }

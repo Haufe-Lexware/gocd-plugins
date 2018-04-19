@@ -46,7 +46,7 @@ public class SonarTaskExecutor extends TaskExecutor {
 //                log(" Requesting project's quality gate anonymously.");
 //            }
 
-            // get quality gate details
+            //get quality gate details
             JSONObject result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
             JSONObject project = (JSONObject) result.get("projectStatus");
             JSONArray periods = (JSONArray) project.get("periods");

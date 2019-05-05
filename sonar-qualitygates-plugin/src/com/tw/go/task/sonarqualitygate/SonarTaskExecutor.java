@@ -1,40 +1,49 @@
 
 package com.tw.go.task.sonarqualitygate;
 
-
-import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
-import com.tw.go.plugin.common.*;
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.security.GeneralSecurityException;
 import java.util.Map;
 
+import org.json.JSONObject;
+
+import com.thoughtworks.go.plugin.api.task.JobConsoleLogger;
+import com.tw.go.plugin.common.Context;
+import com.tw.go.plugin.common.GoApiClient;
+import com.tw.go.plugin.common.GoApiConstants;
+import com.tw.go.plugin.common.Result;
+import com.tw.go.plugin.common.TaskExecutor;
+import com.tw.go.task.sonarqualitygate.config.SonarConfig;
+
+@SuppressWarnings("rawtypes")
 public class SonarTaskExecutor extends TaskExecutor {
 
-    public SonarTaskExecutor(JobConsoleLogger console, Context context, Map config) {
-        super(console, context, config);
-    }
+	private String sonarVersion;
+	private SonarConfig sonarConfig;
 
-    public Result execute() throws Exception {
+	public SonarTaskExecutor(JobConsoleLogger console, Context context, Map config) {
+		super(console, context, config);
+		this.sonarConfig = new SonarConfig(config);
+	}
 
-        String sonarProjectKey = (String) ((Map) this.config.get(SonarScanTask.SONAR_PROJECT_KEY)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-        log("checking quality gate result for: " + sonarProjectKey);
+	public Result execute() throws Exception {
 
-        try {
-            // get input parameter
-            String stageName = (String) ((Map)this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            String jobName = (String) ((Map)this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            String jobCounter = (String) ((Map)this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE);
+		String sonarProjectKey = sonarConfig.getSonarProjectKey();
+		log("checking quality gate result for: " + sonarProjectKey);
 
-            String sonarApiUrl = (String) ((Map)this.config.get(SonarScanTask.SONAR_API_URL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            log("API Url: " + sonarApiUrl);
-            String issueTypeFail = (String) ((Map) this.config.get(SonarScanTask.ISSUE_TYPE_FAIL)).get(GoApiConstants.PROPERTY_NAME_VALUE);
-            log("Fail if: " + issueTypeFail);
+		try {
+			// get input parameter
+			String stageName = sonarConfig.getStageName();
+			String jobName = sonarConfig.getJobName();
+			String jobCounter = sonarConfig.getJobCounter();
 
-            SonarClient sonarClient = new SonarClient(sonarApiUrl);
+			String sonarApiUrl = sonarConfig.getSonarApiUrl();
+			log("API Url: " + sonarApiUrl);
+			String issueTypeFail = sonarConfig.getIssueTypeFail();
+			log("Fail if: " + issueTypeFail);
 
+			SonarClient sonarClient = new SonarClient(sonarApiUrl);
+			this.sonarVersion = sonarClient.getSonarVersion();
+			log("SonarQube Version: " + sonarVersion);
 //            // This might need some auth!
 //            Map envVars = context.getEnvironmentVariables();
 //            if (envVars.get(GoApiConstants.ENVVAR_NAME_SONAR_USER) != null &&
@@ -43,146 +52,134 @@ public class SonarTaskExecutor extends TaskExecutor {
 //                sonarClient.setBasicAuthentication(envVars.get(GoApiConstants.ENVVAR_NAME_SONAR_USER).toString(), envVars.get(GoApiConstants.ENVVAR_NAME_SONAR_USER_PASSWORD).toString());
 //                log("Logged in as '" + envVars.get(GoApiConstants.ENVVAR_NAME_SONAR_USER).toString() + "' to get the project's quality gate");
 //            } else {
-//                log(" Requesting project's quality gate anonymously.");
+//                log(" Requesting project's quality gate anonymously."); 
 //            }
 
-            //get quality gate details
-            JSONObject result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
-            JSONObject project = (JSONObject) result.get("projectStatus");
-            JSONArray periods = (JSONArray) project.get("periods");
-            JSONObject lastPeriod = (JSONObject) periods.get(periods.length() - 1);
+			// get quality gate details
+			JSONObject projectStatus = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
+			String lastAnalisysDate = sonarClient.getLastAnalisysDate(sonarProjectKey, this.sonarVersion);
+			String lastDate = SonarParser.getInstance(lastAnalisysDate, sonarVersion).getLastAnalysisDate();
+			String lastVersion = SonarParser.getInstance(lastAnalisysDate, sonarVersion).getProjectVersion();
 
-            String lastDate = (String) lastPeriod.get("date");
-            String lastVersion = (String) lastPeriod.get("parameter");
+			if (!("".equals(stageName)) && !("".equals(jobName)) && !("".equals(jobCounter))) {
+				String scheduledTime = getScheduledTime();
 
-            if (!("".equals(stageName)) && !("".equals(jobName)) && !("".equals(jobCounter))) {
-                String scheduledTime = getScheduledTime();
+				String resultDate = lastDate;
+				resultDate = new StringBuilder(resultDate).insert(resultDate.length() - 2, ":").toString();
 
-                
+				int timeout = 0;
+				int timeoutTime = 60000;
+				int timeLimit = 300000;
+				log("scheduledTime: " + scheduledTime);
+				log("resultDate: " + resultDate);
+				while (compareDates(resultDate, scheduledTime) <= 0) {
+					log("scheduledTime while: " + scheduledTime);
+					log("resultDate while: " + resultDate);
+					log("Scan result is older than the start of the pipeline. Waiting for a newer scan ...");
 
-                String resultDate = lastDate;
-                resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
+					projectStatus = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
+					lastAnalisysDate = sonarClient.getLastAnalisysDate(sonarProjectKey, this.sonarVersion);
+					lastDate = SonarParser.getInstance(lastAnalisysDate, sonarVersion).getLastAnalysisDate();
+					lastVersion = SonarParser.getInstance(lastAnalisysDate, sonarVersion).getProjectVersion();
+					timeout = timeout + timeoutTime;
 
-                int timeout = 0;
-                int timeoutTime = 60000;
-                int timeLimit = 300000;
+					resultDate = lastDate;
+					resultDate = new StringBuilder(resultDate).insert(resultDate.length() - 2, ":").toString();
 
-                while(compareDates(resultDate, scheduledTime) <= 0) {
+					if (timeout > timeLimit) {
 
-                    log("Scan result is older than the start of the pipeline. Waiting for a newer scan ...");
+						log("No new scan has been found !");
 
-                    result = sonarClient.getProjectWithQualityGateDetails(sonarProjectKey);
+						log("Date of Sonar scan: " + lastDate);
+						log("Version of Sonar scan: " + lastVersion);
 
-                    timeout = timeout + timeoutTime;
+						return new Result(false, "Failed to get a newer quality gate for " + sonarProjectKey
+								+ ". The present quality gate is older than the start of the Sonar scan task.");
+					}
 
-                    resultDate = lastDate;
-                    resultDate = new StringBuilder(resultDate).insert(resultDate.length()-2, ":").toString();
+					Thread.sleep(timeoutTime);
 
-                    if (timeout > timeLimit) {
+				}
 
-                        log("No new scan has been found !");
+				log("Date of Sonar scan: " + lastDate);
+				log("Version of Sonar scan: " + lastVersion);
 
-                        log("Date of Sonar scan: " + lastDate);
-                        log("Version of Sonar scan: " + lastVersion);
+				// check that a quality gate is returned
+				String qgResult = SonarParser.getInstance(projectStatus).getProjectQualityGateStatus();
 
-                        return new Result(false, "Failed to get a newer quality gate for " + sonarProjectKey
-                                + ". The present quality gate is older than the start of the Sonar scan task.");
-                    }
+				// get result issues
+				return parseResult(qgResult, issueTypeFail);
 
-                    Thread.sleep(timeoutTime);
+			} else {
 
-                }
+				log("Date of Sonar scan: " + lastDate);
+				log("Version of Sonar scan: " + lastVersion);
 
-                log("Date of Sonar scan: " + lastDate);
-                log("Version of Sonar scan: " + lastVersion);
+				// check that a quality gate is returned
+				String qgResult = SonarParser.getInstance(projectStatus).getProjectQualityGateStatus();
 
-                SonarParser parser = new SonarParser(result);
+				// get result issues
+				return parseResult(qgResult, issueTypeFail);
+			}
 
-                // check that a quality gate is returned
-                String qgResult = parser.getProjectQualityGateStatus();
+		} catch (Exception e) {
+			log("Error during get or parse of quality gate result. Please check if a quality gate is defined\n"
+					+ e.getMessage());
+			return new Result(false, "Failed to get quality gate for " + sonarProjectKey
+					+ ". Please check if a quality gate is defined\n", e);
+		}
+	}
 
-                // get result issues
-                return parseResult(qgResult, issueTypeFail);
+	private Result parseResult(String qgResult, String issueTypeFail) {
 
-            }
-            else {
+		switch (issueTypeFail) {
+		case "error":
+			if ("ERROR".equals(qgResult)) {
+				return new Result(false, "At least one Error in Quality Gate");
+			}
+			break;
+		case "warning":
+			if ("ERROR".equals(qgResult) || "WARN".equals(qgResult)) {
+				return new Result(false, "At least one Error or Warning in Quality Gate");
+			}
+			break;
+		}
+		return new Result(true, "SonarQube quality gate passed");
+	}
 
-                log("Date of Sonar scan: " + lastDate);
-                log("Version of Sonar scan: " + lastVersion);
+	protected String getScheduledTime() throws GeneralSecurityException {
+		Map envVars = context.getEnvironmentVariables();
+		GoApiClient client = new GoApiClient(envVars.get(GoApiConstants.ENVVAR_NAME_GO_SERVER_URL).toString());
+		try {
+			// get go build user authorization
+			if (envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER) != null
+					&& envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD) != null) {
 
-                SonarParser parser = new SonarParser(result);
+				client.setBasicAuthentication(envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString(),
+						envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
 
-                // check that a quality gate is returned
-                String qgResult = parser.getProjectQualityGateStatus();
+				log("Logged in as '" + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString() + "'");
+			} else {
+				log("No login set. Going anonymous.");
+			}
 
-                // get result issues
-                return parseResult(qgResult, issueTypeFail);
-            }
+			String scheduledTime = client.getJobProperty(envVars.get("GO_PIPELINE_NAME").toString(),
+					envVars.get("GO_PIPELINE_COUNTER").toString(), sonarConfig.getStageName(),
+					sonarConfig.getJobCounter(), sonarConfig.getJobName(), "cruise_timestamp_01_scheduled");
 
-        } catch (Exception e) {
-            log("Error during get or parse of quality gate result. Please check if a quality gate is defined\n" + e.getMessage());
-            return new Result(false, "Failed to get quality gate for " + sonarProjectKey + ". Please check if a quality gate is defined\n", e);
-        }
-    }
+			return scheduledTime;
 
-    private Result parseResult(String qgResult, String issueTypeFail) {
+		} catch (Exception e) {
+			log(e.toString());
+			return null;
+		}
+	}
 
-        switch (issueTypeFail) {
-            case "error" :
-                if("ERROR".equals(qgResult))
-                {
-                    return new Result(false, "At least one Error in Quality Gate");
-                }
-                break;
-            case "warning" :
-                if("ERROR".equals(qgResult) || "WARN".equals(qgResult))
-                {
-                    return new Result(false, "At least one Error or Warning in Quality Gate");
-                }
-                break;
-        }
-        return new Result(true, "SonarQube quality gate passed");
-    }
+	protected int compareDates(String date1, String date2) {
+		return (date1.compareTo(date2));
+	}
 
-    protected String getScheduledTime() throws GeneralSecurityException {
-        Map envVars = context.getEnvironmentVariables();
-        GoApiClient client = new GoApiClient(envVars.get(GoApiConstants.ENVVAR_NAME_GO_SERVER_URL).toString());
-        try {
-            // get go build user authorization
-            if (envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER) != null &&
-                    envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD) != null) {
-
-                client.setBasicAuthentication(envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString(), envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER_PASSWORD).toString());
-
-                log("Logged in as '" + envVars.get(GoApiConstants.ENVVAR_NAME_GO_BUILD_USER).toString() + "'");
-            } else {
-                log("No login set. Going anonymous.");
-            }
-
-            String scheduledTime = client.getJobProperty(
-                    envVars.get("GO_PIPELINE_NAME").toString(),
-                    envVars.get("GO_PIPELINE_COUNTER").toString(),
-                    (String) ((Map)this.config.get(SonarScanTask.STAGE_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
-                    (String) ((Map)this.config.get(SonarScanTask.JOB_COUNTER)).get(GoApiConstants.PROPERTY_NAME_VALUE),
-                    (String) ((Map)this.config.get(SonarScanTask.JOB_NAME)).get(GoApiConstants.PROPERTY_NAME_VALUE),
-                    "cruise_timestamp_01_scheduled");
-
-            return scheduledTime;
-
-        }
-        catch(Exception e)
-        {
-            log(e.toString());
-            return null;
-        }
-    }
-
-    protected int compareDates(String date1, String date2)
-    {
-        return (date1.compareTo(date2));
-    }
-
-    protected String getPluginLogPrefix(){
-        return "[SonarQube Quality Gate Plugin] ";
-    }
+	protected String getPluginLogPrefix() {
+		return "[SonarQube Quality Gate Plugin] ";
+	}
 }

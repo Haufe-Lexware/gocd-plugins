@@ -1,51 +1,63 @@
 package com.tw.go.task.sonarqualitygate;
 
-import org.json.JSONObject;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
 
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
+
+import org.json.JSONObject;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.tw.go.task.sonarqualitygate.enumeration.EndpointSonarEnum;
 
 /**
  * Created by MarkusW on 26.10.2015.
  */
+
 public class SonarClientTest {
 
-    // properites required for executing the tests
-    private static String sonarApiUrl;
-    private static String sonarProjectKey;
+	// properites required for executing the tests
+	private String sonarApiUrl; 
+	private String sonarProjectKey;
 
+	@Before
+	public void init() throws Exception {
 
-    @BeforeClass
-    public static void init() throws Exception{
+		// init from properites file (this is sonar installation specific.
+		Properties props = new Properties();
+		InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.properties");
+		props.load(in);
 
-        // init from properites file (this is sonar installation specific.
-        Properties props = new Properties();
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.properties");
-        props.load(in);
+		// api properites
+		sonarApiUrl = props.getProperty("sonarApiUrl");
+		sonarProjectKey = props.getProperty("sonarProjectKey");
+	}
 
-        // api properites
-        SonarClientTest.sonarApiUrl = props.getProperty("sonarApiUrl");
-        SonarClientTest.sonarProjectKey = props.getProperty("sonarProjectKey");
-    }
+	@Test
+	public void testQualityGateResult() throws Exception {
 
-    public void testQualityGateResult() throws Exception {
+		// create a sonar client
+		SonarClient sonarClient = new SonarClient(this.sonarApiUrl);
 
-        // create a sonar client
-        SonarClient sonarClient = new SonarClient(this.sonarApiUrl);
+		// get quality gate details
+		JSONObject result = sonarClient.getProjectWithQualityGateDetails(this.sonarProjectKey);
 
-        // get quality gate details
-        JSONObject result = sonarClient.getProjectWithQualityGateDetails(this.sonarProjectKey);
+		// check that a quality gate is returned
 
-        SonarParser parser = new SonarParser(result);
+		String qgResult = SonarParser.getInstance(result).getProjectQualityGateStatus();
+		Assert.assertEquals("OK", qgResult);
+	}
 
-        // check that a quality gate is returned
-        JSONObject qgDetails = parser.GetQualityGateDetails();
+	@Test
+	public void testSonarVersion() throws Exception {
 
-        String qgResult = qgDetails.getString("level");
-        Assert.assertEquals("ERROR", qgResult);
-    }
+		SonarClient sonarClient = new SonarClient(sonarApiUrl);
+		String version = sonarClient.getSonarVersion();
+		Logger.getLogger(SonarParserTest.class.getName()).info("Version: " + version);
+		assertFalse(EndpointSonarEnum.isSonarVersionUntil62(version));
+	}
 
 }

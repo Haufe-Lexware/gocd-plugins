@@ -97,11 +97,13 @@ public class SonarParser {
 		 * [{ "id": "2", "rk": "org.report:report4j", "n": "1.0.0-SNAPSHOT", "c":
 		 * "Version", "dt": "2019-05-04T16:03:55-0500" } ]
 		 */
-
-		JSONObject object = (JSONObject) jsonArray.get(0);
-		if (object.has(TOKEN_DATETIME)) {
-			return object.getString(TOKEN_DATETIME);
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject object = (JSONObject) jsonArray.get(i);
+			if (object.has(TOKEN_DATETIME) && "VERSION".equalsIgnoreCase(object.getString("c"))) {
+				return object.getString(TOKEN_DATETIME);
+			}
 		}
+
 		return null;
 	}
 

@@ -60,14 +60,11 @@
             <artifactId>mockito-core</artifactId>
             <version>1.10.19</version>
         </dependency>
-        <dependency>
-            <artifactId>guava</artifactId>
-            <groupId>com.google.guava</groupId>
-            <type>jar</type>
-            <version>14.0.1</version>
-        </dependency>
-    </dependencies>
-
+       <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>30.1-jre</version>
+       </dependency>
     <build>
         <sourceDirectory>src</sourceDirectory>
         <resources>

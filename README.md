@@ -1,5 +1,7 @@
 # gocd-plugins
 
+> :warning: **This project is no longer maintained**
+
 A collection of plugins for use with Go.CD. Have a look at [http://www.go.cd/](http://www.go.cd/) for more information on Go.CD itself.
 
 ## SonarQube Quality Gate Plugin

@@ -1,10 +1,15 @@
+<style>
+   .asterisk {
+      color : red;
+   }
+</style>
 <a href="https://docs.docker.com/machine/reference/create/">Docker create documentation</a>
 <br>
 <div class="form_item_block">
     <div class="form_item_block">
-        <label>Name(s) of the virtual machine(s). Format is text[format,start,stop,step]text. You can enter multiple names, separated with a semicolon. <span class="asterisk">*</span></label>
+        <label>Name(s) of the virtual machine(s). Format is text[format,start,stop,step]text. You can enter multiple
+            names, separated with a semicolon. <span class="asterisk">*</span></label>
         <input type="text" ng-model="VMNAME" ng-required="true">
-        </input>
     </div>
 </div>
 <div class="form_item_block">
@@ -16,12 +21,11 @@
 <div class="form_item_block">
     <label>Specify environment variables to set in the engine</label>
     <input type="text" ng-model="ENGINE_ENV" ng-required="false">
-    </input>
 </div>
 <div class="form_item_block">
-    <label>Specify arbitrary daemon options with the syntax name=value. Multiple pairs can be provided separated by ','</label>
+    <label>Specify arbitrary daemon options with the syntax name=value. Multiple pairs can be provided separated by
+        ','</label>
     <input type="text" ng-model="ENGINE_OPT" ng-required="false">
-    </input>
 </div>
 <div class="form_item_block">
     <H2>Driver used by create</H2>
@@ -38,27 +42,22 @@
         <div class="form_item_block">
             <label>Path to the SSH user private key (must be accessible from go-agent!)</label>
             <input type="text" ng-model="GENERIC_SSH_KEY">
-            </input>
         </div>
         <div class="form_item_block">
             <label>SSH username used to connect</label>
             <input type="text" ng-model="GENERIC_SSH_USER">
-            </input>
         </div>
         <div class="form_item_block">
             <label>IP Address of host</label>
             <input type="text" ng-model="GENERIC_IP_ADDRESS">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Port to use for SSH</label>
             <input type="text" ng-model="GENERIC_SSH_PORT">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Port to use for Docker Daemon (Note: This flag will not work with boot2docker).</label>
             <input type="text" ng-model="GENERIC_ENGINE_PORT">
-            </input>
         </div>
     </div>
 </div>
@@ -68,43 +67,34 @@
         <div class="form_item_block">
             <label>Username</label>
             <input type="text" ng-model="VSPHERE_USERNAME">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Password</label>
             <input type="password" ng-model="VSPHERE_PASSWORD">
-            </input>
         </div>
         <div class="form_item_block">
             <label>IP/hostname for vCenter or ESXi</label>
             <input type="text" ng-model="VSPHERE_VCENTER">
-            </input>
         </div>
         <div class="form_item_block">
             <label>DataCenter (for ESXi use ha-datacenter)</label>
             <input type="text" ng-model="VSPHERE_DATACENTER">
-            </input>
         </div>
-
         <div class="form_item_block">
             <label>CPU count</label>
             <input type="text" ng-model="VSPHERE_CPU_COUNT">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Memory size</label>
             <input type="text" ng-model="VSPHERE_MEMORY_SIZE">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Disk size</label>
             <input type="text" ng-model="VSPHERE_DISK_SIZE">
-            </input>
         </div>
         <div class="form_item_block">
             <label>URL of BootImage</label>
             <input type="text" ng-model="VSPHERE_BOOT2DOCKER_URL">
-            </input>
         </div>
     </div>
 </div>
@@ -114,63 +104,51 @@
         <div class="form_item_block">
             <label>Your Azure Subscription ID</label>
             <input type="text" ng-model="AZURE_SUBSCRIPTION_ID">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Azure environment (e.g. AzurePublicCloud, AzureChinaCloud)</label>
             <input type="text" ng-model="AZURE_ENVIRONMENT">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Azure virtual machine image in the format of Publisher:Offer:Sku:Version</label>
             <input type="text" ng-model="AZURE_IMAGE">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Azure region to create the virtual machine</label>
             <input type="text" ng-model="AZURE_LOCATION">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Azure Resource Group name to create the resources in.</label>
             <input type="text" ng-model="AZURE_RESOURCE_GROUP">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Size for Azure Virtual Machine</label>
             <input type="text" ng-model="AZURE_SIZE">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Username for SSH login</label>
             <input type="text" ng-model="AZURE_SSH_USER">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Azure Virtual Network name to connect the virtual machine</label>
             <input type="text" ng-model="AZURE_VNET">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Azure Subnet Name to be used within the Virtual Network.</label>
             <input type="text" ng-model="AZURE_SUBNET">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Private CIDR block. Used to create subnet if it does not exist. Must match in the case that the
                 subnet does exist.</label>
             <input type="text" ng-model="AZURE_SUBNET_PREFIX">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Azure Availability Set to place the virtual machine into</label>
             <input type="text" ng-model="AZURE_AVAILABILITY_SET">
-            </input>
         </div>
         <div class="form_item_block">
             <label>Port number for Docker engine </label>
             <input type="text" ng-model="AZURE_DOCKER_PORT">
-            </input>
         </div>
     </div>
 </div>

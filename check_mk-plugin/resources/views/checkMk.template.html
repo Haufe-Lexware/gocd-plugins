@@ -1,9 +1,18 @@
+<style>
+    .asterisk {
+        color : red;
+    }
+    textarea {
+        min-height: 100px;
+    }
+
+</style>
 <div class="form_item_block">
     <label>CheckMK server:<span class="asterisk">*</span>
     </label>
     <textarea ng-model="Server" ng-required="true"></textarea>
     <div role="alert">
-      <span class="error" color="red" ng-show="GOINPUTNAME[Server].$error.required" >Required!</span>
+        <span class="error" color="red" ng-show="GOINPUTNAME[Server].$error.required">Required!</span>
     </div>
 </div>
 <div class="form_item_block">
@@ -11,7 +20,7 @@
     </label>
     <input type="text" ng-model="Username" ng-required="true">
     <div role="alert">
-        <span class="error" color="red" ng-show="GOINPUTNAME[Username].$error.required" >Required!</span>
+        <span class="error" color="red" ng-show="GOINPUTNAME[Username].$error.required">Required!</span>
     </div>
 </div>
 <div class="form_item_block">
@@ -19,10 +28,10 @@
     </label>
     <input type="password" name="password" ng-model="Password" ng-required="true">
     <div role="alert">
-        <span class="error" color="red" ng-show="GOINPUTNAME[Password].$error.required" >Required!</span>
+        <span class="error" color="red" ng-show="GOINPUTNAME[Password].$error.required">Required!</span>
     </div>
 </div>
-<select ng-init="SelectedAction='default'" ng-model="SelectedAction" >
+<select ng-init="SelectedAction='default'" ng-model="SelectedAction">
     <option selected disabled value="default">Select action</option>
     <option value="add">Add Host</option>
     <option value="edit">Edit Host</option>
@@ -36,27 +45,24 @@
             <label>Hostname:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="Hostname" ng-required="true">
-            </input>
             <div role="alert">
-                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required" >Required!</span>
+                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required">Required!</span>
             </div>
         </div>
         <div class="form_item_block">
             <label>Host ip:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="HostIp" ng-required="true">
-            </input>
             <div role="alert">
-                <span class="error" color="red" ng-show="GOINPUTNAME[HostIp].$error.required" >Required!</span>
+                <span class="error" color="red" ng-show="GOINPUTNAME[HostIp].$error.required">Required!</span>
             </div>
         </div>
         <div class="form_item_block">
             <label>Folder path:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="FolderPath" ng-required="true">
-            </input>
             <div role="alert">
-                <span class="error" color="red" ng-show="GOINPUTNAME[FolderPath].$error.required" >Required!</span>
+                <span class="error" color="red" ng-show="GOINPUTNAME[FolderPath].$error.required">Required!</span>
             </div>
         </div>
     </div>
@@ -65,27 +71,24 @@
             <label>Hostname:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="Hostname" ng-required="true">
-            </input>
             <div role="alert">
-                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required" >Required!</span>
+                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required">Required!</span>
             </div>
         </div>
         <div class="form_item_block">
             <label>New Host ip:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="HostIp" ng-required="true">
-            </input>
             <div role="alert">
-                <span class="error" color="red" ng-show="GOINPUTNAME[HostIp].$error.required" >Required!</span>
+                <span class="error" color="red" ng-show="GOINPUTNAME[HostIp].$error.required">Required!</span>
             </div>
         </div>
         <div class="form_item_block">
             <label>New Folder path:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="FolderPath" ng-required="true">
-            </input>
             <div role="alert">
-                <span class="error" color="red" ng-show="GOINPUTNAME[FolderPath].$error.required" >Required!</span>
+                <span class="error" color="red" ng-show="GOINPUTNAME[FolderPath].$error.required">Required!</span>
             </div>
         </div>
     </div>
@@ -94,9 +97,8 @@
             <label>Hostname:<span class="asterisk">*</span>
             </label>
             <input type="text" ng-model="Hostname" ng-required="true">
-            </input>
             <div role="alert">
-                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required" >Required!</span>
+                <span class="error" color="red" ng-show="GOINPUTNAME[Hostname].$error.required">Required!</span>
             </div>
         </div>
     </div>

@@ -1,202 +1,225 @@
+<style>
+  .checkbox_row {
+    display: flex;
+  }
+  .checkbox_label{
+    line-height: 1 !important;
+    margin-left: 5px !important;
+  }
+  .inline_instruction{
+    margin-bottom: 10px;
+    color: #666;
+    font-style: italic;
+    clear: left;
+    font-size: 11px;
+   }
+   .input_with_instructions {
+   margin-bottom : 2px !important;
+   }
+
+</style>
 <div class="form_item_block">
-  <div class="checkbox_row">
-    <input id="CleanBeforeTask1" type="checkbox" ng-model="CleanBeforeTask1"
-           ng-init="CleanBeforeTask1 = CleanBeforeTask"
-           ng-change="CleanBeforeTask = CleanBeforeTask1"
-           ng-true-value="true"
-           ng-false-value="false">
-    <input id="CleanBeforeTask" type="hidden" ng-model="CleanBeforeTask" value="{{CleanBeforeTask}}">
-    <label for="CleanBeforeTask">Restart Docker service, stop and remove all containers and images</label>
-  </div><br><br>
-  <h2>Login</h2><br>
-  <div class="form_item_block">
-    <label>Username </label>
-    <input type="text" ng-model="RegistryUsername" ng-required="false">
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryUsername].$error.server">{{ GOINPUTNAME[RegistryUsername].$error.server }}</span>
-  </div>
+    <div class="checkbox_row">
+        <input id="CleanBeforeTask1" type="checkbox" ng-model="CleanBeforeTask1"
+               ng-init="CleanBeforeTask1 = CleanBeforeTask"
+               ng-change="CleanBeforeTask = CleanBeforeTask1"
+               ng-true-value="true"
+               ng-false-value="false">
+        <input id="CleanBeforeTask" type="hidden" ng-model="CleanBeforeTask" value="{{CleanBeforeTask}}">
+        <label for="CleanBeforeTask" class="checkbox_label">Restart Docker service, stop and remove all containers and
+            images</label>
+    </div>
+    <h2>Login</h2>
+    <div class="form_item_block">
+        <label>Username </label>
+        <input type="text" ng-model="RegistryUsername" ng-required="false">
+        <span class="form_error" ng-show="GOINPUTNAME[RegistryUsername].$error.server">{{ GOINPUTNAME[RegistryUsername].$error.server }}</span>
+    </div>
 
-  <div class="form_item_block">
-    <label>Password </label>
-    <input type="password" ng-model="RegistryPassword" ng-required="false">
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryPassword].$error.server">{{ GOINPUTNAME[RegistryPassword].$error.server }}</span>
-  </div>
+    <div class="form_item_block">
+        <label>Password </label>
+        <input type="password" ng-model="RegistryPassword" ng-required="false">
+        <span class="form_error" ng-show="GOINPUTNAME[RegistryPassword].$error.server">{{ GOINPUTNAME[RegistryPassword].$error.server }}</span>
+    </div>
 
-  <div class="form_item_block">
-    <label>Registry URL </label>
-    <input type="text" ng-model="RegistryURLForLogin" ng-required="false">
-    <span class="form_error" ng-show="GOINPUTNAME[RegistryURLForLogin].$error.server">{{ GOINPUTNAME[RegistryURLForLogin].$error.server }}</span>
-  </div>
+    <div class="form_item_block">
+        <label>Registry URL </label>
+        <input type="text" ng-model="RegistryURLForLogin" ng-required="false">
+        <span class="form_error" ng-show="GOINPUTNAME[RegistryURLForLogin].$error.server">{{ GOINPUTNAME[RegistryURLForLogin].$error.server }}</span>
+    </div>
 
-  <div class="checkbox_row">
-    <input id="isPush2" type="checkbox" ng-model="isPush2"
-           ng-init="isPush2 = isPush"
-           ng-change="isPush = isPush2" ng-true-value="true" ng-false-value="false">
-    <input id="pushCheckBox" type="hidden" ng-model="isPush" value="{{isPush}}">
-    <label>Push the resulting image(s)</label>
-  </div>
+    <div class="checkbox_row">
+        <input id="isPush2" type="checkbox" ng-model="isPush2"
+               ng-init="isPush2 = isPush"
+               ng-change="isPush = isPush2" ng-true-value="true" ng-false-value="false">
+        <input id="pushCheckBox" type="hidden" ng-model="isPush" value="{{isPush}}">
+        <label class="checkbox_label">Push the resulting image(s)</label>
+    </div>
 </div>
 
 <div class="form_item_block">
-  <h2>Build</h2>
+    <h2>Build</h2>
 
-  <div class="checkbox_row">
-    <input id="BUILD_NO_CACHE2" type="checkbox" ng-model="BUILD_NO_CACHE2"
-           ng-init="BUILD_NO_CACHE2 = BUILD_NO_CACHE"
-           ng-change="BUILD_NO_CACHE = BUILD_NO_CACHE2" ng-true-value="true" ng-false-value="false">
-    <input id="buildNoCache" type="hidden" ng-model="BUILD_NO_CACHE" value="{{BUILD_NO_CACHE}}">
-    <label>Disable cache while building the image (might take MUCH longer)</label>
-  </div>
-
-  <div class="checkbox_row">
-    <input id="BUILD_MICROLABELING2" type="checkbox" ng-model="BUILD_MICROLABELING2"
-           ng-init="BUILD_MICROLABELING2 = BUILD_MICROLABELING"
-           ng-change="BUILD_MICROLABELING = BUILD_MICROLABELING2" ng-true-value="true" ng-false-value="false">
-    <input id="buildMicrolabeling" type="hidden" ng-model="BUILD_MICROLABELING" value="{{BUILD_MICROLABELING}}">
-    <label>Enable microlabeling</label>
-  </div>
-
-  <div class="form_item_block">
-    <label>Build args</label>
-    <input type="text" ng-model="BuildArgs" ng-required="false">
-    <div class="inline_instruction">Provide one or multiple tags separated by ';'. Define a different separator as
-      the
-      VERY FIRST character (example "|arg1=xyz|arg2=123")
+    <div class="checkbox_row">
+        <input id="BUILD_NO_CACHE2" type="checkbox" ng-model="BUILD_NO_CACHE2"
+               ng-init="BUILD_NO_CACHE2 = BUILD_NO_CACHE"
+               ng-change="BUILD_NO_CACHE = BUILD_NO_CACHE2" ng-true-value="true" ng-false-value="false">
+        <input id="buildNoCache" type="hidden" ng-model="BUILD_NO_CACHE" value="{{BUILD_NO_CACHE}}">
+        <label class="checkbox_label">Disable cache while building the image (might take MUCH longer)</label>
     </div>
-    <span class="form_error" ng-show="GOINPUTNAME[BuildArgs].$error.server">{{ GOINPUTNAME[BuildArgs].$error.server }}</span>
-  </div>
 
-  <div class="form_item_block">
-    <label>Dockerfile path and its name </label>
-    <input type="text" ng-model="DockerFileName" ng-required="false">
-    <div class="inline_instruction">Path and name of Dockerfile relative to repository-root (default is
-      ./Dockerfile).
+    <div class="checkbox_row">
+        <input id="BUILD_MICROLABELING2" type="checkbox" ng-model="BUILD_MICROLABELING2"
+               ng-init="BUILD_MICROLABELING2 = BUILD_MICROLABELING"
+               ng-change="BUILD_MICROLABELING = BUILD_MICROLABELING2" ng-true-value="true" ng-false-value="false">
+        <input id="buildMicrolabeling" type="hidden" ng-model="BUILD_MICROLABELING" value="{{BUILD_MICROLABELING}}">
+        <label class="checkbox_label">Enable microlabeling</label>
     </div>
-    <span class="form_error" ng-show="GOINPUTNAME[DockerFileName].$error.server">{{ GOINPUTNAME[DockerFileName].$error.server }}</span>
-  </div>
+
+    <div class="form_item_block">
+        <label>Build args</label>
+        <input type="text" ng-model="BuildArgs" ng-required="false" class="input_with_instructions">
+        <div class="inline_instruction">Provide one or multiple tags separated by ';'. Define a different separator as
+            the
+            VERY FIRST character (example "|arg1=xyz|arg2=123")
+        </div>
+        <span class="form_error" ng-show="GOINPUTNAME[BuildArgs].$error.server">{{ GOINPUTNAME[BuildArgs].$error.server }}</span>
+    </div>
+
+    <div class="form_item_block">
+        <label>Dockerfile path and its name </label>
+        <input type="text" ng-model="DockerFileName" ng-required="false" class="input_with_instructions">
+        <div class="inline_instruction">Path and name of Dockerfile relative to repository-root (default is
+            ./Dockerfile).
+        </div>
+        <span class="form_error" ng-show="GOINPUTNAME[DockerFileName].$error.server">{{ GOINPUTNAME[DockerFileName].$error.server }}</span>
+    </div>
 </div>
 
 <div class="form_item_block">
-  <h2>Push</h2><br>
-  <div class="form_item_block">
-    <label>Username </label>
-    <input type="text" ng-model="Username" ng-required="false">
+    <h2>Push</h2>
+    <div class="form_item_block">
+        <label>Username </label>
+        <input type="text" ng-model="Username" ng-required="false">
         <span class="form_error"
               ng-show="GOINPUTNAME[Username].$error.server">{{ GOINPUTNAME[Username].$error.server }}</span>
-  </div>
-
-  <div class="form_item_block">
-    <label>Image name </label>
-    <input type="text" ng-model="ImageName" ng-required="false">
-    <span class="form_error" ng-show="GOINPUTNAME[ImageName].$error.server">{{ GOINPUTNAME[ImageName].$error.server }}</span>
-  </div>
-
-  <div class="form_item_block">
-    <label>Image tag </label>
-    <input type="text" ng-model="ImageTag" ng-required="false">
-    <div class="inline_instruction">You must specify at least one tag. Provide multiple tags separated by ';'.
-      Define a
-      different separator as the VERY FIRST character (example "|tag1|tag2")
     </div>
+
+    <div class="form_item_block">
+        <label>Image name </label>
+        <input type="text" ng-model="ImageName" ng-required="false">
+        <span class="form_error" ng-show="GOINPUTNAME[ImageName].$error.server">{{ GOINPUTNAME[ImageName].$error.server }}</span>
+    </div>
+
+    <div class="form_item_block">
+        <label>Image tag </label>
+        <input type="text" ng-model="ImageTag" ng-required="false" class="input_with_instructions">
+        <div class="inline_instruction">You must specify at least one tag. Provide multiple tags separated by ';'.
+            Define a
+            different separator as the VERY FIRST character (example "|tag1|tag2")
+        </div>
         <span class="form_error"
               ng-show="GOINPUTNAME[ImageTag].$error.server">{{ GOINPUTNAME[ImageTag].$error.server }}</span>
-  </div>
+    </div>
 
-  <div class="form_item_block">
-    <label>Tag postfix</label>
-    <input type="text" ng-model="IMAGE_TAG_POSTFIX" ng-required="false">
-    <span class="form_error" ng-show="GOINPUTNAME[IMAGE_TAG_POSTFIX].$error.server">{{ GOINPUTNAME[IMAGE_TAG_POSTFIX].$error.server }}</span>
-    <div class="inline_instruction">The tag postfix will be appended to all tags like "...:tag-postfix"</div>
-  </div>
+    <div class="form_item_block">
+        <label>Tag postfix</label>
+        <input type="text" ng-model="IMAGE_TAG_POSTFIX" ng-required="false" class="input_with_instructions">
+        <span class="form_error" ng-show="GOINPUTNAME[IMAGE_TAG_POSTFIX].$error.server">{{ GOINPUTNAME[IMAGE_TAG_POSTFIX].$error.server }}</span>
+        <div class="inline_instruction">The tag postfix will be appended to all tags like "...:tag-postfix"</div>
+    </div>
 
 </div>
 
 <div class="form_item_block">
-  <h2>Run</h2>
-  <div class="inline_instruction">Run an arbritrary container from inside the task. The current pipeline directory
-    can be accessed as a volume and is set as the initial working directory.</div>
+    <h2 class="input_with_instructions">Run</h2>
+    <div class="inline_instruction">Run an arbritrary container from inside the task. The current pipeline directory
+        can be accessed as a volume and is set as the initial working directory.
+    </div>
 
-  <div class="form_item_block">
-    <label>Image</label>
-    <input type="text" ng-model="RUN_IMAGE" ng-required="false">
+    <div class="form_item_block">
+        <label>Image</label>
+        <input type="text" ng-model="RUN_IMAGE" ng-required="false">
         <span class="form_error"
               ng-show="GOINPUTNAME[RUN_IMAGE].$error.server">{{ GOINPUTNAME[RUN_IMAGE].$error.server }}</span>
-  </div>
-
-  <div class="form_item_block">
-    <label>Environment variables</label>
-    <input type="text" ng-model="RUN_ENV_VARS" ng-required="false">
-    <div class="inline_instruction">Provide one or multiple vars separated by ';'. Define a different separator as
-      the
-      VERY FIRST character (example "|arg1=xyz|arg2=123")
     </div>
-    <span class="form_error" ng-show="GOINPUTNAME[RUN_ENV_VARS].$error.server">{{ GOINPUTNAME[RUN_ENV_VARS].$error.server }}</span>
-  </div>
 
-  <div class="form_item_block">
-    <label>Command and args</label>
-    <input type="text" ng-model="RUN_ARGS" ng-required="false">
+    <div class="form_item_block">
+        <label>Environment variables</label>
+        <input type="text" ng-model="RUN_ENV_VARS" ng-required="false" class="input_with_instructions">
+        <div class="inline_instruction">Provide one or multiple vars separated by ';'. Define a different separator as
+            the
+            VERY FIRST character (example "|arg1=xyz|arg2=123")
+        </div>
+        <span class="form_error" ng-show="GOINPUTNAME[RUN_ENV_VARS].$error.server">{{ GOINPUTNAME[RUN_ENV_VARS].$error.server }}</span>
+    </div>
+
+    <div class="form_item_block">
+        <label>Command and args</label>
+        <input type="text" ng-model="RUN_ARGS" ng-required="false">
         <span class="form_error"
               ng-show="GOINPUTNAME[RUN_ARGS].$error.server">{{ GOINPUTNAME[RUN_ARGS].$error.server }}</span>
-  </div>
+    </div>
 
-  <div class="form_item_block">
     <div class="form_item_block">
-      <label>BEFORE run, copy FROM </label>
-      <input type="text" ng-model="RUN_PRE_COPY_FROM" ng-required="false">
+        <div class="form_item_block">
+            <label>BEFORE run, copy FROM </label>
+            <input type="text" ng-model="RUN_PRE_COPY_FROM" ng-required="false">
             <span class="form_error"
                   ng-show="GOINPUTNAME[RUN_PRE_COPY_FROM].$error.server">{{ GOINPUTNAME[RUN_PRE_COPY_FROM].$error.server }}</span>
-    </div>
+        </div>
 
 
-    <div class="form_item_block">
-      <label>BEFORE run, copy TO </label>
-      <input type="text" ng-model="RUN_PRE_COPY_TO" ng-required="false">
+        <div class="form_item_block">
+            <label>BEFORE run, copy TO </label>
+            <input type="text" ng-model="RUN_PRE_COPY_TO" ng-required="false">
             <span class="form_error"
                   ng-show="GOINPUTNAME[RUN_PRE_COPY_TO].$error.server">{{ GOINPUTNAME[RUN_PRE_COPY_TO].$error.server }}</span>
-    </div>
+        </div>
 
-    <div class="form_item_block">
-      <label>AFTER run, copy FROM </label>
-      <input type="text" ng-model="RUN_POST_COPY_FROM" ng-required="false">
+        <div class="form_item_block">
+            <label>AFTER run, copy FROM </label>
+            <input type="text" ng-model="RUN_POST_COPY_FROM" ng-required="false">
             <span class="form_error"
                   ng-show="GOINPUTNAME[RUN_POST_COPY_FROM].$error.server">{{ GOINPUTNAME[RUN_POST_COPY_FROM].$error.server }}</span>
-    </div>
+        </div>
 
 
-    <div class="form_item_block">
-      <label>AFTER run, copy TO </label>
-      <input type="text" ng-model="RUN_POST_COPY_TO" ng-required="false">
+        <div class="form_item_block">
+            <label>AFTER run, copy TO </label>
+            <input type="text" ng-model="RUN_POST_COPY_TO" ng-required="false">
             <span class="form_error"
                   ng-show="GOINPUTNAME[RUN_POST_COPY_TO].$error.server">{{ GOINPUTNAME[RUN_POST_COPY_TO].$error.server }}</span>
+        </div>
     </div>
-  </div>
 
 </div>
 
 <div class="form_item_block">
-  <h2>Cleanup</h2>
+    <h2>Cleanup</h2>
 
-  <div class="form_item_block">
-    <div class="checkbox_row">
-      <input id="CleanAfterTask1" type="checkbox" ng-model="CleanAfterTask1"
-             ng-init="CleanAfterTask1 = CleanAfterTask"
-             ng-change="CleanAfterTask = CleanAfterTask1"
-             ng-true-value="true"
-             ng-false-value="false">
-      <input id="CleanAfterTask" type="hidden" ng-model="CleanAfterTask" value="{{CleanAfterTask}}">
-      <label for="CleanAfterTask">Remove all the exited containers and dangling images</label>
+    <div class="form_item_block">
+        <div class="checkbox_row">
+            <input id="CleanAfterTask1" type="checkbox" ng-model="CleanAfterTask1"
+                   ng-init="CleanAfterTask1 = CleanAfterTask"
+                   ng-change="CleanAfterTask = CleanAfterTask1"
+                   ng-true-value="true"
+                   ng-false-value="false">
+            <input id="CleanAfterTask" type="hidden" ng-model="CleanAfterTask" value="{{CleanAfterTask}}">
+            <label for="CleanAfterTask" class="checkbox_label">Remove all the exited containers and dangling
+                images</label>
+        </div>
     </div>
-  </div>
 
-  <div class="form_item_block">
-    <div class="checkbox_row">
-      <input id="CleanAfterTask2" type="checkbox" ng-model="CleanAfterTask2"
-             ng-init="CleanAfterTask2 = CleanAfterComplete"
-             ng-change="CleanAfterComplete = CleanAfterTask2"
-             ng-true-value="true"
-             ng-false-value="false">
-      <input id="CleanAfterComplete" type="hidden" ng-model="CleanAfterComplete" value="{{CleanAfterComplete}}">
-      <label for="CleanAfterComplete">Remove all images and containers</label>
+    <div class="form_item_block">
+        <div class="checkbox_row">
+            <input id="CleanAfterTask2" type="checkbox" ng-model="CleanAfterTask2"
+                   ng-init="CleanAfterTask2 = CleanAfterComplete"
+                   ng-change="CleanAfterComplete = CleanAfterTask2"
+                   ng-true-value="true"
+                   ng-false-value="false">
+            <input id="CleanAfterComplete" type="hidden" ng-model="CleanAfterComplete" value="{{CleanAfterComplete}}">
+            <label for="CleanAfterComplete" class="checkbox_label">Remove all images and containers</label>
+        </div>
     </div>
-  </div>
 </div>

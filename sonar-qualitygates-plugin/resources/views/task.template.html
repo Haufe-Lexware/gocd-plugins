@@ -1,35 +1,35 @@
+<style>
+   .asterisk {
+      color :red;
+   }
+</style>
 <div class="form_item_block">
-  <label>Stage name where the sonar scan is executed</label>
-  <input type="text" ng-model="StageName" ng-required="false">
-  </input>
+    <label>Stage name where the sonar scan is executed</label>
+    <input type="text" ng-model="StageName" ng-required="false">
 </div>
 <div class="form_item_block">
-  <label>Job name where the sonar scan is executed</label>
-  <input type="text" ng-model="JobName" ng-required="false">
-  </input>
+    <label>Job name where the sonar scan is executed</label>
+    <input type="text" ng-model="JobName" ng-required="false">
 </div>
 <div class="form_item_block">
-  <label>Stage counter</label>
-  <input type="text" ng-model="JobCounter" ng-required="false">
-  </input>
+    <label>Stage counter</label>
+    <input type="text" ng-model="JobCounter" ng-required="false">
 </div>
 <div class="form_item_block">
-  <label>Key of Sonar Project<span class="asterisk">*</span>
-  </label>
-  <input type="text" ng-model="SonarProjectKey" ng-required="true">
-  </input>
+    <label>Key of Sonar Project<span class="asterisk">*</span>
+    </label>
+    <input type="text" ng-model="SonarProjectKey" ng-required="true">
 </div>
 <div class="form_item_block">
-  <label>Fail Quality Gate result:</label>
-  <select ng-model="IssueTypeFail">
-    <option value="error">Error and Missing</option>
-    <option value="warning">Warning, Error and Missing</option>
-  </select>
+    <label>Fail Quality Gate result:</label>
+    <select ng-model="IssueTypeFail">
+        <option value="error">Error and Missing</option>
+        <option value="warning">Warning, Error and Missing</option>
+    </select>
 </div>
 <div class="form_item_block">
-  <label>SonarQube Api Url<span class="asterisk">*</span>
-  </label>
-  <input type="text" ng-model="SonarApiUrl" ng-required="true">
-  </input>
+    <label>SonarQube Api Url<span class="asterisk">*</span>
+    </label>
+    <input type="text" ng-model="SonarApiUrl" ng-required="true">
 </div>
 
